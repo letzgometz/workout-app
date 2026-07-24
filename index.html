@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StrengthTrack Pro - 4-Week Blueprint</title>
+    <title>StrengthTrack Pro - Perpetual Blueprint</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -13,7 +13,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --tag-bg: #0284c7;
+            --instructions-bg: #0f172a;
         }
 
         body {
@@ -26,10 +26,7 @@
             justify-content: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 800px;
-        }
+        .container { width: 100%; max-width: 800px; }
 
         header {
             text-align: center;
@@ -39,13 +36,13 @@
         }
 
         h1 { margin: 0 0 0.25rem 0; color: var(--accent); font-size: 1.8rem; }
-        p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+        p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
 
-        .session-selector {
-            display: flex;
+        .controls-panel {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
             gap: 10px;
             margin-bottom: 1.5rem;
-            flex-wrap: wrap;
         }
 
         select, input, button {
@@ -56,8 +53,6 @@
             color: var(--text-main);
             font-size: 0.95rem;
         }
-
-        select { flex: 1; min-width: 200px; }
 
         .card {
             background-color: var(--card-bg);
@@ -71,7 +66,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
         }
 
         .exercise-title h3 { margin: 0; font-size: 1.1rem; color: #ffffff; }
@@ -84,6 +79,35 @@
             border-radius: 4px;
             text-transform: uppercase;
             font-weight: bold;
+        }
+
+        .target-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        /* Instructions Toggle */
+        details {
+            background-color: var(--instructions-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        summary {
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: 600;
+            outline: none;
+        }
+
+        details p {
+            margin: 8px 0 0 0;
+            color: #cbd5e1;
+            line-height: 1.4;
         }
 
         .inputs-row {
@@ -106,7 +130,6 @@
             font-weight: bold;
             border: none;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         button.btn-log:hover { background-color: var(--accent-hover); color: white; }
@@ -122,11 +145,16 @@
         .history-item {
             display: flex;
             justify-content: space-between;
-            padding: 3px 0;
+            padding: 4px 0;
             border-bottom: 1px dashed #334155;
         }
 
         .history-item:last-child { border-bottom: none; }
+        .cycle-tag { font-size: 0.75rem; color: var(--accent); }
+
+        @media (max-width: 500px) {
+            .controls-panel { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -134,126 +162,133 @@
 <div class="container">
     <header>
         <h1>StrengthTrack Pro</h1>
-        <p>4-Week Diversified Master Blueprint</p>
+        <p>Perpetual Blueprint & Progress Tracker</p>
     </header>
 
-    <div class="session-selector">
-        <select id="sessionSelect" onchange="loadSession()">
-            <!-- Week 1 -->
-            <optgroup label="Week 1: Foundation & Hypertrophy">
-                <option value="w1sa">Week 1 - Session A (Push / Core Focus)</option>
-                <option value="w1sb">Week 1 - Session B (Pull / Arms Focus)</option>
-                <option value="w1sc">Week 1 - Session C (Legs / Functional Focus)</option>
-            </optgroup>
-            <!-- Week 2 -->
-            <optgroup label="Week 2: Free-Weight Focus">
-                <option value="w2sa">Week 2 - Session A (Dumbbell Hypertrophy)</option>
-                <option value="w2sb">Week 2 - Session B (Posterior Chain & Biceps)</option>
-                <option value="w2sc">Week 2 - Session C (Quad / Shoulder Synergy)</option>
-            </optgroup>
-            <!-- Week 3 -->
-            <optgroup label="Week 3: Cable Athleticism">
-                <option value="w3sa">Week 3 - Session A (Constant Tension Upper)</option>
-                <option value="w3sb">Week 3 - Session B (Rotational Core & Back)</option>
-                <option value="w3sc">Week 3 - Session C (Unilateral Lower & Arms)</option>
-            </optgroup>
-            <!-- Week 4 -->
-            <optgroup label="Week 4: Metabolic Intensity">
-                <option value="w4sa">Week 4 - Session A (Upper Density)</option>
-                <option value="w4sb">Week 4 - Session B (Pull & Core Complex)</option>
-                <option value="w4sc">Week 4 - Session C (Full Body Burnout)</option>
-            </optgroup>
-        </select>
+    <div class="controls-panel">
+        <div>
+            <select id="cycleSelect" onchange="loadSession()">
+                <option value="Cycle 1">Cycle 1 (Month 1)</option>
+                <option value="Cycle 2">Cycle 2 (Month 2)</option>
+                <option value="Cycle 3">Cycle 3 (Month 3)</option>
+                <option value="Cycle 4">Cycle 4 (Month 4)</option>
+                <option value="Cycle 5">Cycle 5 (Month 5)</option>
+                <option value="Cycle 6">Cycle 6 (Month 6)</option>
+            </select>
+        </div>
+        <div>
+            <select id="sessionSelect" onchange="loadSession()">
+                <optgroup label="Week 1: Foundation & Hypertrophy">
+                    <option value="w1sa">Week 1 - Session A (Push / Core)</option>
+                    <option value="w1sb">Week 1 - Session B (Pull / Arms)</option>
+                    <option value="w1sc">Week 1 - Session C (Legs / Functional)</option>
+                </optgroup>
+                <optgroup label="Week 2: Free-Weight Focus">
+                    <option value="w2sa">Week 2 - Session A (Dumbbell Hypertrophy)</option>
+                    <option value="w2sb">Week 2 - Session B (Posterior & Biceps)</option>
+                    <option value="w2sc">Week 2 - Session C (Quad / Shoulder)</option>
+                </optgroup>
+                <optgroup label="Week 3: Cable Athleticism">
+                    <option value="w3sa">Week 3 - Session A (Constant Tension Upper)</option>
+                    <option value="w3sb">Week 3 - Session B (Rotational Core & Back)</option>
+                    <option value="w3sc">Week 3 - Session C (Unilateral Lower & Arms)</option>
+                </optgroup>
+                <optgroup label="Week 4: Metabolic Intensity">
+                    <option value="w4sa">Week 4 - Session A (Upper Density)</option>
+                    <option value="w4sb">Week 4 - Session B (Pull & Core Complex)</option>
+                    <option value="w4sc">Week 4 - Session C (Full Body Burnout)</option>
+                </optgroup>
+            </select>
+        </div>
     </div>
 
     <div id="workoutContainer"></div>
 </div>
 
 <script>
-    // 12-Session Workout Database
     const workoutBlueprint = {
         "w1sa": [
-            { id: "w1sa_1", name: "Dumbbell Bench Press", target: "3 sets x 10-12 reps", category: "Free Weights" },
-            { id: "w1sa_2", name: "Seated Cable Row", target: "3 sets x 12 reps", category: "Machines" },
-            { id: "w1sa_3", name: "Overhead Triceps Extension", target: "3 sets x 12-15 reps", category: "Arms" },
-            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core" }
+            { id: "w1sa_1", name: "Dumbbell Bench Press", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Lie flat on the bench with a dumbbell in each hand. Keep feet flat on the floor, press weights upward until arms are extended, then lower under control until dumbbells reach chest level." },
+            { id: "w1sa_2", name: "Seated Cable Row", target: "3 sets x 12 reps", category: "Machines", instructions: "Sit facing the pulley with knees slightly bent. Pull handle toward your lower torso, keeping back upright and squeezing shoulder blades together at full contraction." },
+            { id: "w1sa_3", name: "Overhead Triceps Extension", target: "3 sets x 12-15 reps", category: "Arms", instructions: "Hold a dumbbell with both hands overhead. Lower the weight behind your head by bending at elbows, keeping upper arms vertical and close to ears." },
+            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core", instructions: "Support body on elbows in captain's chair or hang from bar. Raise knees or straight legs toward chest without using momentum, pausing briefly at the top." }
         ],
         "w1sb": [
-            { id: "w1sb_1", name: "Lat Pulldown", target: "3 sets x 10-12 reps", category: "Machines" },
-            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Arms" },
-            { id: "w1sb_3", name: "Cable Face Pulls", target: "3 sets x 15 reps", category: "Cables" },
-            { id: "w1sb_4", name: "Ab Wheel Rollouts / Cable Crunch", target: "3 sets x 12 reps", category: "Core" }
+            { id: "w1sb_1", name: "Lat Pulldown", target: "3 sets x 10-12 reps", category: "Machines", instructions: "Grasp bar wider than shoulders. Pull bar down toward upper chest while leaning back slightly, keeping elbows pointing down." },
+            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Arms", instructions: "Sit on bench inclined at 45-60 degrees with dumbbells. Keep upper arms stationary, curl weights upward while rotating palms inward to face up." },
+            { id: "w1sb_3", name: "Cable Face Pulls", target: "3 sets x 15 reps", category: "Cables", instructions: "Set cable attachment at upper chest height with rope. Pull toward face, separating rope ends so hands land near ears; squeeze rear shoulders." },
+            { id: "w1sb_4", name: "Ab Wheel Rollouts / Cable Crunch", target: "3 sets x 12 reps", category: "Core", instructions: "For Cable Crunch: Kneel under rope attachment, pull rope down to upper head, flex waist to pull elbows toward thighs." }
         ],
         "w1sc": [
-            { id: "w1sc_1", name: "Goblet Squat", target: "3 sets x 10-12 reps", category: "Free Weights" },
-            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights" },
-            { id: "w1sc_3", name: "Standing Calf Raises", target: "3 sets x 15-20 reps", category: "Machines" },
-            { id: "w1sc_4", name: "Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core" }
+            { id: "w1sc_1", name: "Goblet Squat", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbell vertically against chest. Squat down between knees until thighs are parallel to floor, driving through heels to stand." },
+            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbells in front of thighs. Hinge at hips to lower weights along shins while maintaining flat back; return by squeezing glutes." },
+            { id: "w1sc_3", name: "Standing Calf Raises", target: "3 sets x 15-20 reps", category: "Machines", instructions: "Position balls of feet on platform edge. Lower heels for stretch, then raise up onto toes as high as possible, holding contraction at top." },
+            { id: "w1sc_4", name: "Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set cable high or mid-level. Rotate torso diagonally downward across body using core muscles, keeping arms relatively straight." }
         ],
         "w2sa": [
-            { id: "w2sa_1", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights" },
-            { id: "w2sa_2", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights" },
-            { id: "w2sa_3", name: "Hammer Curls", target: "3 sets x 12 reps", category: "Arms" },
-            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core" }
+            { id: "w2sa_1", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Set bench to 30-45 degree incline. Press dumbbells up overhead, lower until dumbbells align with upper chest." },
+            { id: "w2sa_2", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights", instructions: "Place one knee and hand on bench. Hold dumbbell in opposite hand, pull elbow up past torso while driving shoulder blade inward." },
+            { id: "w2sa_3", name: "Hammer Curls", target: "3 sets x 12 reps", category: "Arms", instructions: "Stand upright holding dumbbells with palms facing each other (neutral grip). Curl weights toward shoulders without swinging." },
+            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength rather than pulling on head or neck." }
         ],
         "w2sb": [
-            { id: "w2sb_1", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights" },
-            { id: "w2sb_2", name: "Seated Incline Biceps Curl", target: "3 sets x 10-12 reps", category: "Arms" },
-            { id: "w2sb_3", name: "Triceps Dip Machine / Bench Dips", target: "3 sets x 12-15 reps", category: "Arms" },
-            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core" }
+            { id: "w2sb_1", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Stand feet shoulder-width. Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to return." },
+            { id: "w2sb_2", name: "Seated Incline Biceps Curl", target: "3 sets x 10-12 reps", category: "Arms", instructions: "Seated on incline bench, let arms hang vertically. Curl weights upward, keeping shoulders stabilized against pad." },
+            { id: "w2sb_3", name: "Triceps Dip Machine / Bench Dips", target: "3 sets x 12-15 reps", category: "Arms", instructions: "Grasp handles or bench edge behind hips. Lower torso by bending elbows to 90 degrees, press upward to lock elbows." },
+            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core", instructions: "Hold forearm plank position. Alternately reach one arm straight out in front without letting hips tilt or rock." }
         ],
         "w2sc": [
-            { id: "w2sc_1", name: "Dumbbell Walking Lunges", target: "3 sets x 10 steps / leg", category: "Free Weights" },
-            { id: "w2sc_2", name: "Dumbbell Shoulder Press", target: "3 sets x 10-12 reps", category: "Free Weights" },
-            { id: "w2sc_3", name: "Leg Extension Machine", target: "3 sets x 12-15 reps", category: "Machines" },
-            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core" }
+            { id: "w2sc_1", name: "Dumbbell Walking Lunges", target: "3 sets x 10 steps / leg", category: "Free Weights", instructions: "Step forward with dumbbell in each hand, lowering back knee toward floor until front thigh is parallel; drive forward to next step." },
+            { id: "w2sc_2", name: "Dumbbell Shoulder Press", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Seated or standing, hold dumbbells at ear height. Press overhead until arms lock out, then lower back to ear height." },
+            { id: "w2sc_3", name: "Leg Extension Machine", target: "3 sets x 12-15 reps", category: "Machines", instructions: "Position pad over lower shins. Extend legs fully by contracting quadriceps; lower under control." },
+            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core", instructions: "Sit with feet slightly elevated off ground. Hold small dumbbell or plate and rotate torso side-to-side, touching weight near hips." }
         ],
         "w3sa": [
-            { id: "w3sa_1", name: "Cable Chest Flyes", target: "3 sets x 12-15 reps", category: "Cables" },
-            { id: "w3sa_2", name: "Straight-Arm Cable Pushdown", target: "3 sets x 12-15 reps", category: "Cables" },
-            { id: "w3sa_3", name: "Cable Triceps Rope Pushdown", target: "3 sets x 12-15 reps", category: "Arms" },
-            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core" }
+            { id: "w3sa_1", name: "Cable Chest Flyes", target: "3 sets x 12-15 reps", category: "Cables", instructions: "Stand between cables set at chest height. Bring hands together in front with slight elbow bend, squeezing chest at center." },
+            { id: "w3sa_2", name: "Straight-Arm Cable Pushdown", target: "3 sets x 12-15 reps", category: "Cables", instructions: "Grasp high pulley bar with arms straight. Pull bar down toward thighs using lats while keeping arms extended." },
+            { id: "w3sa_3", name: "Cable Triceps Rope Pushdown", target: "3 sets x 12-15 reps", category: "Arms", instructions: "Grasp rope attached to top cable. Extend elbows down toward hips, spreading rope ends outward at bottom." },
+            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set cable high. Pull diagonally down across hips, pivoting back foot to rotate core through movement." }
         ],
         "w3sb": [
-            { id: "w3sb_1", name: "Lat Pulldown (Wide Grip)", target: "3 sets x 10-12 reps", category: "Machines" },
-            { id: "w3sb_2", name: "Cable Biceps Curl (Straight Bar)", target: "3 sets x 12 reps", category: "Arms" },
-            { id: "w3sb_3", name: "Face Pulls with External Rotation", target: "3 sets x 15 reps", category: "Cables" },
-            { id: "w3sb_4", name: "Pallof Press (Cable)", target: "3 sets x 10 holds / side", category: "Core" }
+            { id: "w3sb_1", name: "Lat Pulldown (Wide Grip)", target: "3 sets x 10-12 reps", category: "Machines", instructions: "Hold bar wider than shoulder width. Pull down smoothly to collarbone while keeping chest up." },
+            { id: "w3sb_2", name: "Cable Biceps Curl (Straight Bar)", target: "3 sets x 12 reps", category: "Arms", instructions: "Attach straight bar to low pulley. Curl bar up toward chest, keeping elbows tucked close to sides." },
+            { id: "w3sb_3", name: "Face Pulls with External Rotation", target: "3 sets x 15 reps", category: "Cables", instructions: "Pull rope high toward forehead, driving knuckles back to rotate shoulders open at end of motion." },
+            { id: "w3sb_4", name: "Pallof Press (Cable)", target: "3 sets x 10 holds / side", category: "Core", instructions: "Stand sideways to cable at chest height. Press handle straight out in front, resisting pulling torque from stack." }
         ],
         "w3sc": [
-            { id: "w3sc_1", name: "Bulgarian Split Squat", target: "3 sets x 8-10 reps / leg", category: "Free Weights" },
-            { id: "w3sc_2", name: "Lying Leg Curl Machine", target: "3 sets x 12 reps", category: "Machines" },
-            { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights" },
-            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core" }
+            { id: "w3sc_1", name: "Bulgarian Split Squat", target: "3 sets x 8-10 reps / leg", category: "Free Weights", instructions: "Rest back foot on bench behind you. Lower front thigh until parallel to floor, keeping weight centered in front heel." },
+            { id: "w3sc_2", name: "Lying Leg Curl Machine", target: "3 sets x 12 reps", category: "Machines", instructions: "Lie face down with pad above ankles. Flex knees to curl heel pad toward glutes; lower slowly." },
+            { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights", instructions: "Hold dumbbells at sides. Raise arms out sideways until parallel with shoulders; lower with control." },
+            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core", instructions: "Hang from pull-up bar. Raise knees high enough to touch elbows, engaging lower ab muscles." }
         ],
         "w4sa": [
-            { id: "w4sa_1", name: "Dumbbell Bench Press Superset w/ Pushups", target: "3 sets x 10 + Max reps", category: "Free Weights" },
-            { id: "w4sa_2", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights" },
-            { id: "w4sa_3", name: "Skull Crushers (EZ Bar or DB)", target: "3 sets x 12 reps", category: "Arms" },
-            { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "3 sets x 10-12 reps", category: "Core" }
+            { id: "w4sa_1", name: "Dumbbell Bench Press Superset", target: "3 sets x 10 reps + Pushups", category: "Free Weights", instructions: "Perform 10 heavy dumbbell bench press reps, immediately drop to floor and execute max pushups to fatigue." },
+            { id: "w4sa_2", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips, taking strain off lower back." },
+            { id: "w4sa_3", name: "Skull Crushers (EZ Bar or DB)", target: "3 sets x 12 reps", category: "Arms", instructions: "Lie on flat bench with arms perpendicular to body. Bend elbows to lower weight toward forehead, then extend." },
+            { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "3 sets x 10-12 reps", category: "Core", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling, control descent down." }
         ],
         "w4sb": [
-            { id: "w4sb_1", name: "Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Cables" },
-            { id: "w4sb_2", name: "Concentration Curls", target: "3 sets x 12 reps / side", category: "Arms" },
-            { id: "w4sb_3", name: "Dumbbell Shrugs", target: "3 sets x 15 reps", category: "Free Weights" },
-            { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "3 sets x 15 reps", category: "Core" }
+            { id: "w4sb_1", name: "Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Cables", instructions: "Row single cable handle toward hip, allowing slight torso rotation to pull deep into lat." },
+            { id: "w4sb_2", name: "Concentration Curls", target: "3 sets x 12 reps / side", category: "Arms", instructions: "Seated, rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
+            { id: "w4sb_3", name: "Dumbbell Shrugs", target: "3 sets x 15 reps", category: "Free Weights", instructions: "Hold dumbbells at sides. Elevate shoulders straight up toward ears, hold for 1 second, then lower." },
+            { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "3 sets x 15 reps", category: "Core", instructions: "Raise knees toward chest while alternating turning knees toward left and right shoulders." }
         ],
         "w4sc": [
-            { id: "w4sc_1", name: "Dumbbell Thrusters (Squat to Press)", target: "3 sets x 10-12 reps", category: "Free Weights" },
-            { id: "w4sc_2", name: "Leg Press Machine", target: "3 sets x 12-15 reps", category: "Machines" },
-            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Arms" },
-            { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "3 sets x 10 transitions", category: "Core" }
+            { id: "w4sc_1", name: "Dumbbell Thrusters", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbells at shoulders, squat down full depth, then explode up pressing weights directly overhead." },
+            { id: "w4sc_2", name: "Leg Press Machine", target: "3 sets x 12-15 reps", category: "Machines", instructions: "Place feet shoulder-width on sled. Lower sled until knees hit 90 degrees, press up without locking knees." },
+            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Arms", instructions: "7 reps bottom-to-midway, 7 reps midway-to-top, followed immediately by 7 full-range curls." },
+            { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "3 sets x 10 transitions", category: "Core", instructions: "From elbow plank, press up one hand at a time into full pushup position, then lower back to elbows." }
         ]
     };
 
-    // Load logs from LocalStorage
-    let logs = JSON.parse(localStorage.getItem('stp_blueprint_logs')) || {};
+    let logs = JSON.parse(localStorage.getItem('stp_perpetual_logs')) || {};
 
     function saveLogs() {
-        localStorage.setItem('stp_blueprint_logs', JSON.stringify(logs));
+        localStorage.setItem('stp_perpetual_logs', JSON.stringify(logs));
     }
 
     function logEntry(exId) {
+        const cycle = document.getElementById('cycleSelect').value;
         const weight = document.getElementById(`w_${exId}`).value || '0';
         const level = document.getElementById(`l_${exId}`).value || 'N/A';
         const reps = document.getElementById(`r_${exId}`).value || '0';
@@ -261,6 +296,7 @@
         if (!logs[exId]) logs[exId] = [];
 
         logs[exId].unshift({
+            cycle: cycle,
             date: new Date().toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
             weight: weight,
             level: level,
@@ -280,9 +316,9 @@
         exercises.forEach(ex => {
             const history = logs[ex.id] || [];
             let historyHtml = history.length > 0 
-                ? history.slice(0, 3).map(h => 
+                ? history.slice(0, 4).map(h => 
                     `<div class="history-item">
-                        <span>${h.date}</span>
+                        <span><strong class="cycle-tag">[${h.cycle}]</strong> ${h.date}</span>
                         <span>${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
                     </div>`
                   ).join('')
@@ -295,17 +331,22 @@
                     <h3>${ex.name}</h3>
                     <span class="badge">${ex.category}</span>
                 </div>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
-                    Target: <strong>${ex.target}</strong>
-                </div>
+                <div class="target-text">Target: <strong>${ex.target}</strong></div>
+                
+                <details>
+                    <summary>How to perform exercise</summary>
+                    <p>${ex.instructions}</p>
+                </details>
+
                 <div class="inputs-row">
-                    <input type="number" id="w_${ex.id}" placeholder="Weight (lbs)">
+                    <input type="number" id="w_${ex.id}" placeholder="lbs">
                     <input type="text" id="l_${ex.id}" placeholder="Level">
                     <input type="number" id="r_${ex.id}" placeholder="Reps">
                     <button class="btn-log" onclick="logEntry('${ex.id}')">Log</button>
                 </div>
+
                 <div class="history-box">
-                    <strong style="display: block; margin-bottom: 4px;">Recent Performance:</strong>
+                    <strong style="display: block; margin-bottom: 4px;">Progression Log:</strong>
                     ${historyHtml}
                 </div>
             `;
@@ -313,7 +354,6 @@
         });
     }
 
-    // Initial Load
     loadSession();
 </script>
 
