@@ -77,6 +77,16 @@
             font-size: 0.95rem;
         }
 
+        .section-header {
+            margin: 1.5rem 0 0.75rem 0;
+            padding-bottom: 0.25rem;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--accent);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
         .card {
             background-color: var(--card-bg);
             border-radius: 8px;
@@ -103,6 +113,9 @@
             text-transform: uppercase;
             font-weight: bold;
         }
+
+        .badge.warmup { color: #f59e0b; }
+        .badge.flexibility { color: #10b981; }
 
         .target-text {
             font-size: 0.85rem;
@@ -272,78 +285,92 @@
     let currentUser = null;
     let userLogs = {};
 
+    // Standard Modules for Warmup & Cool-Down
+    const WARMUP_BLOCK = [
+        { id: "wm_1", name: "Dynamic Bodyweight Warmup Routine", target: "5-7 mins total", category: "Warmup", loggable: false, instructions: "Perform 10 Bodyweight Squats, 10 Forward Lunges, 30s Arm Circles, and 8-10 Cat-Cow flows to lubricate joints and raise heart rate." },
+        { id: "wm_2", name: "World's Greatest Stretch", target: "5 reps / side", category: "Warmup", loggable: false, instructions: "Lunge forward, drop elbow inside instep, rotate arm to ceiling, then step back and switch sides." }
+    ];
+
+    const COOLDOWN_BLOCK = [
+        { id: "cd_1", name: "Kneeling Hip Flexor & Hamstring Stretch", target: "45 sec / side", category: "Flexibility", loggable: false, instructions: "Kneel on one knee, lean forward to stretch hip flexors. Shift hips back, extend front leg to stretch hamstrings." },
+        { id: "cd_2", name: "Doorway Chest Opener & Child's Pose", target: "60 sec holds", category: "Flexibility", loggable: false, instructions: "Place forearms on door frame and step through to open chest. Finish on mat in Child's Pose with deep breathing." }
+    ];
+
+    // Blueprint containing workouts & core density limits
     const workoutBlueprint = {
         "w1sa": [
-            { id: "w1sa_1", name: "Dumbbell Overhead Press", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Seated or standing, hold dumbbells at shoulder height with palms facing forward. Press straight overhead until arms lock out." },
-            { id: "w1sa_2", name: "Technogym Chest Press", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
-            { id: "w1sa_3", name: "Overhead Triceps Extension (Dumbbell)", target: "3 sets x 12-15 reps", category: "Free Weights", instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows before pressing back up." },
-            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core", instructions: "Support body on elbows in captain's chair. Raise knees or straight legs toward chest without swinging." }
+            { id: "w1sa_1", name: "Dumbbell Overhead Press", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Seated or standing, hold dumbbells at shoulder height with palms facing forward. Press straight overhead until arms lock out." },
+            { id: "w1sa_2", name: "Technogym Chest Press", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
+            { id: "w1sa_3", name: "Overhead Triceps Extension (Dumbbell)", target: "3 sets x 12-15 reps", category: "Free Weights", loggable: true, instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows before pressing back up." },
+            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core", loggable: true, instructions: "Support body on elbows in captain's chair. Raise knees or straight legs toward chest without swinging." },
+            { id: "w1sa_5", name: "Forearm Plank Hold", target: "3 sets x 45-60 sec", category: "Core", loggable: true, instructions: "Maintain straight line from shoulders to heels, bracing glutes and core." }
         ],
         "w1sb": [
-            { id: "w1sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest while keeping chest open." },
-            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Free Weights", instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
-            { id: "w1sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
-            { id: "w1sb_4", name: "Precor FTS Cable Crunch", target: "3 sets x 12 reps", category: "Core", instructions: "Kneel with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
+            { id: "w1sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest while keeping chest open." },
+            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Free Weights", loggable: true, instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
+            { id: "w1sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", loggable: true, instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
+            { id: "w1sb_4", name: "Precor FTS Cable Crunch", target: "3 sets x 12 reps", category: "Core", loggable: true, instructions: "Kneel with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
         ],
         "w1sc": [
-            { id: "w1sc_1", name: "Dumbbell Step Squat (Step-Up Squat)", target: "3 sets x 10-12 reps / leg", category: "Free Weights", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
-            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
-            { id: "w1sc_3", name: "Precor Leg Press Calf Raises", target: "3 sets x 15-20 reps", category: "Precor", instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
-            { id: "w1sc_4", name: "Precor FTS Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
+            { id: "w1sc_1", name: "Dumbbell Step Squat (Step-Up Squat)", target: "3 sets x 10-12 reps / leg", category: "Free Weights", loggable: true, instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
+            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
+            { id: "w1sc_3", name: "Precor Leg Press Calf Raises", target: "3 sets x 15-20 reps", category: "Precor", loggable: true, instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
+            { id: "w1sc_4", name: "Precor FTS Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", loggable: true, instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
         ],
         "w2sa": [
-            { id: "w2sa_1", name: "Standing Dumbbell Overhead Press", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
-            { id: "w2sa_2", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
-            { id: "w2sa_3", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights", instructions: "Knee and hand on bench. Pull dumbbell elbow toward hip driving shoulder blade back." },
-            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength." }
+            { id: "w2sa_1", name: "Standing Dumbbell Overhead Press", target: "3 sets x 8-10 reps", category: "Free Weights", loggable: true, instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
+            { id: "w2sa_2", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights", loggable: true, instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
+            { id: "w2sa_3", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights", loggable: true, instructions: "Knee and hand on bench. Pull dumbbell elbow toward hip driving shoulder blade back." },
+            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core", loggable: true, instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength." },
+            { id: "w2sa_5", name: "Dead Bugs (Pelvic Control)", target: "3 sets x 12 reps / side", category: "Core", loggable: true, instructions: "Lie on back. Lower opposite arm and leg while pressing lower back flush into floor." }
         ],
         "w2sb": [
-            { id: "w2sb_1", name: "Technogym Low Pull Row", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
-            { id: "w2sb_2", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
-            { id: "w2sb_3", name: "Precor FTS Triceps Pushdown", target: "3 sets x 12-15 reps", category: "Precor FTS", instructions: "Attach rope to high pulley. Extend elbows down toward hips, spreading handles outward." },
-            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core", instructions: "Forearm plank position. Alternately reach one arm straight in front without tilting hips." }
+            { id: "w2sb_1", name: "Technogym Low Pull Row", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
+            { id: "w2sb_2", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights", loggable: true, instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
+            { id: "w2sb_3", name: "Precor FTS Triceps Pushdown", target: "3 sets x 12-15 reps", category: "Precor FTS", loggable: true, instructions: "Attach rope to high pulley. Extend elbows down toward hips, spreading handles outward." },
+            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core", loggable: true, instructions: "Forearm plank position. Alternately reach one arm straight in front without tilting hips." }
         ],
         "w2sc": [
-            { id: "w2sc_1", name: "Dumbbell Step Squat", target: "3 sets x 10 steps / leg", category: "Free Weights", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
-            { id: "w2sc_2", name: "Precor Leg Press", target: "3 sets x 10-12 reps", category: "Precor", instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
-            { id: "w2sc_3", name: "Dumbbell Hammer Curls", target: "3 sets x 12 reps", category: "Free Weights", instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
-            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core", instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
+            { id: "w2sc_1", name: "Dumbbell Step Squat", target: "3 sets x 10 steps / leg", category: "Free Weights", loggable: true, instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
+            { id: "w2sc_2", name: "Precor Leg Press", target: "3 sets x 10-12 reps", category: "Precor", loggable: true, instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
+            { id: "w2sc_3", name: "Dumbbell Hammer Curls", target: "3 sets x 12 reps", category: "Free Weights", loggable: true, instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
+            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core", loggable: true, instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
         ],
         "w3sa": [
-            { id: "w3sa_1", name: "Precor FTS Cable Overhead Press", target: "3 sets x 10-12 reps", category: "Precor FTS", instructions: "Set low cables on FTS. Press handles overhead smoothly from shoulder height." },
-            { id: "w3sa_2", name: "Precor FTS Chest Flyes", target: "3 sets x 12-15 reps", category: "Precor FTS", instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
-            { id: "w3sa_3", name: "Technogym High Pull Lat (Reverse Grip)", target: "3 sets x 12 reps", category: "Technogym", instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
-            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
+            { id: "w3sa_1", name: "Precor FTS Cable Overhead Press", target: "3 sets x 10-12 reps", category: "Precor FTS", loggable: true, instructions: "Set low cables on FTS. Press handles overhead smoothly from shoulder height." },
+            { id: "w3sa_2", name: "Precor FTS Chest Flyes", target: "3 sets x 12-15 reps", category: "Precor FTS", loggable: true, instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
+            { id: "w3sa_3", name: "Technogym High Pull Lat (Reverse Grip)", target: "3 sets x 12 reps", category: "Technogym", loggable: true, instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
+            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", loggable: true, instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
         ],
         "w3sb": [
-            { id: "w3sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
-            { id: "w3sb_2", name: "Precor FTS Cable Biceps Curl", target: "3 sets x 12 reps", category: "Precor FTS", instructions: "Set low pulley on FTS. Curl upwards keeping elbows pinned to your sides." },
-            { id: "w3sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion." },
-            { id: "w3sb_4", name: "Precor FTS Pallof Press", target: "3 sets x 10 holds / side", category: "Core", instructions: "Stand sideways to FTS. Press handle straight out in front, resisting rotational pull." }
+            { id: "w3sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
+            { id: "w3sb_2", name: "Precor FTS Cable Biceps Curl", target: "3 sets x 12 reps", category: "Precor FTS", loggable: true, instructions: "Set low pulley on FTS. Curl upwards keeping elbows pinned to your sides." },
+            { id: "w3sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", loggable: true, instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion." },
+            { id: "w3sb_4", name: "Precor FTS Pallof Press", target: "3 sets x 10 holds / side", category: "Core", loggable: true, instructions: "Stand sideways to FTS. Press handle straight out in front, resisting rotational pull." }
         ],
         "w3sc": [
-            { id: "w3sc_1", name: "Weighted Step Squats", target: "3 sets x 10 reps / leg", category: "Free Weights", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
-            { id: "w3sc_2", name: "Precor Leg Press (Single Leg Focus)", target: "3 sets x 10 reps / leg", category: "Precor", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
-            { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights", instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
-            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core", instructions: "Hang from captain's chair/bar. Raise knees high enough to touch elbows." }
+            { id: "w3sc_1", name: "Weighted Step Squats", target: "3 sets x 10 reps / leg", category: "Free Weights", loggable: true, instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
+            { id: "w3sc_2", name: "Precor Leg Press (Single Leg Focus)", target: "3 sets x 10 reps / leg", category: "Precor", loggable: true, instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
+            { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights", loggable: true, instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
+            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core", loggable: true, instructions: "Hang from captain's chair/bar. Raise knees high enough to touch elbows." }
         ],
         "w4sa": [
-            { id: "w4sa_1", name: "Seated Dumbbell Overhead Press", target: "3 sets x 10 reps", category: "Free Weights", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
-            { id: "w4sa_2", name: "Technogym Chest Press Superset", target: "3 sets x 10 reps + Pushups", category: "Technogym", instructions: "Perform 10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
-            { id: "w4sa_3", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
-            { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "3 sets x 10-12 reps", category: "Core", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
+            { id: "w4sa_1", name: "Seated Dumbbell Overhead Press", target: "3 sets x 10 reps", category: "Free Weights", loggable: true, instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
+            { id: "w4sa_2", name: "Technogym Chest Press Superset", target: "3 sets x 10 reps + Pushups", category: "Technogym", loggable: true, instructions: "Perform 10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
+            { id: "w4sa_3", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
+            { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "1-2 sets max (Heavy Focus)", category: "Core", loggable: true, instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
         ],
         "w4sb": [
-            { id: "w4sb_1", name: "Single-Arm Overhead Press (Dumbbell)", target: "3 sets x 10 reps / side", category: "Free Weights", instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
-            { id: "w4sb_2", name: "Precor FTS Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Precor FTS", instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
-            { id: "w4sb_3", name: "Dumbbell Concentration Curls", target: "3 sets x 12 reps / side", category: "Free Weights", instructions: "Rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
-            { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "3 sets x 15 reps", category: "Core", instructions: "Raise knees toward chest while alternating turning knees left and right." }
+            { id: "w4sb_1", name: "Single-Arm Overhead Press (Dumbbell)", target: "3 sets x 10 reps / side", category: "Free Weights", loggable: true, instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
+            { id: "w4sb_2", name: "Precor FTS Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Precor FTS", loggable: true, instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
+            { id: "w4sb_3", name: "Dumbbell Concentration Curls", target: "3 sets x 12 reps / side", category: "Free Weights", loggable: true, instructions: "Rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
+            { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "1-2 sets max (Strenuous Session)", category: "Core", loggable: true, instructions: "Raise knees toward chest while alternating turning knees left and right." }
         ],
         "w4sc": [
-            { id: "w4sc_1", name: "Dumbbell Step Squat Burnout", target: "3 sets x 12 steps / leg", category: "Free Weights", instructions: "Continuous step squat reps alternating legs on each step up." },
-            { id: "w4sc_2", name: "Precor Leg Press (Heavy)", target: "3 sets x 12-15 reps", category: "Precor", instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
-            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Free Weights", instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
-            { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "3 sets x 10 transitions", category: "Core", instructions: "From elbow plank, press up one hand at a time into full pushup position." }
+            { id: "w4sc_1", name: "Dumbbell Step Squat Burnout", target: "3 sets x 12 steps / leg", category: "Free Weights", loggable: true, instructions: "Continuous step squat reps alternating legs on each step up." },
+            { id: "w4sc_2", name: "Precor Leg Press (Heavy)", target: "3 sets x 12-15 reps", category: "Precor", loggable: true, instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
+            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Free Weights", loggable: true, instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
+            { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "1-2 sets max (Strenuous Session)", category: "Core", loggable: true, instructions: "From elbow plank, press up one hand at a time into full pushup position." }
         ]
     };
 
@@ -427,51 +454,78 @@
         });
     }
 
+    function renderCard(ex) {
+        const history = userLogs[ex.id] || [];
+        let historyHtml = history.length > 0 
+            ? history.slice(0, 4).map(h => 
+                `<div class="history-item">
+                    <span><strong class="cycle-tag">[${h.cycle}]</strong> ${h.date}</span>
+                    <span>${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
+                </div>`
+              ).join('')
+            : '<div style="font-size: 0.8rem; color: #64748b;">No logs recorded yet.</div>';
+
+        const badgeClass = ex.category === 'Warmup' ? 'badge warmup' : ex.category === 'Flexibility' ? 'badge flexibility' : 'badge';
+
+        const inputsHtml = ex.loggable ? `
+            <div class="inputs-row">
+                <input type="number" id="w_${ex.id}" placeholder="lbs">
+                <input type="text" id="l_${ex.id}" placeholder="Level">
+                <input type="number" id="r_${ex.id}" placeholder="Reps">
+                <button class="btn-log" onclick="logEntry('${ex.id}')">Log</button>
+            </div>
+            <div class="history-box">
+                <strong style="display: block; margin-bottom: 4px;">Progression Log:</strong>
+                ${historyHtml}
+            </div>` : '';
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="exercise-title">
+                <h3>${ex.name}</h3>
+                <span class="${badgeClass}">${ex.category}</span>
+            </div>
+            <div class="target-text">Target: <strong>${ex.target}</strong></div>
+            
+            <details>
+                <summary>How to perform exercise</summary>
+                <p>${ex.instructions}</p>
+            </details>
+            ${inputsHtml}
+        `;
+        return card;
+    }
+
     function loadSession() {
         const sessionKey = document.getElementById('sessionSelect').value;
-        const exercises = workoutBlueprint[sessionKey] || [];
+        const mainExercises = workoutBlueprint[sessionKey] || [];
         const container = document.getElementById('workoutContainer');
         container.innerHTML = '';
 
-        exercises.forEach(ex => {
-            const history = userLogs[ex.id] || [];
-            let historyHtml = history.length > 0 
-                ? history.slice(0, 4).map(h => 
-                    `<div class="history-item">
-                        <span><strong class="cycle-tag">[${h.cycle}]</strong> ${h.date}</span>
-                        <span>${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
-                    </div>`
-                  ).join('')
-                : '<div style="font-size: 0.8rem; color: #64748b;">No logs recorded yet.</div>';
+        // 1. Warmup Header & Cards
+        const warmupHeader = document.createElement('h2');
+        warmupHeader.className = 'section-header';
+        warmupHeader.innerText = '1. Warmup & Mobility';
+        container.appendChild(warmupHeader);
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="exercise-title">
-                    <h3>${ex.name}</h3>
-                    <span class="badge">${ex.category}</span>
-                </div>
-                <div class="target-text">Target: <strong>${ex.target}</strong></div>
-                
-                <details>
-                    <summary>How to perform exercise</summary>
-                    <p>${ex.instructions}</p>
-                </details>
+        WARMUP_BLOCK.forEach(ex => container.appendChild(renderCard(ex)));
 
-                <div class="inputs-row">
-                    <input type="number" id="w_${ex.id}" placeholder="lbs">
-                    <input type="text" id="l_${ex.id}" placeholder="Level">
-                    <input type="number" id="r_${ex.id}" placeholder="Reps">
-                    <button class="btn-log" onclick="logEntry('${ex.id}')">Log</button>
-                </div>
+        // 2. Main Workout Header & Cards
+        const mainHeader = document.createElement('h2');
+        mainHeader.className = 'section-header';
+        mainHeader.innerText = '2. Core & Main Workout';
+        container.appendChild(mainHeader);
 
-                <div class="history-box">
-                    <strong style="display: block; margin-bottom: 4px;">Progression Log:</strong>
-                    ${historyHtml}
-                </div>
-            `;
-            container.appendChild(card);
-        });
+        mainExercises.forEach(ex => container.appendChild(renderCard(ex)));
+
+        // 3. Cool-Down Header & Cards
+        const coolHeader = document.createElement('h2');
+        coolHeader.className = 'section-header';
+        coolHeader.innerText = '3. Flexibility & Cool-Down';
+        container.appendChild(coolHeader);
+
+        COOLDOWN_BLOCK.forEach(ex => container.appendChild(renderCard(ex)));
     }
 </script>
 
