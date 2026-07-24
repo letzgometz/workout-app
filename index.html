@@ -252,7 +252,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-    // Firebase Configuration (Pre-configured with your keys)
+    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDY7UPL_sPM47s3bsOSxpDQuLJqpWT-ms0",
         authDomain: "strengthtrack-b0b4e.firebaseapp.com",
@@ -263,7 +263,9 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const db = firebase.firestore();
 
@@ -361,15 +363,22 @@
     });
 
     function handleAuth(type) {
-        const email = document.getElementById('authEmail').value;
+        const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value;
         const errTag = document.getElementById('authError');
         errTag.textContent = '';
 
+        if (!email || !password) {
+            errTag.textContent = 'Please enter both email and password.';
+            return;
+        }
+
         if (type === 'signup') {
-            auth.createUserWithEmailAndPassword(email, password).catch(err => errTag.textContent = err.message);
+            auth.createUserWithEmailAndPassword(email, password)
+                .catch(err => { errTag.textContent = err.message; });
         } else {
-            auth.signInWithEmailAndPassword(email, password).catch(err => errTag.textContent = err.message);
+            auth.signInWithEmailAndPassword(email, password)
+                .catch(err => { errTag.textContent = err.message; });
         }
     }
 
@@ -386,6 +395,8 @@
                 userLogs = {};
             }
             loadSession();
+        }, err => {
+            console.error("Firestore sync error:", err);
         });
     }
 
@@ -407,10 +418,13 @@
             reps: reps
         });
 
-        // Save directly to cloud DB
         db.collection('users').doc(currentUser.uid).set({
             logs: userLogs
-        }, { merge: true });
+        }, { merge: true }).then(() => {
+            document.getElementById(`w_${exId}`).value = '';
+            document.getElementById(`l_${exId}`).value = '';
+            document.getElementById(`r_${exId}`).value = '';
+        });
     }
 
     function loadSession() {
