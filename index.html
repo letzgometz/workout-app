@@ -249,6 +249,7 @@
         .history-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 4px 0;
             border-bottom: 1px dashed #334155;
         }
@@ -522,7 +523,7 @@
         const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 
         const entry = {
-            id: Date.now(), // unique timestamp ID for precise deletion
+            id: Date.now(),
             cycle: cycle,
             session: sessionName,
             timestamp: `${dateStr} @ ${timeStr}`
@@ -540,7 +541,6 @@
     function undoWorkoutCompleted(entryId) {
         if (!currentUser) return;
 
-        // Filter out the entry with the matching ID
         completedWorkouts = completedWorkouts.filter(item => item.id !== entryId);
 
         db.collection('users').doc(currentUser.uid).set({
@@ -579,6 +579,7 @@
         if (!userLogs[exId]) userLogs[exId] = [];
 
         userLogs[exId].unshift({
+            id: Date.now(), // unique timestamp ID for precise exercise entry deletion
             cycle: cycle,
             date: new Date().toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
             weight: weight,
@@ -595,13 +596,24 @@
         });
     }
 
+    function undoExerciseLog(exId, logId) {
+        if (!currentUser || !userLogs[exId]) return;
+
+        // Filter out the specific exercise log entry
+        userLogs[exId] = userLogs[exId].filter(h => h.id !== logId);
+
+        db.collection('users').doc(currentUser.uid).set({
+            logs: userLogs
+        }, { merge: true });
+    }
+
     function renderCard(ex) {
         const history = userLogs[ex.id] || [];
         let historyHtml = history.length > 0 
             ? history.slice(0, 4).map(h => 
                 `<div class="history-item">
-                    <span><strong class="cycle-tag">[${h.cycle}]</strong> ${h.date}</span>
-                    <span>${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
+                    <span><strong class="cycle-tag">[${h.cycle}]</strong> ${h.date} - ${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
+                    <button class="btn-undo" onclick="undoExerciseLog('${ex.id}', ${h.id})">Undo</button>
                 </div>`
               ).join('')
             : '<div style="font-size: 0.8rem; color: #64748b;">No logs recorded yet.</div>';
