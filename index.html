@@ -14,6 +14,7 @@
             --text-muted: #94a3b8;
             --border-color: #334155;
             --instructions-bg: #0f172a;
+            --success: #10b981;
         }
 
         body {
@@ -65,7 +66,7 @@
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 10px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         select, input, button {
@@ -76,6 +77,56 @@
             color: var(--text-main);
             font-size: 0.95rem;
         }
+
+        /* Completion Bar Styling */
+        .completion-bar {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-complete {
+            background-color: var(--success);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn-complete:hover { background-color: #059669; color: white; }
+
+        .completed-list {
+            background-color: #0f172a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .completed-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dashed #334155;
+            color: var(--text-muted);
+        }
+
+        .completed-item:last-child { border-bottom: none; }
 
         .section-header {
             margin: 1.5rem 0 0.75rem 0;
@@ -190,6 +241,7 @@
 
         @media (max-width: 500px) {
             .controls-panel { grid-template-columns: 1fr; }
+            .completion-header { flex-direction: column; gap: 8px; align-items: stretch; }
         }
     </style>
 </head>
@@ -211,7 +263,7 @@
         <p id="authError" style="color: #ef4444; font-size: 0.8rem; text-align: center;"></p>
     </div>
 
-    <!-- Main Workout App (Hidden until login) -->
+    <!-- Main Workout App -->
     <div id="appPanel" class="hidden">
         <div class="user-bar">
             <span>Logged in as: <strong id="userEmailTag" style="color: var(--accent);"></strong></span>
@@ -255,6 +307,17 @@
             </div>
         </div>
 
+        <!-- Workout Completion Tracker Bar -->
+        <div class="completion-bar">
+            <div class="completion-header">
+                <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Session Log Tracker</span>
+                <button class="btn-complete" onclick="markWorkoutCompleted()">✓ Mark Workout Completed Today</button>
+            </div>
+            <div class="completed-list" id="completedHistoryList">
+                <div style="color: #64748b;">No completed sessions recorded yet.</div>
+            </div>
+        </div>
+
         <div id="workoutContainer"></div>
     </div>
 </div>
@@ -275,7 +338,6 @@
         appId: "1:725222914101:web:af5ab4c76b77f60d43997c"
     };
 
-    // Initialize Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -284,8 +346,9 @@
 
     let currentUser = null;
     let userLogs = {};
+    let completedWorkouts = [];
 
-    // Standard Modules for Warmup & Cool-Down
+    // Modules for Warmup & Cool-Down
     const WARMUP_BLOCK = [
         { id: "wm_1", name: "Dynamic Bodyweight Warmup Routine", target: "5-7 mins total", category: "Warmup", loggable: false, instructions: "Perform 10 Bodyweight Squats, 10 Forward Lunges, 30s Arm Circles, and 8-10 Cat-Cow flows to lubricate joints and raise heart rate." },
         { id: "wm_2", name: "World's Greatest Stretch", target: "5 reps / side", category: "Warmup", loggable: false, instructions: "Lunge forward, drop elbow inside instep, rotate arm to ceiling, then step back and switch sides." }
@@ -296,7 +359,6 @@
         { id: "cd_2", name: "Doorway Chest Opener & Child's Pose", target: "60 sec holds", category: "Flexibility", loggable: false, instructions: "Place forearms on door frame and step through to open chest. Finish on mat in Child's Pose with deep breathing." }
     ];
 
-    // Blueprint containing workouts & core density limits
     const workoutBlueprint = {
         "w1sa": [
             { id: "w1sa_1", name: "Dumbbell Overhead Press", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Seated or standing, hold dumbbells at shoulder height with palms facing forward. Press straight overhead until arms lock out." },
@@ -374,7 +436,6 @@
         ]
     };
 
-    // Auth State Observer
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
@@ -417,14 +478,59 @@
         if (!currentUser) return;
         db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
             if (doc.exists) {
-                userLogs = doc.data().logs || {};
+                const data = doc.data();
+                userLogs = data.logs || {};
+                completedWorkouts = data.completedWorkouts || [];
             } else {
                 userLogs = {};
+                completedWorkouts = [];
             }
+            renderCompletionHistory();
             loadSession();
         }, err => {
             console.error("Firestore sync error:", err);
         });
+    }
+
+    function markWorkoutCompleted() {
+        if (!currentUser) return;
+
+        const cycle = document.getElementById('cycleSelect').value;
+        const sessionSelect = document.getElementById('sessionSelect');
+        const sessionName = sessionSelect.options[sessionSelect.selectedIndex].text;
+        
+        const now = new Date();
+        const dateStr = now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+        const entry = {
+            cycle: cycle,
+            session: sessionName,
+            timestamp: `${dateStr} @ ${timeStr}`
+        };
+
+        completedWorkouts.unshift(entry);
+
+        db.collection('users').doc(currentUser.uid).set({
+            completedWorkouts: completedWorkouts
+        }, { merge: true }).then(() => {
+            renderCompletionHistory();
+        });
+    }
+
+    function renderCompletionHistory() {
+        const listDiv = document.getElementById('completedHistoryList');
+        if (!completedWorkouts || completedWorkouts.length === 0) {
+            listDiv.innerHTML = '<div style="color: #64748b;">No completed sessions recorded yet.</div>';
+            return;
+        }
+
+        listDiv.innerHTML = completedWorkouts.map(item => `
+            <div class="completed-item">
+                <span><strong style="color: var(--accent);">[${item.cycle}]</strong> ${item.session}</span>
+                <span style="font-weight: 500; color: var(--success);">${item.timestamp}</span>
+            </div>
+        `).join('');
     }
 
     function logEntry(exId) {
@@ -503,28 +609,25 @@
         const container = document.getElementById('workoutContainer');
         container.innerHTML = '';
 
-        // 1. Warmup Header & Cards
+        // Warmup Section
         const warmupHeader = document.createElement('h2');
         warmupHeader.className = 'section-header';
         warmupHeader.innerText = '1. Warmup & Mobility';
         container.appendChild(warmupHeader);
-
         WARMUP_BLOCK.forEach(ex => container.appendChild(renderCard(ex)));
 
-        // 2. Main Workout Header & Cards
+        // Main Workout Section
         const mainHeader = document.createElement('h2');
         mainHeader.className = 'section-header';
         mainHeader.innerText = '2. Core & Main Workout';
         container.appendChild(mainHeader);
-
         mainExercises.forEach(ex => container.appendChild(renderCard(ex)));
 
-        // 3. Cool-Down Header & Cards
+        // Cool-Down Section
         const coolHeader = document.createElement('h2');
         coolHeader.className = 'section-header';
         coolHeader.innerText = '3. Flexibility & Cool-Down';
         container.appendChild(coolHeader);
-
         COOLDOWN_BLOCK.forEach(ex => container.appendChild(renderCard(ex)));
     }
 </script>
