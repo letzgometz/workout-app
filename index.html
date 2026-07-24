@@ -1,29 +1,9 @@
-Here is the updated, single-file code for **StrengthTrack Pro**.
-
-This revised version adds **custom exercise categories**, improves the **UI**, and enhances **weight and level tracking** with set-by-set input and progress visualization—all saved automatically in your browser's local storage.
-
----
-
-### Key Improvements Made
-
-* **Custom Categories & Exercises**: Easily create and filter by muscle groups or equipment types (e.g., Free Weights, Machines, Core, Cardio).
-* **Enhanced Set Logging**: Input weights, resistance levels, and reps for each individual set.
-* **Refined UI**: Cleaner, responsive design with clear session breakdown, exercise display, and visual progress tracking.
-* **Auto-Save**: Uses browser `localStorage` so your logged weights, levels, and custom exercises persist across sessions without requiring a login.
-
----
-
-### Application Code
-
-Save the code below as an `index.html` file and open it in any modern web browser:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StrengthTrack Pro</title>
+    <title>StrengthTrack Pro - 4-Week Blueprint</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -33,7 +13,7 @@ Save the code below as an `index.html` file and open it in any modern web browse
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --success: #22c55e;
+            --tag-bg: #0284c7;
         }
 
         body {
@@ -41,7 +21,7 @@ Save the code below as an `index.html` file and open it in any modern web browse
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
         }
@@ -53,84 +33,88 @@ Save the code below as an `index.html` file and open it in any modern web browse
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 1rem;
         }
 
-        h1 { margin: 0 0 0.5rem 0; color: var(--accent); }
-        p { color: var(--text-muted); margin: 0; }
+        h1 { margin: 0 0 0.25rem 0; color: var(--accent); font-size: 1.8rem; }
+        p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group {
+        .session-selector {
             display: flex;
             gap: 10px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
 
-        input, select, button {
-            padding: 10px 14px;
+        select, input, button {
+            padding: 10px 12px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
-            background-color: #0f172a;
+            background-color: #1e293b;
             color: var(--text-main);
             font-size: 0.95rem;
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--accent);
+        select { flex: 1; min-width: 200px; }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
         }
 
-        button {
-            background-color: var(--accent);
-            color: #0f172a;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.2s;
-        }
-
-        button:hover { background-color: var(--accent-hover); color: white; }
-
-        .exercise-header {
+        .exercise-title {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
-        .tag {
+        .exercise-title h3 { margin: 0; font-size: 1.1rem; color: #ffffff; }
+
+        .badge {
             background-color: #334155;
             color: var(--accent);
-            padding: 4px 8px;
+            font-size: 0.75rem;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 0.8rem;
             text-transform: uppercase;
+            font-weight: bold;
         }
 
-        .set-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+        .inputs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
-        .set-row label { width: 50px; color: var(--text-muted); }
-        .set-row input { width: 80px; }
+        .inputs-row input {
+            background-color: #0f172a;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
 
-        .history-list {
-            margin-top: 1rem;
+        button.btn-log {
+            background-color: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.btn-log:hover { background-color: var(--accent-hover); color: white; }
+
+        .history-box {
+            background-color: #0f172a;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 0.85rem;
             color: var(--text-muted);
         }
@@ -138,9 +122,11 @@ Save the code below as an `index.html` file and open it in any modern web browse
         .history-item {
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
+            padding: 3px 0;
             border-bottom: 1px dashed #334155;
         }
+
+        .history-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -148,120 +134,188 @@ Save the code below as an `index.html` file and open it in any modern web browse
 <div class="container">
     <header>
         <h1>StrengthTrack Pro</h1>
-        <p>Log your exercises, levels, and weight progression</p>
+        <p>4-Week Diversified Master Blueprint</p>
     </header>
 
-    <!-- Add Custom Exercise / Category -->
-    <div class="card">
-        <h3>Add New Exercise</h3>
-        <div class="form-group">
-            <input type="text" id="exName" placeholder="Exercise Name (e.g., Leg Press)" style="flex: 2;">
-            <select id="exCat" style="flex: 1;">
-                <option value="Free Weights">Free Weights</option>
-                <option value="Machines">Machines</option>
-                <option value="Core">Core</option>
-                <option value="Bodyweight/Level">Bodyweight / Level</option>
-            </select>
-            <button onclick="addExercise()">Add Exercise</button>
-        </div>
+    <div class="session-selector">
+        <select id="sessionSelect" onchange="loadSession()">
+            <!-- Week 1 -->
+            <optgroup label="Week 1: Foundation & Hypertrophy">
+                <option value="w1sa">Week 1 - Session A (Push / Core Focus)</option>
+                <option value="w1sb">Week 1 - Session B (Pull / Arms Focus)</option>
+                <option value="w1sc">Week 1 - Session C (Legs / Functional Focus)</option>
+            </optgroup>
+            <!-- Week 2 -->
+            <optgroup label="Week 2: Free-Weight Focus">
+                <option value="w2sa">Week 2 - Session A (Dumbbell Hypertrophy)</option>
+                <option value="w2sb">Week 2 - Session B (Posterior Chain & Biceps)</option>
+                <option value="w2sc">Week 2 - Session C (Quad / Shoulder Synergy)</option>
+            </optgroup>
+            <!-- Week 3 -->
+            <optgroup label="Week 3: Cable Athleticism">
+                <option value="w3sa">Week 3 - Session A (Constant Tension Upper)</option>
+                <option value="w3sb">Week 3 - Session B (Rotational Core & Back)</option>
+                <option value="w3sc">Week 3 - Session C (Unilateral Lower & Arms)</option>
+            </optgroup>
+            <!-- Week 4 -->
+            <optgroup label="Week 4: Metabolic Intensity">
+                <option value="w4sa">Week 4 - Session A (Upper Density)</option>
+                <option value="w4sb">Week 4 - Session B (Pull & Core Complex)</option>
+                <option value="w4sc">Week 4 - Session C (Full Body Burnout)</option>
+            </optgroup>
+        </select>
     </div>
 
-    <!-- Exercise Displays -->
-    <div id="exerciseList"></div>
+    <div id="workoutContainer"></div>
 </div>
 
 <script>
-    let exercises = JSON.parse(localStorage.getItem('stp_exercises')) || [
-        { id: 1, name: 'Dumbbell Bench Press', category: 'Free Weights', history: [] },
-        { id: 2, name: 'Cable Woodchoppers', category: 'Core', history: [] },
-        { id: 3, name: 'Leg Extension Machine', category: 'Machines', history: [] }
-    ];
+    // 12-Session Workout Database
+    const workoutBlueprint = {
+        "w1sa": [
+            { id: "w1sa_1", name: "Dumbbell Bench Press", target: "3 sets x 10-12 reps", category: "Free Weights" },
+            { id: "w1sa_2", name: "Seated Cable Row", target: "3 sets x 12 reps", category: "Machines" },
+            { id: "w1sa_3", name: "Overhead Triceps Extension", target: "3 sets x 12-15 reps", category: "Arms" },
+            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core" }
+        ],
+        "w1sb": [
+            { id: "w1sb_1", name: "Lat Pulldown", target: "3 sets x 10-12 reps", category: "Machines" },
+            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Arms" },
+            { id: "w1sb_3", name: "Cable Face Pulls", target: "3 sets x 15 reps", category: "Cables" },
+            { id: "w1sb_4", name: "Ab Wheel Rollouts / Cable Crunch", target: "3 sets x 12 reps", category: "Core" }
+        ],
+        "w1sc": [
+            { id: "w1sc_1", name: "Goblet Squat", target: "3 sets x 10-12 reps", category: "Free Weights" },
+            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights" },
+            { id: "w1sc_3", name: "Standing Calf Raises", target: "3 sets x 15-20 reps", category: "Machines" },
+            { id: "w1sc_4", name: "Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core" }
+        ],
+        "w2sa": [
+            { id: "w2sa_1", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights" },
+            { id: "w2sa_2", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights" },
+            { id: "w2sa_3", name: "Hammer Curls", target: "3 sets x 12 reps", category: "Arms" },
+            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core" }
+        ],
+        "w2sb": [
+            { id: "w2sb_1", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights" },
+            { id: "w2sb_2", name: "Seated Incline Biceps Curl", target: "3 sets x 10-12 reps", category: "Arms" },
+            { id: "w2sb_3", name: "Triceps Dip Machine / Bench Dips", target: "3 sets x 12-15 reps", category: "Arms" },
+            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core" }
+        ],
+        "w2sc": [
+            { id: "w2sc_1", name: "Dumbbell Walking Lunges", target: "3 sets x 10 steps / leg", category: "Free Weights" },
+            { id: "w2sc_2", name: "Dumbbell Shoulder Press", target: "3 sets x 10-12 reps", category: "Free Weights" },
+            { id: "w2sc_3", name: "Leg Extension Machine", target: "3 sets x 12-15 reps", category: "Machines" },
+            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core" }
+        ],
+        "w3sa": [
+            { id: "w3sa_1", name: "Cable Chest Flyes", target: "3 sets x 12-15 reps", category: "Cables" },
+            { id: "w3sa_2", name: "Straight-Arm Cable Pushdown", target: "3 sets x 12-15 reps", category: "Cables" },
+            { id: "w3sa_3", name: "Cable Triceps Rope Pushdown", target: "3 sets x 12-15 reps", category: "Arms" },
+            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core" }
+        ],
+        "w3sb": [
+            { id: "w3sb_1", name: "Lat Pulldown (Wide Grip)", target: "3 sets x 10-12 reps", category: "Machines" },
+            { id: "w3sb_2", name: "Cable Biceps Curl (Straight Bar)", target: "3 sets x 12 reps", category: "Arms" },
+            { id: "w3sb_3", name: "Face Pulls with External Rotation", target: "3 sets x 15 reps", category: "Cables" },
+            { id: "w3sb_4", name: "Pallof Press (Cable)", target: "3 sets x 10 holds / side", category: "Core" }
+        ],
+        "w3sc": [
+            { id: "w3sc_1", name: "Bulgarian Split Squat", target: "3 sets x 8-10 reps / leg", category: "Free Weights" },
+            { id: "w3sc_2", name: "Lying Leg Curl Machine", target: "3 sets x 12 reps", category: "Machines" },
+            { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights" },
+            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core" }
+        ],
+        "w4sa": [
+            { id: "w4sa_1", name: "Dumbbell Bench Press Superset w/ Pushups", target: "3 sets x 10 + Max reps", category: "Free Weights" },
+            { id: "w4sa_2", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights" },
+            { id: "w4sa_3", name: "Skull Crushers (EZ Bar or DB)", target: "3 sets x 12 reps", category: "Arms" },
+            { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "3 sets x 10-12 reps", category: "Core" }
+        ],
+        "w4sb": [
+            { id: "w4sb_1", name: "Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Cables" },
+            { id: "w4sb_2", name: "Concentration Curls", target: "3 sets x 12 reps / side", category: "Arms" },
+            { id: "w4sb_3", name: "Dumbbell Shrugs", target: "3 sets x 15 reps", category: "Free Weights" },
+            { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "3 sets x 15 reps", category: "Core" }
+        ],
+        "w4sc": [
+            { id: "w4sc_1", name: "Dumbbell Thrusters (Squat to Press)", target: "3 sets x 10-12 reps", category: "Free Weights" },
+            { id: "w4sc_2", name: "Leg Press Machine", target: "3 sets x 12-15 reps", category: "Machines" },
+            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Arms" },
+            { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "3 sets x 10 transitions", category: "Core" }
+        ]
+    };
 
-    function saveToStorage() {
-        localStorage.setItem('stp_exercises', JSON.stringify(exercises));
+    // Load logs from LocalStorage
+    let logs = JSON.parse(localStorage.getItem('stp_blueprint_logs')) || {};
+
+    function saveLogs() {
+        localStorage.setItem('stp_blueprint_logs', JSON.stringify(logs));
     }
 
-    function addExercise() {
-        const name = document.getElementById('exName').value.trim();
-        const category = document.getElementById('exCat').value;
+    function logEntry(exId) {
+        const weight = document.getElementById(`w_${exId}`).value || '0';
+        const level = document.getElementById(`l_${exId}`).value || 'N/A';
+        const reps = document.getElementById(`r_${exId}`).value || '0';
 
-        if (!name) return alert('Please enter an exercise name.');
+        if (!logs[exId]) logs[exId] = [];
 
-        const newEx = {
-            id: Date.now(),
-            name: name,
-            category: category,
-            history: []
-        };
-
-        exercises.push(newEx);
-        saveToStorage();
-        document.getElementById('exName').value = '';
-        renderExercises();
-    }
-
-    function logSet(exId) {
-        const weightInput = document.getElementById(`weight-${exId}`);
-        const levelInput = document.getElementById(`level-${exId}`);
-        const repsInput = document.getElementById(`reps-${exId}`);
-
-        const weight = weightInput.value || '0';
-        const level = levelInput.value || 'N/A';
-        const reps = repsInput.value || '0';
-
-        const exercise = exercises.find(e => e.id === exId);
-        const logEntry = {
-            date: new Date().toLocaleDateString(),
+        logs[exId].unshift({
+            date: new Date().toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
             weight: weight,
             level: level,
             reps: reps
-        };
+        });
 
-        exercise.history.unshift(logEntry);
-        saveToStorage();
-        renderExercises();
+        saveLogs();
+        loadSession();
     }
 
-    function renderExercises() {
-        const listEl = document.getElementById('exerciseList');
-        listEl.innerHTML = '';
+    function loadSession() {
+        const sessionKey = document.getElementById('sessionSelect').value;
+        const exercises = workoutBlueprint[sessionKey] || [];
+        const container = document.getElementById('workoutContainer');
+        container.innerHTML = '';
 
         exercises.forEach(ex => {
+            const history = logs[ex.id] || [];
+            let historyHtml = history.length > 0 
+                ? history.slice(0, 3).map(h => 
+                    `<div class="history-item">
+                        <span>${h.date}</span>
+                        <span>${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
+                    </div>`
+                  ).join('')
+                : '<div style="font-size: 0.8rem; color: #64748b;">No logs recorded yet.</div>';
+
             const card = document.createElement('div');
             card.className = 'card';
-
-            let historyHtml = ex.history.length > 0 ? ex.history.slice(0, 3).map(h => 
-                `<div class="history-item">
-                    <span>${h.date}</span>
-                    <span>${h.weight} lbs / Level ${h.level} × ${h.reps} reps</span>
-                 </div>`
-            ).join('') : '<p style="font-size: 0.85rem; color: #64748b;">No logs recorded yet.</p>';
-
             card.innerHTML = `
-                <div class="exercise-header">
-                    <h3 style="margin: 0;">${ex.name}</h3>
-                    <span class="tag">${ex.category}</span>
+                <div class="exercise-title">
+                    <h3>${ex.name}</h3>
+                    <span class="badge">${ex.category}</span>
                 </div>
-                <div class="set-row">
-                    <input type="number" id="weight-${ex.id}" placeholder="Weight (lbs)">
-                    <input type="text" id="level-${ex.id}" placeholder="Level/Diff">
-                    <input type="number" id="reps-${ex.id}" placeholder="Reps">
-                    <button onclick="logSet(${ex.id})">Log Entry</button>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+                    Target: <strong>${ex.target}</strong>
                 </div>
-                <div class="history-list">
-                    <strong>Recent Entries:</strong>
+                <div class="inputs-row">
+                    <input type="number" id="w_${ex.id}" placeholder="Weight (lbs)">
+                    <input type="text" id="l_${ex.id}" placeholder="Level">
+                    <input type="number" id="r_${ex.id}" placeholder="Reps">
+                    <button class="btn-log" onclick="logEntry('${ex.id}')">Log</button>
+                </div>
+                <div class="history-box">
+                    <strong style="display: block; margin-bottom: 4px;">Recent Performance:</strong>
                     ${historyHtml}
                 </div>
             `;
-            listEl.appendChild(card);
+            container.appendChild(card);
         });
     }
 
-    // Initial render
-    renderExercises();
+    // Initial Load
+    loadSession();
 </script>
 
 </body>
 </html>
-
-```
