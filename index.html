@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StrengthTrack Pro - Perpetual Blueprint</title>
+    <title>StrengthTrack Pro - Custom Gym Blueprint</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -87,7 +87,6 @@
             margin-bottom: 8px;
         }
 
-        /* Instructions Toggle */
         details {
             background-color: var(--instructions-bg);
             border: 1px solid var(--border-color);
@@ -162,7 +161,7 @@
 <div class="container">
     <header>
         <h1>StrengthTrack Pro</h1>
-        <p>Perpetual Blueprint & Progress Tracker</p>
+        <p>Custom Gym Blueprint & Progress Tracker</p>
     </header>
 
     <div class="controls-panel">
@@ -179,24 +178,24 @@
         <div>
             <select id="sessionSelect" onchange="loadSession()">
                 <optgroup label="Week 1: Foundation & Hypertrophy">
-                    <option value="w1sa">Week 1 - Session A (Push / Core)</option>
-                    <option value="w1sb">Week 1 - Session B (Pull / Arms)</option>
-                    <option value="w1sc">Week 1 - Session C (Legs / Functional)</option>
+                    <option value="w1sa">Week 1 - Session A (Push / Overhead Press)</option>
+                    <option value="w1sb">Week 1 - Session B (Technogym Pull / Arms)</option>
+                    <option value="w1sc">Week 1 - Session C (Step Squat / Precor / Core)</option>
                 </optgroup>
                 <optgroup label="Week 2: Free-Weight Focus">
-                    <option value="w2sa">Week 2 - Session A (Dumbbell Hypertrophy)</option>
-                    <option value="w2sb">Week 2 - Session B (Posterior & Biceps)</option>
-                    <option value="w2sc">Week 2 - Session C (Quad / Shoulder)</option>
+                    <option value="w2sa">Week 2 - Session A (Dumbbell Hypertrophy & Press)</option>
+                    <option value="w2sb">Week 2 - Session B (Technogym Row & Core)</option>
+                    <option value="w2sc">Week 2 - Session C (Precor Leg Press & Step Squat)</option>
                 </optgroup>
-                <optgroup label="Week 3: Cable Athleticism">
-                    <option value="w3sa">Week 3 - Session A (Constant Tension Upper)</option>
-                    <option value="w3sb">Week 3 - Session B (Rotational Core & Back)</option>
-                    <option value="w3sc">Week 3 - Session C (Unilateral Lower & Arms)</option>
+                <optgroup label="Week 3: Cable Athleticism (Precor FTS)">
+                    <option value="w3sa">Week 3 - Session A (FTS Overhead Press & Upper)</option>
+                    <option value="w3sb">Week 3 - Session B (FTS Core & Technogym Lat)</option>
+                    <option value="w3sc">Week 3 - Session C (Unilateral Lower & Step Squats)</option>
                 </optgroup>
                 <optgroup label="Week 4: Metabolic Intensity">
-                    <option value="w4sa">Week 4 - Session A (Upper Density)</option>
-                    <option value="w4sb">Week 4 - Session B (Pull & Core Complex)</option>
-                    <option value="w4sc">Week 4 - Session C (Full Body Burnout)</option>
+                    <option value="w4sa">Week 4 - Session A (Technogym Press & Core Density)</option>
+                    <option value="w4sb">Week 4 - Session B (Technogym Pull & Overhead Press)</option>
+                    <option value="w4sc">Week 4 - Session C (Step Squat & Full Body Burnout)</option>
                 </optgroup>
             </select>
         </div>
@@ -208,75 +207,75 @@
 <script>
     const workoutBlueprint = {
         "w1sa": [
-            { id: "w1sa_1", name: "Dumbbell Bench Press", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Lie flat on the bench with a dumbbell in each hand. Keep feet flat on the floor, press weights upward until arms are extended, then lower under control until dumbbells reach chest level." },
-            { id: "w1sa_2", name: "Seated Cable Row", target: "3 sets x 12 reps", category: "Machines", instructions: "Sit facing the pulley with knees slightly bent. Pull handle toward your lower torso, keeping back upright and squeezing shoulder blades together at full contraction." },
-            { id: "w1sa_3", name: "Overhead Triceps Extension", target: "3 sets x 12-15 reps", category: "Arms", instructions: "Hold a dumbbell with both hands overhead. Lower the weight behind your head by bending at elbows, keeping upper arms vertical and close to ears." },
-            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core", instructions: "Support body on elbows in captain's chair or hang from bar. Raise knees or straight legs toward chest without using momentum, pausing briefly at the top." }
+            { id: "w1sa_1", name: "Dumbbell Overhead Press", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Seated or standing, hold dumbbells at shoulder height with palms facing forward. Press straight overhead until arms lock out, then lower back under control to ear level." },
+            { id: "w1sa_2", name: "Technogym Chest Press", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows, then slowly return to starting position feeling the chest stretch." },
+            { id: "w1sa_3", name: "Overhead Triceps Extension (Dumbbell)", target: "3 sets x 12-15 reps", category: "Free Weights", instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows, keeping upper arms close to ears before pressing back up." },
+            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core", instructions: "Support body on elbows in captain's chair. Raise knees or straight legs toward chest without using momentum, pausing briefly at top." }
         ],
         "w1sb": [
-            { id: "w1sb_1", name: "Lat Pulldown", target: "3 sets x 10-12 reps", category: "Machines", instructions: "Grasp bar wider than shoulders. Pull bar down toward upper chest while leaning back slightly, keeping elbows pointing down." },
-            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Arms", instructions: "Sit on bench inclined at 45-60 degrees with dumbbells. Keep upper arms stationary, curl weights upward while rotating palms inward to face up." },
-            { id: "w1sb_3", name: "Cable Face Pulls", target: "3 sets x 15 reps", category: "Cables", instructions: "Set cable attachment at upper chest height with rope. Pull toward face, separating rope ends so hands land near ears; squeeze rear shoulders." },
-            { id: "w1sb_4", name: "Ab Wheel Rollouts / Cable Crunch", target: "3 sets x 12 reps", category: "Core", instructions: "For Cable Crunch: Kneel under rope attachment, pull rope down to upper head, flex waist to pull elbows toward thighs." }
+            { id: "w1sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest while keeping chest open and pulling through your elbows." },
+            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Free Weights", instructions: "Sit back on incline bench set to 45-60 degrees. Keep elbows stationary and curl dumbbells upward, rotating wrists inward." },
+            { id: "w1sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", instructions: "Set FTS pulley to upper chest height with rope attachment. Pull rope toward forehead, flaring hands out near ears to target rear delts." },
+            { id: "w1sb_4", name: "Precor FTS Cable Crunch", target: "3 sets x 12 reps", category: "Core", instructions: "Kneel facing or away from FTS with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
         ],
         "w1sc": [
-            { id: "w1sc_1", name: "Goblet Squat", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbell vertically against chest. Squat down between knees until thighs are parallel to floor, driving through heels to stand." },
-            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbells in front of thighs. Hinge at hips to lower weights along shins while maintaining flat back; return by squeezing glutes." },
-            { id: "w1sc_3", name: "Standing Calf Raises", target: "3 sets x 15-20 reps", category: "Machines", instructions: "Position balls of feet on platform edge. Lower heels for stretch, then raise up onto toes as high as possible, holding contraction at top." },
-            { id: "w1sc_4", name: "Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set cable high or mid-level. Rotate torso diagonally downward across body using core muscles, keeping arms relatively straight." }
+            { id: "w1sc_1", name: "Dumbbell Step Squat (Step-Up Squat)", target: "3 sets x 10-12 reps / leg", category: "Free Weights", instructions: "Hold dumbbells at sides or chest height facing a plyo box or bench. Step one foot up onto the platform, drive up through the heel to stand, then lower back down into a controlled squat stance." },
+            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbells in front of thighs. Hinge hips back, lowering weights along shins with flat back; squeeze glutes to return." },
+            { id: "w1sc_3", name: "Precor Leg Press Calf Raises", target: "3 sets x 15-20 reps", category: "Precor", instructions: "Place balls of feet on bottom edge of Precor Leg Press platform with heels extending off. Press platform out, then flex ankles to elevate toes." },
+            { id: "w1sc_4", name: "Precor FTS Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set FTS pulley at mid-height. Rotate torso diagonally across body using core, keeping arms steady." }
         ],
         "w2sa": [
-            { id: "w2sa_1", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Set bench to 30-45 degree incline. Press dumbbells up overhead, lower until dumbbells align with upper chest." },
-            { id: "w2sa_2", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights", instructions: "Place one knee and hand on bench. Hold dumbbell in opposite hand, pull elbow up past torso while driving shoulder blade inward." },
-            { id: "w2sa_3", name: "Hammer Curls", target: "3 sets x 12 reps", category: "Arms", instructions: "Stand upright holding dumbbells with palms facing each other (neutral grip). Curl weights toward shoulders without swinging." },
-            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength rather than pulling on head or neck." }
+            { id: "w2sa_1", name: "Standing Dumbbell Overhead Press", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Stand shoulder-width apart, brace core tight, and press dumbbells overhead. Avoid arching lower back at peak lockout." },
+            { id: "w2sa_2", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower until dumbbells align with upper chest." },
+            { id: "w2sa_3", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights", instructions: "Place knee and hand on bench. Hold dumbbell in opposite hand, pull elbow toward hip driving shoulder blade back." },
+            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength rather than pulling on neck." }
         ],
         "w2sb": [
-            { id: "w2sb_1", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Stand feet shoulder-width. Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to return." },
-            { id: "w2sb_2", name: "Seated Incline Biceps Curl", target: "3 sets x 10-12 reps", category: "Arms", instructions: "Seated on incline bench, let arms hang vertically. Curl weights upward, keeping shoulders stabilized against pad." },
-            { id: "w2sb_3", name: "Triceps Dip Machine / Bench Dips", target: "3 sets x 12-15 reps", category: "Arms", instructions: "Grasp handles or bench edge behind hips. Lower torso by bending elbows to 90 degrees, press upward to lock elbows." },
-            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core", instructions: "Hold forearm plank position. Alternately reach one arm straight out in front without letting hips tilt or rock." }
+            { id: "w2sb_1", name: "Technogym Low Pull Row", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Maintain upright posture on Technogym row. Drive elbows straight back close to torso, holding peak squeeze in mid-back." },
+            { id: "w2sb_2", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights", instructions: "Feet shoulder-width. Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
+            { id: "w2sb_3", name: "Precor FTS Triceps Pushdown", target: "3 sets x 12-15 reps", category: "Precor FTS", instructions: "Attach bar or rope to high pulley on FTS. Extend elbows down toward hips, spreading handles outward at bottom." },
+            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core", instructions: "Forearm plank position. Alternately reach one arm straight in front without letting hips tilt." }
         ],
         "w2sc": [
-            { id: "w2sc_1", name: "Dumbbell Walking Lunges", target: "3 sets x 10 steps / leg", category: "Free Weights", instructions: "Step forward with dumbbell in each hand, lowering back knee toward floor until front thigh is parallel; drive forward to next step." },
-            { id: "w2sc_2", name: "Dumbbell Shoulder Press", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Seated or standing, hold dumbbells at ear height. Press overhead until arms lock out, then lower back to ear height." },
-            { id: "w2sc_3", name: "Leg Extension Machine", target: "3 sets x 12-15 reps", category: "Machines", instructions: "Position pad over lower shins. Extend legs fully by contracting quadriceps; lower under control." },
-            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core", instructions: "Sit with feet slightly elevated off ground. Hold small dumbbell or plate and rotate torso side-to-side, touching weight near hips." }
+            { id: "w2sc_1", name: "Dumbbell Step Squat", target: "3 sets x 10 steps / leg", category: "Free Weights", instructions: "Step up onto a box or platform with one leg, lower down into a full squat position, then switch lead legs." },
+            { id: "w2sc_2", name: "Precor Leg Press", target: "3 sets x 10-12 reps", category: "Precor", instructions: "Place feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, then press up without locking knees." },
+            { id: "w2sc_3", name: "Dumbbell Hammer Curls", target: "3 sets x 12 reps", category: "Free Weights", instructions: "Hold dumbbells with palms facing each other (neutral grip). Curl weights toward shoulders without swinging." },
+            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core", instructions: "Sit with feet elevated. Hold small weight and rotate torso side-to-side, tapping floor near hips." }
         ],
         "w3sa": [
-            { id: "w3sa_1", name: "Cable Chest Flyes", target: "3 sets x 12-15 reps", category: "Cables", instructions: "Stand between cables set at chest height. Bring hands together in front with slight elbow bend, squeezing chest at center." },
-            { id: "w3sa_2", name: "Straight-Arm Cable Pushdown", target: "3 sets x 12-15 reps", category: "Cables", instructions: "Grasp high pulley bar with arms straight. Pull bar down toward thighs using lats while keeping arms extended." },
-            { id: "w3sa_3", name: "Cable Triceps Rope Pushdown", target: "3 sets x 12-15 reps", category: "Arms", instructions: "Grasp rope attached to top cable. Extend elbows down toward hips, spreading rope ends outward at bottom." },
-            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set cable high. Pull diagonally down across hips, pivoting back foot to rotate core through movement." }
+            { id: "w3sa_1", name: "Precor FTS Cable Overhead Press", target: "3 sets x 10-12 reps", category: "Precor FTS", instructions: "Set low cables on FTS. Hold handles at shoulders facing forward, press up and slightly inward to lockout." },
+            { id: "w3sa_2", name: "Precor FTS Chest Flyes", target: "3 sets x 12-15 reps", category: "Precor FTS", instructions: "Set dual FTS arms at chest height. Stand in center, pull handles together in front with slight elbow bend." },
+            { id: "w3sa_3", name: "Technogym High Pull Lat (Reverse Grip)", target: "3 sets x 12 reps", category: "Technogym", instructions: "Grip handles with underhand/supinated grip. Pull down toward upper chest focusing on lower lat engagement." },
+            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip using core power." }
         ],
         "w3sb": [
-            { id: "w3sb_1", name: "Lat Pulldown (Wide Grip)", target: "3 sets x 10-12 reps", category: "Machines", instructions: "Hold bar wider than shoulder width. Pull down smoothly to collarbone while keeping chest up." },
-            { id: "w3sb_2", name: "Cable Biceps Curl (Straight Bar)", target: "3 sets x 12 reps", category: "Arms", instructions: "Attach straight bar to low pulley. Curl bar up toward chest, keeping elbows tucked close to sides." },
-            { id: "w3sb_3", name: "Face Pulls with External Rotation", target: "3 sets x 15 reps", category: "Cables", instructions: "Pull rope high toward forehead, driving knuckles back to rotate shoulders open at end of motion." },
-            { id: "w3sb_4", name: "Pallof Press (Cable)", target: "3 sets x 10 holds / side", category: "Core", instructions: "Stand sideways to cable at chest height. Press handle straight out in front, resisting pulling torque from stack." }
+            { id: "w3sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", instructions: "Standard wide grip on high pull lat. Drive elbows down toward ribs to engage upper back width." },
+            { id: "w3sb_2", name: "Precor FTS Cable Biceps Curl", target: "3 sets x 12 reps", category: "Precor FTS", instructions: "Set low pulley on FTS with straight bar or handles. Curl upwards keeping elbows pinned to sides." },
+            { id: "w3sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion to open shoulders." },
+            { id: "w3sb_4", name: "Precor FTS Pallof Press", target: "3 sets x 10 holds / side", category: "Core", instructions: "Stand sideways to FTS pulley at chest height. Press handle straight out in front, resisting rotational pull." }
         ],
         "w3sc": [
-            { id: "w3sc_1", name: "Bulgarian Split Squat", target: "3 sets x 8-10 reps / leg", category: "Free Weights", instructions: "Rest back foot on bench behind you. Lower front thigh until parallel to floor, keeping weight centered in front heel." },
-            { id: "w3sc_2", name: "Lying Leg Curl Machine", target: "3 sets x 12 reps", category: "Machines", instructions: "Lie face down with pad above ankles. Flex knees to curl heel pad toward glutes; lower slowly." },
+            { id: "w3sc_1", name: "Weighted Step Squats", target: "3 sets x 10 reps / leg", category: "Free Weights", instructions: "Step elevated onto box or step platform, lower into squatting stance, keeping posture tall and core braced." },
+            { id: "w3sc_2", name: "Precor Leg Press (Single Leg Focus)", target: "3 sets x 10 reps / leg", category: "Precor", instructions: "Position one foot in center of Precor Leg Press platform. Lower platform to 90 degrees and press back up smoothly." },
             { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights", instructions: "Hold dumbbells at sides. Raise arms out sideways until parallel with shoulders; lower with control." },
-            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core", instructions: "Hang from pull-up bar. Raise knees high enough to touch elbows, engaging lower ab muscles." }
+            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core", instructions: "Hang from pull-up bar or captain's chair. Raise knees high enough to touch elbows, contracting abs." }
         ],
         "w4sa": [
-            { id: "w4sa_1", name: "Dumbbell Bench Press Superset", target: "3 sets x 10 reps + Pushups", category: "Free Weights", instructions: "Perform 10 heavy dumbbell bench press reps, immediately drop to floor and execute max pushups to fatigue." },
-            { id: "w4sa_2", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips, taking strain off lower back." },
-            { id: "w4sa_3", name: "Skull Crushers (EZ Bar or DB)", target: "3 sets x 12 reps", category: "Arms", instructions: "Lie on flat bench with arms perpendicular to body. Bend elbows to lower weight toward forehead, then extend." },
+            { id: "w4sa_1", name: "Seated Dumbbell Overhead Press", target: "3 sets x 10 reps", category: "Free Weights", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly, stopping just short of locking elbows out completely." },
+            { id: "w4sa_2", name: "Technogym Chest Press Superset", target: "3 sets x 10 reps + Pushups", category: "Technogym", instructions: "Perform 10 heavy reps on Technogym Chest Press, immediately step off machine and perform max pushups on floor." },
+            { id: "w4sa_3", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips, taking strain off lower back." },
             { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "3 sets x 10-12 reps", category: "Core", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling, control descent down." }
         ],
         "w4sb": [
-            { id: "w4sb_1", name: "Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Cables", instructions: "Row single cable handle toward hip, allowing slight torso rotation to pull deep into lat." },
-            { id: "w4sb_2", name: "Concentration Curls", target: "3 sets x 12 reps / side", category: "Arms", instructions: "Seated, rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
-            { id: "w4sb_3", name: "Dumbbell Shrugs", target: "3 sets x 15 reps", category: "Free Weights", instructions: "Hold dumbbells at sides. Elevate shoulders straight up toward ears, hold for 1 second, then lower." },
+            { id: "w4sb_1", name: "Single-Arm Overhead Press (Dumbbell)", target: "3 sets x 10 reps / side", category: "Free Weights", instructions: "Press one dumbbell overhead while keeping opposite hand on hip or core to maintain trunk stability and eliminate swaying." },
+            { id: "w4sb_2", name: "Precor FTS Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Precor FTS", instructions: "Set FTS arm at mid-height. Row single cable handle toward hip, rotating torso slightly into lat squeeze." },
+            { id: "w4sb_3", name: "Dumbbell Concentration Curls", target: "3 sets x 12 reps / side", category: "Free Weights", instructions: "Seated, rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
             { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "3 sets x 15 reps", category: "Core", instructions: "Raise knees toward chest while alternating turning knees toward left and right shoulders." }
         ],
         "w4sc": [
-            { id: "w4sc_1", name: "Dumbbell Thrusters", target: "3 sets x 10-12 reps", category: "Free Weights", instructions: "Hold dumbbells at shoulders, squat down full depth, then explode up pressing weights directly overhead." },
-            { id: "w4sc_2", name: "Leg Press Machine", target: "3 sets x 12-15 reps", category: "Machines", instructions: "Place feet shoulder-width on sled. Lower sled until knees hit 90 degrees, press up without locking knees." },
-            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Arms", instructions: "7 reps bottom-to-midway, 7 reps midway-to-top, followed immediately by 7 full-range curls." },
+            { id: "w4sc_1", name: "Dumbbell Step Squat Burnout", target: "3 sets x 12 steps / leg", category: "Free Weights", instructions: "Perform continuous step squat reps alternating legs on each step up to maximize leg and cardio output." },
+            { id: "w4sc_2", name: "Precor Leg Press (Heavy)", target: "3 sets x 12-15 reps", category: "Precor", instructions: "Position feet mid-platform on Precor press. Lower controlled to 90 degrees, drive through heels to press." },
+            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Free Weights", instructions: "7 reps bottom-to-midway, 7 reps midway-to-top, followed immediately by 7 full-range curls." },
             { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "3 sets x 10 transitions", category: "Core", instructions: "From elbow plank, press up one hand at a time into full pushup position, then lower back to elbows." }
         ]
     };
