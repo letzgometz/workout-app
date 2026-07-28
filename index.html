@@ -171,6 +171,11 @@
             border: 1px solid var(--bg-card-alt);
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+        }
+
         .input-group {
             display: flex;
             flex-direction: column;
@@ -206,7 +211,7 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -222,7 +227,17 @@
 
         .btn-save {
             height: 35px;
-            padding: 0 14px;
+        }
+
+        .btn-clear {
+            background-color: #334155;
+            color: #cbd5e1;
+            height: 35px;
+        }
+
+        .btn-clear:hover {
+            background-color: var(--danger);
+            color: #ffffff;
         }
 
         .btn-demo {
@@ -475,7 +490,10 @@
                             <label>Level / Pin</label>
                             <input type="text" id="input_lvl_${ex.id}" placeholder="e.g. Lvl 5" value="${savedLvl}">
                         </div>
-                        <button class="btn btn-save" onclick="saveLog('${ex.id}')">Save</button>
+                        <div class="action-buttons">
+                            <button class="btn btn-save" onclick="saveLog('${ex.id}')">Save</button>
+                            <button class="btn btn-clear" onclick="clearLog('${ex.id}')" title="Clear inputs">Clear</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -507,6 +525,16 @@
         localStorage.setItem('log_lvl_' + exId, lvl);
 
         alert('Progress saved!');
+    }
+
+    function clearLog(exId) {
+        document.getElementById('input_wt_' + exId).value = '';
+        document.getElementById('input_reps_' + exId).value = '';
+        document.getElementById('input_lvl_' + exId).value = '';
+
+        localStorage.removeItem('log_wt_' + exId);
+        localStorage.removeItem('log_reps_' + exId);
+        localStorage.removeItem('log_lvl_' + exId);
     }
 
     function toggleSessionComplete() {
