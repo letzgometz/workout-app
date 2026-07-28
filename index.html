@@ -1,683 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E and J Workout Buddy</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #38bdf8;
-            --accent-hover: #0284c7;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --instructions-bg: #0f172a;
-            --success: #10b981;
-            --danger: #ef4444;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrengthTrack Pro</title>
+  <style>
+    :root {
+      --bg-primary: #121212;
+      --bg-card: #1e1e1e;
+      --accent: #ff3e3e;
+      --accent-hover: #e03232;
+      --text-main: #ffffff;
+      --text-sub: #b0b0b0;
+      --border: #2a2a2a;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .container { width: 100%; max-width: 800px; }
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-        }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
 
-        h1 { margin: 0 0 0.25rem 0; color: var(--accent); font-size: 1.8rem; }
-        p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+    }
 
-        .auth-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            border-radius: 8px;
-            max-width: 400px;
-            margin: 2rem auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    .exercise-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 
-        .user-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding: 8px 12px;
-            background-color: var(--card-bg);
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
 
-        .controls-panel {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 10px;
-            margin-bottom: 1rem;
-        }
+    .exercise-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
 
-        select, input, button {
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: #1e293b;
-            color: var(--text-main);
-            font-size: 0.95rem;
-        }
+    .demo-btn {
+      background: #2a2a3a;
+      color: #9d9dff;
+      border: 1px solid #4a4a6a;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
 
-        /* Completion Bar Styling */
-        .completion-bar {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    .demo-btn:hover {
+      background: #3a3a5a;
+      color: #ffffff;
+    }
 
-        .completion-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .target-text {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
 
-        .btn-complete {
-            background-color: var(--success);
-            color: #0f172a;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
+    .instructions {
+      color: var(--text-sub);
+      font-size: 0.88rem;
+      line-height: 1.4;
+      margin: 0;
+    }
 
-        .btn-complete:hover { background-color: #059669; color: white; }
+    /* Video Demo Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
 
-        .btn-undo {
-            background-color: transparent;
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            padding: 2px 6px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 8px;
-        }
+    .modal-overlay.active {
+      display: flex;
+    }
 
-        .btn-undo:hover {
-            background-color: var(--danger);
-            color: #ffffff;
-        }
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
 
-        .completed-list {
-            background-color: #0f172a;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.85rem;
-            max-height: 140px;
-            overflow-y: auto;
-        }
+    .modal-header {
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
 
-        .completed-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px dashed #334155;
-            color: var(--text-muted);
-        }
+    .modal-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
 
-        .completed-item:last-child { border-bottom: none; }
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
 
-        .section-header {
-            margin: 1.5rem 0 0.75rem 0;
-            padding-bottom: 0.25rem;
-            border-bottom: 2px solid var(--border-color);
-            color: var(--accent);
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 ratio */
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .exercise-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .exercise-title h3 { margin: 0; font-size: 1.1rem; color: #ffffff; }
-
-        .badge {
-            background-color: #334155;
-            color: var(--accent);
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .badge.warmup { color: #f59e0b; }
-        .badge.flexibility { color: #10b981; }
-
-        .target-text {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        details {
-            background-color: var(--instructions-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-        }
-
-        summary {
-            cursor: pointer;
-            color: var(--accent);
-            font-weight: 600;
-            outline: none;
-        }
-
-        details p {
-            margin: 8px 0 0 0;
-            color: #cbd5e1;
-            line-height: 1.4;
-        }
-
-        .inputs-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .inputs-row input {
-            background-color: #0f172a;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        button.btn-log, button.btn-action {
-            background-color: var(--accent);
-            color: #0f172a;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-        }
-
-        button.btn-log:hover, button.btn-action:hover { background-color: var(--accent-hover); color: white; }
-
-        .history-box {
-            background-color: #0f172a;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-            border-bottom: 1px dashed #334155;
-        }
-
-        .history-item:last-child { border-bottom: none; }
-        .cycle-tag { font-size: 0.75rem; color: var(--accent); }
-        .hidden { display: none !important; }
-
-        @media (max-width: 500px) {
-            .controls-panel { grid-template-columns: 1fr; }
-            .completion-header { flex-direction: column; gap: 8px; align-items: stretch; }
-        }
-    </style>
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
+  <div class="container">
     <header>
-        <h1>E and J Workout Buddy</h1>
-        <p>Custom Gym Blueprint & Cloud Tracker</p>
+      <h1>StrengthTrack Pro</h1>
+      <p style="color: var(--text-sub); font-size: 0.9rem;">Core Workout Module</p>
     </header>
 
-    <!-- Authentication Form -->
-    <div id="authPanel" class="auth-container">
-        <h2 style="margin:0 0 10px 0; font-size: 1.2rem; text-align: center;">Sign In / Register</h2>
-        <input type="email" id="authEmail" placeholder="Email Address">
-        <input type="password" id="authPassword" placeholder="Password">
-        <button class="btn-action" onclick="handleAuth('login')">Log In</button>
-        <button style="background-color: transparent; color: var(--text-muted); border: 1px solid var(--border-color); cursor:pointer;" onclick="handleAuth('signup')">Create Account</button>
-        <p id="authError" style="color: #ef4444; font-size: 0.8rem; text-align: center;"></p>
+    <div id="workout-list"></div>
+  </div>
+
+  <!-- Demo Video Modal -->
+  <div id="demoModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="modalExerciseTitle" class="modal-title">Exercise Demo</span>
+        <button class="close-btn" onclick="closeDemo()">&times;</button>
+      </div>
+      <div class="video-container">
+        <iframe id="demoVideoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
     </div>
+  </div>
 
-    <!-- Main Workout App -->
-    <div id="appPanel" class="hidden">
-        <div class="user-bar">
-            <span>Logged in as: <strong id="userEmailTag" style="color: var(--accent);"></strong></span>
-            <button onclick="handleLogout()" style="padding: 4px 8px; font-size: 0.8rem; cursor:pointer;">Log Out</button>
+  <script>
+    // Curated Exercise DB with mapped demo videos
+    const exercises = [
+      {
+        id: "decline_reverse_crunch",
+        name: "Decline Bench Reverse Crunch",
+        target: "3 sets × 12–15 reps",
+        instructions: "Lie on a decline bench with your head at the top. Firmly grip the bench handles, then curl your hips off the pad toward your chest. Focus on flexing your lumbar spine.",
+        demoEmbedUrl: "https://www.youtube.com/embed/llBeKBs21Q8?autoplay=1"
+      },
+      {
+        id: "decline_reverse_crunch_high",
+        name: "Decline Bench Reverse Crunch (High Incline)",
+        target: "3 sets × 12 reps",
+        instructions: "Set bench angle higher for increased gravity resistance. Initiate movement by rotating pelvis backward and lifting tailbone cleanly off the board.",
+        demoEmbedUrl: "https://www.youtube.com/embed/M_SU5KtMDmw?autoplay=1"
+      },
+      {
+        id: "decline_oblique_crunch",
+        name: "Decline Bench Oblique Crunch",
+        target: "3 sets × 10–12 reps / side",
+        instructions: "Position on decline bench, twisting hips slightly at the top of the hip-lift to pull knees towards opposite shoulders alternating sides.",
+        demoEmbedUrl: "https://www.youtube.com/embed/sBAZTuZAUA8?autoplay=1"
+      },
+      {
+        id: "hanging_leg_raise",
+        name: "Pull-Up Bar Hanging Knee Raise",
+        target: "3 sets × 12 reps",
+        instructions: "Grip the overhead bar shoulder-width apart. Engage your shoulders and raise your knees up toward your chest without swinging your body.",
+        demoEmbedUrl: "https://www.youtube.com/embed/vwl68EF9M2Q?autoplay=1"
+      }
+    ];
+
+    function renderExercises() {
+      const listEl = document.getElementById('workout-list');
+      listEl.innerHTML = exercises.map(ex => `
+        <div class="exercise-card">
+          <div class="card-header">
+            <span class="exercise-title">${ex.name}</span>
+            <button class="demo-btn" onclick="openDemo('${ex.name}', '${ex.demoEmbedUrl}')">
+              🎥 Demo
+            </button>
+          </div>
+          <div class="target-text">${ex.target}</div>
+          <p class="instructions">${ex.instructions}</p>
         </div>
-
-        <div class="controls-panel">
-            <div>
-                <select id="cycleSelect" onchange="loadSession()">
-                    <option value="Cycle 1">Cycle 1 (Month 1)</option>
-                    <option value="Cycle 2">Cycle 2 (Month 2)</option>
-                    <option value="Cycle 3">Cycle 3 (Month 3)</option>
-                    <option value="Cycle 4">Cycle 4 (Month 4)</option>
-                    <option value="Cycle 5">Cycle 5 (Month 5)</option>
-                    <option value="Cycle 6">Cycle 6 (Month 6)</option>
-                </select>
-            </div>
-            <div>
-                <select id="sessionSelect" onchange="loadSession()">
-                    <optgroup label="Week 1: Foundation & Hypertrophy">
-                        <option value="w1sa">Week 1 - Session A (Push / Overhead Press)</option>
-                        <option value="w1sb">Week 1 - Session B (Technogym Pull / Arms)</option>
-                        <option value="w1sc">Week 1 - Session C (Step Squat / Precor / Core)</option>
-                    </optgroup>
-                    <optgroup label="Week 2: Free-Weight Focus">
-                        <option value="w2sa">Week 2 - Session A (Dumbbell Hypertrophy & Press)</option>
-                        <option value="w2sb">Week 2 - Session B (Technogym Row & Core)</option>
-                        <option value="w2sc">Week 2 - Session C (Precor Leg Press & Step Squat)</option>
-                    </optgroup>
-                    <optgroup label="Week 3: Cable Athleticism (Precor FTS)">
-                        <option value="w3sa">Week 3 - Session A (FTS Overhead Press & Upper)</option>
-                        <option value="w3sb">Week 3 - Session B (FTS Core & Technogym Lat)</option>
-                        <option value="w3sc">Week 3 - Session C (Unilateral Lower & Step Squats)</option>
-                    </optgroup>
-                    <optgroup label="Week 4: Metabolic Intensity">
-                        <option value="w4sa">Week 4 - Session A (Technogym Press & Core Density)</option>
-                        <option value="w4sb">Week 4 - Session B (Technogym Pull & Overhead Press)</option>
-                        <option value="w4sc">Week 4 - Session C (Step Squat & Full Body Burnout)</option>
-                    </optgroup>
-                </select>
-            </div>
-        </div>
-
-        <!-- Workout Completion Tracker Bar -->
-        <div class="completion-bar">
-            <div class="completion-header">
-                <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Session Log Tracker</span>
-                <button class="btn-complete" onclick="markWorkoutCompleted()">✓ Mark Workout Completed Today</button>
-            </div>
-            <div class="completed-list" id="completedHistoryList">
-                <div style="color: #64748b;">No completed sessions recorded yet.</div>
-            </div>
-        </div>
-
-        <div id="workoutContainer"></div>
-    </div>
-</div>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script>
-    // Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyDgx7JAYX5B31h6DP827BVjCflGjhSSCy4",
-        authDomain: "strengthtrack-b0b4e.firebaseapp.com",
-        projectId: "strengthtrack-b0b4e",
-        storageBucket: "strengthtrack-b0b4e.firebasestorage.app",
-        messagingSenderId: "725222914101",
-        appId: "1:725222914101:web:af5ab4c76b77f60d43997c"
-    };
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+      `).join('');
     }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    let currentUser = null;
-    let userLogs = {};
-    let completedWorkouts = [];
+    function openDemo(title, embedUrl) {
+      document.getElementById('modalExerciseTitle').innerText = title;
+      document.getElementById('demoVideoIframe').src = embedUrl;
+      document.getElementById('demoModal').classList.add('active');
+    }
 
-    // Modules for Warmup & Cool-Down
-    const WARMUP_BLOCK = [
-        { id: "wm_1", name: "Dynamic Bodyweight Warmup Routine", target: "5-7 mins total", category: "Warmup", loggable: false, instructions: "Perform 10 Bodyweight Squats, 10 Forward Lunges, 30s Arm Circles, and 8-10 Cat-Cow flows to lubricate joints and raise heart rate." },
-        { id: "wm_2", name: "World's Greatest Stretch", target: "5 reps / side", category: "Warmup", loggable: false, instructions: "Lunge forward, drop elbow inside instep, rotate arm to ceiling, then step back and switch sides." }
-    ];
+    function closeDemo() {
+      document.getElementById('demoModal').classList.remove('active');
+      document.getElementById('demoVideoIframe').src = ''; // Stop video playback on close
+    }
 
-    const COOLDOWN_BLOCK = [
-        { id: "cd_1", name: "Kneeling Hip Flexor & Hamstring Stretch", target: "45 sec / side", category: "Flexibility", loggable: false, instructions: "Kneel on one knee, lean forward to stretch hip flexors. Shift hips back, extend front leg to stretch hamstrings." },
-        { id: "cd_2", name: "Doorway Chest Opener & Child's Pose", target: "60 sec holds", category: "Flexibility", loggable: false, instructions: "Place forearms on door frame and step through to open chest. Finish on mat in Child's Pose with deep breathing." }
-    ];
-
-    const workoutBlueprint = {
-        "w1sa": [
-            { id: "w1sa_1", name: "Dumbbell Overhead Press", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Seated or standing, hold dumbbells at shoulder height with palms facing forward. Press straight overhead until arms lock out." },
-            { id: "w1sa_2", name: "Technogym Chest Press", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
-            { id: "w1sa_3", name: "Overhead Triceps Extension (Dumbbell)", target: "3 sets x 12-15 reps", category: "Free Weights", loggable: true, instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows before pressing back up." },
-            { id: "w1sa_4", name: "Hanging Leg Raises / Captains Chair", target: "3 sets x 15 reps", category: "Core", loggable: true, instructions: "Support body on elbows in captain's chair. Raise knees or straight legs toward chest without swinging." },
-            { id: "w1sa_5", name: "Forearm Plank Hold", target: "3 sets x 45-60 sec", category: "Core", loggable: true, instructions: "Maintain straight line from shoulders to heels, bracing glutes and core." }
-        ],
-        "w1sb": [
-            { id: "w1sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest while keeping chest open." },
-            { id: "w1sb_2", name: "Incline Dumbbell Curl", target: "3 sets x 12 reps", category: "Free Weights", loggable: true, instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
-            { id: "w1sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", loggable: true, instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
-            { id: "w1sb_4", name: "Precor FTS Cable Crunch", target: "3 sets x 12 reps", category: "Core", loggable: true, instructions: "Kneel with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
-        ],
-        "w1sc": [
-            { id: "w1sc_1", name: "Dumbbell Step Squat (Step-Up Squat)", target: "3 sets x 10-12 reps / leg", category: "Free Weights", loggable: true, instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
-            { id: "w1sc_2", name: "Dumbbell Romanian Deadlift", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
-            { id: "w1sc_3", name: "Precor Leg Press Calf Raises", target: "3 sets x 15-20 reps", category: "Precor", loggable: true, instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
-            { id: "w1sc_4", name: "Precor FTS Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", loggable: true, instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
-        ],
-        "w2sa": [
-            { id: "w2sa_1", name: "Standing Dumbbell Overhead Press", target: "3 sets x 8-10 reps", category: "Free Weights", loggable: true, instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
-            { id: "w2sa_2", name: "Incline Dumbbell Press", target: "3 sets x 8-10 reps", category: "Free Weights", loggable: true, instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
-            { id: "w2sa_3", name: "Single-Arm Dumbbell Row", target: "3 sets x 10 reps / side", category: "Free Weights", loggable: true, instructions: "Knee and hand on bench. Pull dumbbell elbow toward hip driving shoulder blade back." },
-            { id: "w2sa_4", name: "Decline Sit-Ups / Weighted Crunch", target: "3 sets x 15 reps", category: "Core", loggable: true, instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength." },
-            { id: "w2sa_5", name: "Dead Bugs (Pelvic Control)", target: "3 sets x 12 reps / side", category: "Core", loggable: true, instructions: "Lie on back. Lower opposite arm and leg while pressing lower back flush into floor." }
-        ],
-        "w2sb": [
-            { id: "w2sb_1", name: "Technogym Low Pull Row", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
-            { id: "w2sb_2", name: "Dumbbell Deadlift", target: "3 sets x 8-10 reps", category: "Free Weights", loggable: true, instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
-            { id: "w2sb_3", name: "Precor FTS Triceps Pushdown", target: "3 sets x 12-15 reps", category: "Precor FTS", loggable: true, instructions: "Attach rope to high pulley. Extend elbows down toward hips, spreading handles outward." },
-            { id: "w2sb_4", name: "Plank with Arm Reach", target: "3 sets x 45 sec", category: "Core", loggable: true, instructions: "Forearm plank position. Alternately reach one arm straight in front without tilting hips." }
-        ],
-        "w2sc": [
-            { id: "w2sc_1", name: "Dumbbell Step Squat", target: "3 sets x 10 steps / leg", category: "Free Weights", loggable: true, instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
-            { id: "w2sc_2", name: "Precor Leg Press", target: "3 sets x 10-12 reps", category: "Precor", loggable: true, instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
-            { id: "w2sc_3", name: "Dumbbell Hammer Curls", target: "3 sets x 12 reps", category: "Free Weights", loggable: true, instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
-            { id: "w2sc_4", name: "Russian Twists (Weighted)", target: "3 sets x 20 total reps", category: "Core", loggable: true, instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
-        ],
-        "w3sa": [
-            { id: "w3sa_1", name: "Precor FTS Cable Overhead Press", target: "3 sets x 10-12 reps", category: "Precor FTS", loggable: true, instructions: "Set low cables on FTS. Press handles overhead smoothly from shoulder height." },
-            { id: "w3sa_2", name: "Precor FTS Chest Flyes", target: "3 sets x 12-15 reps", category: "Precor FTS", loggable: true, instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
-            { id: "w3sa_3", name: "Technogym High Pull Lat (Reverse Grip)", target: "3 sets x 12 reps", category: "Technogym", loggable: true, instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
-            { id: "w3sa_4", name: "High-to-Low Cable Woodchoppers", target: "3 sets x 12 reps / side", category: "Core", loggable: true, instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
-        ],
-        "w3sb": [
-            { id: "w3sb_1", name: "Technogym High Pull Lat", target: "3 sets x 10-12 reps", category: "Technogym", loggable: true, instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
-            { id: "w3sb_2", name: "Precor FTS Cable Biceps Curl", target: "3 sets x 12 reps", category: "Precor FTS", loggable: true, instructions: "Set low pulley on FTS. Curl upwards keeping elbows pinned to your sides." },
-            { id: "w3sb_3", name: "Precor FTS Face Pulls", target: "3 sets x 15 reps", category: "Precor FTS", loggable: true, instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion." },
-            { id: "w3sb_4", name: "Precor FTS Pallof Press", target: "3 sets x 10 holds / side", category: "Core", loggable: true, instructions: "Stand sideways to FTS. Press handle straight out in front, resisting rotational pull." }
-        ],
-        "w3sc": [
-            { id: "w3sc_1", name: "Weighted Step Squats", target: "3 sets x 10 reps / leg", category: "Free Weights", loggable: true, instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
-            { id: "w3sc_2", name: "Precor Leg Press (Single Leg Focus)", target: "3 sets x 10 reps / leg", category: "Precor", loggable: true, instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
-            { id: "w3sc_3", name: "Dumbbell Lateral Raises", target: "3 sets x 15 reps", category: "Free Weights", loggable: true, instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
-            { id: "w3sc_4", name: "Hanging Knees-to-Elbows", target: "3 sets x 12 reps", category: "Core", loggable: true, instructions: "Hang from captain's chair/bar. Raise knees high enough to touch elbows." }
-        ],
-        "w4sa": [
-            { id: "w4sa_1", name: "Seated Dumbbell Overhead Press", target: "3 sets x 10 reps", category: "Free Weights", loggable: true, instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
-            { id: "w4sa_2", name: "Technogym Chest Press Superset", target: "3 sets x 10 reps + Pushups", category: "Technogym", loggable: true, instructions: "Perform 10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
-            { id: "w4sa_3", name: "Chest-Supported Dumbbell Row", target: "3 sets x 10-12 reps", category: "Free Weights", loggable: true, instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
-            { id: "w4sa_4", name: "Dragon Flags / Reverse Crunches", target: "1-2 sets max (Heavy Focus)", category: "Core", loggable: true, instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
-        ],
-        "w4sb": [
-            { id: "w4sb_1", name: "Single-Arm Overhead Press (Dumbbell)", target: "3 sets x 10 reps / side", category: "Free Weights", loggable: true, instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
-            { id: "w4sb_2", name: "Precor FTS Single-Arm Cable Row", target: "3 sets x 12 reps / side", category: "Precor FTS", loggable: true, instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
-            { id: "w4sb_3", name: "Dumbbell Concentration Curls", target: "3 sets x 12 reps / side", category: "Free Weights", loggable: true, instructions: "Rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
-            { id: "w4sb_4", name: "Captain's Chair Leg Tuck Twists", target: "1-2 sets max (Strenuous Session)", category: "Core", loggable: true, instructions: "Raise knees toward chest while alternating turning knees left and right." }
-        ],
-        "w4sc": [
-            { id: "w4sc_1", name: "Dumbbell Step Squat Burnout", target: "3 sets x 12 steps / leg", category: "Free Weights", loggable: true, instructions: "Continuous step squat reps alternating legs on each step up." },
-            { id: "w4sc_2", name: "Precor Leg Press (Heavy)", target: "3 sets x 12-15 reps", category: "Precor", loggable: true, instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
-            { id: "w4sc_3", name: "21s Biceps Curl (Dumbbell)", target: "3 sets x 21 total reps", category: "Free Weights", loggable: true, instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
-            { id: "w4sc_4", name: "Plank to Pushup Transitions", target: "1-2 sets max (Strenuous Session)", category: "Core", loggable: true, instructions: "From elbow plank, press up one hand at a time into full pushup position." }
-        ]
-    };
-
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('authPanel').classList.add('hidden');
-            document.getElementById('appPanel').classList.remove('hidden');
-            document.getElementById('userEmailTag').textContent = user.email;
-            syncUserData();
-        } else {
-            currentUser = null;
-            document.getElementById('authPanel').classList.remove('hidden');
-            document.getElementById('appPanel').classList.add('hidden');
-        }
+    // Close modal when clicking dark overlay background
+    document.getElementById('demoModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeDemo();
+      }
     });
 
-    function handleAuth(type) {
-        const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value;
-        const errTag = document.getElementById('authError');
-        errTag.textContent = '';
-
-        if (!email || !password) {
-            errTag.textContent = 'Please enter both email and password.';
-            return;
-        }
-
-        if (type === 'signup') {
-            auth.createUserWithEmailAndPassword(email, password)
-                .catch(err => { errTag.textContent = err.message; });
-        } else {
-            auth.signInWithEmailAndPassword(email, password)
-                .catch(err => { errTag.textContent = err.message; });
-        }
-    }
-
-    function handleLogout() {
-        auth.signOut();
-    }
-
-    function syncUserData() {
-        if (!currentUser) return;
-        db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
-            if (doc.exists) {
-                const data = doc.data();
-                userLogs = data.logs || {};
-                completedWorkouts = data.completedWorkouts || [];
-            } else {
-                userLogs = {};
-                completedWorkouts = [];
-            }
-            renderCompletionHistory();
-            loadSession();
-        }, err => {
-            console.error("Firestore sync error:", err);
-        });
-    }
-
-    function markWorkoutCompleted() {
-        if (!currentUser) return;
-
-        const cycle = document.getElementById('cycleSelect').value;
-        const sessionSelect = document.getElementById('sessionSelect');
-        const sessionName = sessionSelect.options[sessionSelect.selectedIndex].text;
-        
-        const now = new Date();
-        const dateStr = now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-        const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-
-        const entry = {
-            id: Date.now(),
-            cycle: cycle,
-            session: sessionName,
-            timestamp: `${dateStr} @ ${timeStr}`
-        };
-
-        completedWorkouts.unshift(entry);
-
-        db.collection('users').doc(currentUser.uid).set({
-            completedWorkouts: completedWorkouts
-        }, { merge: true }).then(() => {
-            renderCompletionHistory();
-        });
-    }
-
-    function undoWorkoutCompleted(entryId) {
-        if (!currentUser) return;
-
-        completedWorkouts = completedWorkouts.filter(item => item.id !== entryId);
-
-        db.collection('users').doc(currentUser.uid).set({
-            completedWorkouts: completedWorkouts
-        }, { merge: true }).then(() => {
-            renderCompletionHistory();
-        });
-    }
-
-    function renderCompletionHistory() {
-        const listDiv = document.getElementById('completedHistoryList');
-        if (!completedWorkouts || completedWorkouts.length === 0) {
-            listDiv.innerHTML = '<div style="color: #64748b;">No completed sessions recorded yet.</div>';
-            return;
-        }
-
-        listDiv.innerHTML = completedWorkouts.map(item => `
-            <div class="completed-item">
-                <span><strong style="color: var(--accent);">[${item.cycle}]</strong> ${item.session}</span>
-                <div>
-                    <span style="font-weight: 500; color: var(--success);">${item.timestamp}</span>
-                    <button class="btn-undo" onclick="undoWorkoutCompleted(${item.id})">Undo</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function logEntry(exId) {
-        if (!currentUser) return;
-
-        const cycle = document.getElementById('cycleSelect').value;
-        const weight = document.getElementById(`w_${exId}`).value || '0';
-        const level = document.getElementById(`l_${exId}`).value || 'N/A';
-        const reps = document.getElementById(`r_${exId}`).value || '0';
-
-        if (!userLogs[exId]) userLogs[exId] = [];
-
-        userLogs[exId].unshift({
-            id: Date.now(), // unique timestamp ID for precise exercise entry deletion
-            cycle: cycle,
-            date: new Date().toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
-            weight: weight,
-            level: level,
-            reps: reps
-        });
-
-        db.collection('users').doc(currentUser.uid).set({
-            logs: userLogs
-        }, { merge: true }).then(() => {
-            document.getElementById(`w_${exId}`).value = '';
-            document.getElementById(`l_${exId}`).value = '';
-            document.getElementById(`r_${exId}`).value = '';
-        });
-    }
-
-    function undoExerciseLog(exId, logId) {
-        if (!currentUser || !userLogs[exId]) return;
-
-        // Filter out the specific exercise log entry
-        userLogs[exId] = userLogs[exId].filter(h => h.id !== logId);
-
-        db.collection('users').doc(currentUser.uid).set({
-            logs: userLogs
-        }, { merge: true });
-    }
-
-    function renderCard(ex) {
-        const history = userLogs[ex.id] || [];
-        let historyHtml = history.length > 0 
-            ? history.slice(0, 4).map(h => 
-                `<div class="history-item">
-                    <span><strong class="cycle-tag">[${h.cycle}]</strong> ${h.date} - ${h.weight} lbs | Lvl: ${h.level} | ${h.reps} reps</span>
-                    <button class="btn-undo" onclick="undoExerciseLog('${ex.id}', ${h.id})">Undo</button>
-                </div>`
-              ).join('')
-            : '<div style="font-size: 0.8rem; color: #64748b;">No logs recorded yet.</div>';
-
-        const badgeClass = ex.category === 'Warmup' ? 'badge warmup' : ex.category === 'Flexibility' ? 'badge flexibility' : 'badge';
-
-        const inputsHtml = ex.loggable ? `
-            <div class="inputs-row">
-                <input type="number" id="w_${ex.id}" placeholder="lbs">
-                <input type="text" id="l_${ex.id}" placeholder="Level">
-                <input type="number" id="r_${ex.id}" placeholder="Reps">
-                <button class="btn-log" onclick="logEntry('${ex.id}')">Log</button>
-            </div>
-            <div class="history-box">
-                <strong style="display: block; margin-bottom: 4px;">Progression Log:</strong>
-                ${historyHtml}
-            </div>` : '';
-
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <div class="exercise-title">
-                <h3>${ex.name}</h3>
-                <span class="${badgeClass}">${ex.category}</span>
-            </div>
-            <div class="target-text">Target: <strong>${ex.target}</strong></div>
-            
-            <details>
-                <summary>How to perform exercise</summary>
-                <p>${ex.instructions}</p>
-            </details>
-            ${inputsHtml}
-        `;
-        return card;
-    }
-
-    function loadSession() {
-        const sessionKey = document.getElementById('sessionSelect').value;
-        const mainExercises = workoutBlueprint[sessionKey] || [];
-        const container = document.getElementById('workoutContainer');
-        container.innerHTML = '';
-
-        // Warmup Section
-        const warmupHeader = document.createElement('h2');
-        warmupHeader.className = 'section-header';
-        warmupHeader.innerText = '1. Warmup & Mobility';
-        container.appendChild(warmupHeader);
-        WARMUP_BLOCK.forEach(ex => container.appendChild(renderCard(ex)));
-
-        // Main Workout Section
-        const mainHeader = document.createElement('h2');
-        mainHeader.className = 'section-header';
-        mainHeader.innerText = '2. Core & Main Workout';
-        container.appendChild(mainHeader);
-        mainExercises.forEach(ex => container.appendChild(renderCard(ex)));
-
-        // Cool-Down Section
-        const coolHeader = document.createElement('h2');
-        coolHeader.className = 'section-header';
-        coolHeader.innerText = '3. Flexibility & Cool-Down';
-        container.appendChild(coolHeader);
-        COOLDOWN_BLOCK.forEach(ex => container.appendChild(renderCard(ex)));
-    }
-</script>
-
+    renderExercises();
+  </script>
 </body>
 </html>
