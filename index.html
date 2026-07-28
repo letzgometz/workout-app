@@ -1,263 +1,512 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StrengthTrack Pro</title>
-  <style>
-    :root {
-      --bg-primary: #121212;
-      --bg-card: #1e1e1e;
-      --accent: #ff3e3e;
-      --accent-hover: #e03232;
-      --text-main: #ffffff;
-      --text-sub: #b0b0b0;
-      --border: #2a2a2a;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StrengthTrack Pro</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-alt: #334155;
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --accent: #38bdf8;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      margin: 0;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    .container {
-      width: 100%;
-      max-width: 600px;
-    }
+        .container {
+            width: 100%;
+            max-width: 650px;
+        }
 
-    header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
 
-    h1 {
-      margin: 0 0 8px 0;
-      font-size: 1.8rem;
-      letter-spacing: -0.5px;
-    }
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .exercise-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+        .sub-header {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+        .nav-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-    .exercise-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
+        select {
+            background-color: var(--bg-card);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            width: 100%;
+            outline: none;
+        }
 
-    .demo-btn {
-      background: #2a2a3a;
-      color: #9d9dff;
-      border: 1px solid #4a4a6a;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.2s ease;
-    }
+        .section-banner {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-    .demo-btn:hover {
-      background: #3a3a5a;
-      color: #ffffff;
-    }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
 
-    .target-text {
-      color: var(--accent);
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
 
-    .instructions {
-      color: var(--text-sub);
-      font-size: 0.88rem;
-      line-height: 1.4;
-      margin: 0;
-    }
+        .ex-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
 
-    /* Video Demo Modal Styles */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(4px);
-    }
+        .ex-cat {
+            font-size: 0.75rem;
+            background: var(--bg-card-alt);
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
 
-    .modal-overlay.active {
-      display: flex;
-    }
+        .target-tag {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
 
-    .modal-content {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      width: 90%;
-      max-width: 500px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      position: relative;
-    }
+        .instructions {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+            margin-bottom: 10px;
+        }
 
-    .modal-header {
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
+        .log-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
-    .modal-title {
-      font-weight: 600;
-      font-size: 1rem;
-    }
+        input[type="text"] {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
 
-    .close-btn {
-      background: none;
-      border: none;
-      color: var(--text-sub);
-      font-size: 1.5rem;
-      cursor: pointer;
-      line-height: 1;
-    }
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9 ratio */
-      height: 0;
-      overflow: hidden;
-      background: #000;
-    }
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
 
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-  </style>
+        .btn-demo {
+            background-color: #334155;
+            color: var(--accent);
+            border: 1px solid #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .btn-demo:hover {
+            background-color: #475569;
+            color: #ffffff;
+        }
+
+        .btn-complete {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--success);
+            font-size: 1rem;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .btn-undo {
+            background-color: var(--danger);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
     <header>
-      <h1>StrengthTrack Pro</h1>
-      <p style="color: var(--text-sub); font-size: 0.9rem;">Core Workout Module</p>
+        <h1>StrengthTrack Pro</h1>
+        <div class="sub-header">Technogym & Precor FTS Suite Program</div>
     </header>
 
-    <div id="workout-list"></div>
-  </div>
+    <div class="nav-controls">
+        <select id="weekSelect" onchange="loadSession()">
+            <option value="w1">Week 1: Foundation & Hypertrophy</option>
+            <option value="w2">Week 2: Free-Weight Focus</option>
+            <option value="w3">Week 3: Cable Athleticism</option>
+            <option value="w4">Week 4: Metabolic Intensity</option>
+        </select>
 
-  <!-- Demo Video Modal -->
-  <div id="demoModal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span id="modalExerciseTitle" class="modal-title">Exercise Demo</span>
-        <button class="close-btn" onclick="closeDemo()">&times;</button>
-      </div>
-      <div class="video-container">
-        <iframe id="demoVideoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
+        <select id="sessionSelect" onchange="loadSession()">
+            <option value="sA">Session A: Push / Upper</option>
+            <option value="sB">Session B: Pull / Arms</option>
+            <option value="sC">Session C: Step Squat / Legs</option>
+        </select>
     </div>
-  </div>
 
-  <script>
-    // Curated Exercise DB with mapped demo videos
-    const exercises = [
-      {
-        id: "decline_reverse_crunch",
-        name: "Decline Bench Reverse Crunch",
-        target: "3 sets × 12–15 reps",
-        instructions: "Lie on a decline bench with your head at the top. Firmly grip the bench handles, then curl your hips off the pad toward your chest. Focus on flexing your lumbar spine.",
-        demoEmbedUrl: "https://www.youtube.com/embed/llBeKBs21Q8?autoplay=1"
-      },
-      {
-        id: "decline_reverse_crunch_high",
-        name: "Decline Bench Reverse Crunch (High Incline)",
-        target: "3 sets × 12 reps",
-        instructions: "Set bench angle higher for increased gravity resistance. Initiate movement by rotating pelvis backward and lifting tailbone cleanly off the board.",
-        demoEmbedUrl: "https://www.youtube.com/embed/M_SU5KtMDmw?autoplay=1"
-      },
-      {
-        id: "decline_oblique_crunch",
-        name: "Decline Bench Oblique Crunch",
-        target: "3 sets × 10–12 reps / side",
-        instructions: "Position on decline bench, twisting hips slightly at the top of the hip-lift to pull knees towards opposite shoulders alternating sides.",
-        demoEmbedUrl: "https://www.youtube.com/embed/sBAZTuZAUA8?autoplay=1"
-      },
-      {
-        id: "hanging_leg_raise",
-        name: "Pull-Up Bar Hanging Knee Raise",
-        target: "3 sets × 12 reps",
-        instructions: "Grip the overhead bar shoulder-width apart. Engage your shoulders and raise your knees up toward your chest without swinging your body.",
-        demoEmbedUrl: "https://www.youtube.com/embed/vwl68EF9M2Q?autoplay=1"
-      }
-    ];
+    <!-- Warmup Display Block -->
+    <div id="warmupBlock"></div>
 
-    function renderExercises() {
-      const listEl = document.getElementById('workout-list');
-      listEl.innerHTML = exercises.map(ex => `
-        <div class="exercise-card">
-          <div class="card-header">
-            <span class="exercise-title">${ex.name}</span>
-            <button class="demo-btn" onclick="openDemo('${ex.name}', '${ex.demoEmbedUrl}')">
-              🎥 Demo
-            </button>
-          </div>
-          <div class="target-text">${ex.target}</div>
-          <p class="instructions">${ex.instructions}</p>
+    <!-- Main Exercise List -->
+    <div id="exerciseList"></div>
+
+    <!-- Session Completion Button -->
+    <button class="btn btn-complete" id="completeBtn" onclick="toggleSessionComplete()">
+        ✅ Mark Session Complete
+    </button>
+</div>
+
+<!-- Video Demo Modal -->
+<div id="demoModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="modalExerciseTitle" style="font-weight: bold;">Exercise Demo</span>
+            <button class="close-btn" onclick="closeDemo()">&times;</button>
         </div>
-      `).join('');
+        <div class="video-container">
+            <iframe id="demoVideoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Full Program Database
+    const programData = {
+        w1: {
+            sA: {
+                title: "Week 1 - Session A: Push / Overhead Press",
+                exercises: [
+                    { id: "w1sa1", name: "Dumbbell Overhead Press", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Seated or standing, hold dumbbells at shoulder height with palms forward. Press straight overhead." },
+                    { id: "w1sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10-12", instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
+                    { id: "w1sa3", name: "Overhead Triceps Extension", cat: "Free Weights", target: "3 sets x 12-15", instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows before pressing up." },
+                    { id: "w1sa4", name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Lie head-up on decline bench holding handles behind head. Curl knees and hips off pad toward chest." },
+                    { id: "w1sa5", name: "Forearm Plank Hold", cat: "Core", target: "3 sets x 45-60s", instructions: "Maintain straight line from shoulders to heels, bracing glutes and core." }
+                ]
+            },
+            sB: {
+                title: "Week 1 - Session B: Technogym Pull / Arms",
+                exercises: [
+                    { id: "w1sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest keeping chest open." },
+                    { id: "w1sb2", name: "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 12", instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
+                    { id: "w1sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
+                    { id: "w1sb4", name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12", instructions: "Kneel with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
+                ]
+            },
+            sC: {
+                title: "Week 1 - Session C: Step Squat / Precor / Core",
+                exercises: [
+                    { id: "w1sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
+                    { id: "w1sc2", name: "Dumbbell Romanian Deadlift", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
+                    { id: "w1sc3", name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
+                    { id: "w1sc4", name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
+                ]
+            }
+        },
+        w2: {
+            sA: {
+                title: "Week 2 - Session A: Dumbbell Hypertrophy & Press",
+                exercises: [
+                    { id: "w2sa1", name: "Standing DB Overhead Press", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
+                    { id: "w2sa2", name: "Incline Dumbbell Press", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
+                    { id: "w2sa3", name: "Single-Arm Dumbbell Row", cat: "Free Weights", target: "3 sets x 10 / side", instructions: "Knee and hand on bench. Pull dumbbell elbow toward hip driving shoulder blade back." },
+                    { id: "w2sa4", name: "Decline Sit-Ups / Crunch", cat: "Core", target: "3 sets x 15", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength." },
+                    { id: "w2sa5", name: "Dead Bugs", cat: "Core", target: "3 sets x 12 / side", instructions: "Lie on back. Lower opposite arm and leg while pressing lower back flush into floor." }
+                ]
+            },
+            sB: {
+                title: "Week 2 - Session B: Technogym Row & Core",
+                exercises: [
+                    { id: "w2sb1", name: "Technogym Low Pull Row", cat: "Technogym", target: "3 sets x 10-12", instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
+                    { id: "w2sb2", name: "Dumbbell Deadlift", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
+                    { id: "w2sb3", name: "Precor FTS Triceps Pushdown", cat: "Precor FTS", target: "3 sets x 12-15", instructions: "Attach rope to high pulley. Extend elbows down toward hips, spreading handles outward." },
+                    { id: "w2sb4", name: "Plank with Arm Reach", cat: "Core", target: "3 sets x 45s", instructions: "Forearm plank position. Alternately reach one arm straight in front without tilting hips." }
+                ]
+            },
+            sC: {
+                title: "Week 2 - Session C: Precor Leg Press & Step Squat",
+                exercises: [
+                    { id: "w2sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10 / leg", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
+                    { id: "w2sc2", name: "Precor Leg Press", cat: "Precor", target: "3 sets x 10-12", instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
+                    { id: "w2sc3", name: "Dumbbell Hammer Curls", cat: "Free Weights", target: "3 sets x 12", instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
+                    { id: "w2sc4", name: "Russian Twists (Weighted)", cat: "Core", target: "3 sets x 20 total", instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
+                ]
+            }
+        },
+        w3: {
+            sA: {
+                title: "Week 3 - Session A: FTS Overhead Press & Upper",
+                exercises: [
+                    { id: "w3sa1", name: "FTS Cable Overhead Press", cat: "Precor FTS", target: "3 sets x 10-12", instructions: "Set low cables on FTS. Press handles overhead smoothly from shoulder height." },
+                    { id: "w3sa2", name: "Precor FTS Chest Flyes", cat: "Precor FTS", target: "3 sets x 12-15", instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
+                    { id: "w3sa3", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 12", instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
+                    { id: "w3sa4", name: "High-to-Low Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
+                ]
+            },
+            sB: {
+                title: "Week 3 - Session B: FTS Core & Technogym Lat",
+                exercises: [
+                    { id: "w3sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
+                    { id: "w3sb2", name: "FTS Cable Biceps Curl", cat: "Precor FTS", target: "3 sets x 12", instructions: "Set low pulley on FTS. Curl upwards keeping elbows pinned to your sides." },
+                    { id: "w3sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion." },
+                    { id: "w3sb4", name: "Precor FTS Pallof Press", cat: "Core", target: "3 sets x 10 holds", instructions: "Stand sideways to FTS. Press handle straight out in front, resisting rotational pull." }
+                ]
+            },
+            sC: {
+                title: "Week 3 - Session C: Unilateral Lower & Step Squats",
+                exercises: [
+                    { id: "w3sc1", name: "Weighted Step Squats", cat: "Free Weights", target: "3 sets x 10 / leg", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
+                    { id: "w3sc2", name: "Leg Press (Single Leg)", cat: "Precor", target: "3 sets x 10 / leg", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
+                    { id: "w3sc3", name: "Dumbbell Lateral Raises", cat: "Free Weights", target: "3 sets x 15", instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
+                    { id: "w3sc4", name: "Decline Bench Reverse Crunch (High Incline)", cat: "Core", target: "3 sets x 12 reps", instructions: "Set bench at high incline. Curl hips upward off pad with controlled movement." }
+                ]
+            }
+        },
+        w4: {
+            sA: {
+                title: "Week 4 - Session A: Technogym Press & Core Density",
+                exercises: [
+                    { id: "w4sa1", name: "Seated DB Overhead Press", cat: "Free Weights", target: "3 sets x 10", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
+                    { id: "w4sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10 + Max Pushups", instructions: "10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
+                    { id: "w4sa3", name: "Chest-Supported DB Row", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
+                    { id: "w4sa4", name: "Dragon Flags / Reverse Crunch", cat: "Core", target: "1-2 sets max", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
+                ]
+            },
+            sB: {
+                title: "Week 4 - Session B: Technogym Pull & Overhead Press",
+                exercises: [
+                    { id: "w4sb1", name: "Single-Arm DB Overhead Press", cat: "Free Weights", target: "3 sets x 10 / side", instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
+                    { id: "w4sb2", name: "FTS Single-Arm Cable Row", cat: "Precor FTS", target: "3 sets x 12 / side", instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
+                    { id: "w4sb3", name: "DB Concentration Curls", cat: "Free Weights", target: "3 sets x 12 / side", instructions: "Rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
+                    { id: "w4sb4", name: "Decline Bench Oblique Crunch", cat: "Core", target: "3 sets x 10-12 / side", instructions: "On decline bench, lift hips while twisting knees toward opposite shoulders alternating sides." }
+                ]
+            },
+            sC: {
+                title: "Week 4 - Session C: Step Squat & Full Body Burnout",
+                exercises: [
+                    { id: "w4sc1", name: "DB Step Squat Burnout", cat: "Free Weights", target: "3 sets x 12 / leg", instructions: "Continuous step squat reps alternating legs on each step up." },
+                    { id: "w4sc2", name: "Precor Leg Press (Heavy)", cat: "Precor", target: "3 sets x 12-15", instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
+                    { id: "w4sc3", name: "21s Biceps Curl (Dumbbell)", cat: "Free Weights", target: "3 sets x 21 total", instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
+                    { id: "w4sc4", name: "Plank to Pushup Transitions", cat: "Core", target: "1-2 sets max", instructions: "From elbow plank, press up one hand at a time into full pushup position." }
+                ]
+            }
+        }
+    };
+
+    function loadSession() {
+        const week = document.getElementById('weekSelect').value;
+        const session = document.getElementById('sessionSelect').value;
+        const currentData = programData[week][session];
+
+        // Render Banner
+        let html = `<div class="section-banner">${currentData.title}</div>`;
+
+        // Render Exercises
+        currentData.exercises.forEach(ex => {
+            const savedValue = localStorage.getItem('log_' + ex.id) || '';
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="ex-title">${ex.name}</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="ex-cat">${ex.cat}</span>
+                            <button class="btn-demo" onclick="openDemo('${ex.name}')">🎥 Demo</button>
+                        </div>
+                    </div>
+                    <div class="target-tag">${ex.target}</div>
+                    <div class="instructions">${ex.instructions}</div>
+                    <div class="log-row">
+                        <input type="text" id="input_${ex.id}" placeholder="Log Wt / Reps (e.g. 45lbs x 10)" value="${savedValue}">
+                        <button class="btn" onclick="saveLog('${ex.id}')">Save</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('exerciseList').innerHTML = html;
+
+        // Check Completion Status
+        const isComplete = localStorage.getItem('complete_' + week + '_' + session) === 'true';
+        updateCompleteButton(isComplete);
     }
 
-    function openDemo(title, embedUrl) {
-      document.getElementById('modalExerciseTitle').innerText = title;
-      document.getElementById('demoVideoIframe').src = embedUrl;
-      document.getElementById('demoModal').classList.add('active');
+    function saveLog(exId) {
+        const val = document.getElementById('input_' + exId).value;
+        localStorage.setItem('log_' + exId, val);
+        alert('Progress saved!');
+    }
+
+    function toggleSessionComplete() {
+        const week = document.getElementById('weekSelect').value;
+        const session = document.getElementById('sessionSelect').value;
+        const key = 'complete_' + week + '_' + session;
+        
+        const currentState = localStorage.getItem(key) === 'true';
+        localStorage.setItem(key, !currentState);
+        
+        updateCompleteButton(!currentState);
+    }
+
+    function updateCompleteButton(isComplete) {
+        const btn = document.getElementById('completeBtn');
+        if (isComplete) {
+            btn.innerHTML = '↩️ Undo Session Completion';
+            btn.className = 'btn btn-complete btn-undo';
+        } else {
+            btn.innerHTML = '✅ Mark Session Complete';
+            btn.className = 'btn btn-complete';
+        }
+    }
+
+    // Modal Video Demo Search Loader
+    function openDemo(exName) {
+        document.getElementById('modalExerciseTitle').innerText = exName + " — Form Demo";
+        // Embed YouTube Search URL directly for smooth mobile fallback
+        const query = encodeURIComponent(exName + " form exercise tutorial");
+        document.getElementById('demoVideoIframe').src = `https://www.youtube.com/embed?listType=search&list=${query}`;
+        document.getElementById('demoModal').classList.add('active');
     }
 
     function closeDemo() {
-      document.getElementById('demoModal').classList.remove('active');
-      document.getElementById('demoVideoIframe').src = ''; // Stop video playback on close
+        document.getElementById('demoModal').classList.remove('active');
+        document.getElementById('demoVideoIframe').src = '';
     }
 
-    // Close modal when clicking dark overlay background
     document.getElementById('demoModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeDemo();
-      }
+        if (e.target === this) closeDemo();
     });
 
-    renderExercises();
-  </script>
+    // Initial Load
+    loadSession();
+</script>
 </body>
 </html>
