@@ -17,6 +17,7 @@
             --border: #475569;
             --success: #22c55e;
             --danger: #ef4444;
+            --warning: #f59e0b;
         }
 
         body {
@@ -87,6 +88,34 @@
             letter-spacing: 0.5px;
         }
 
+        .routine-box {
+            background-color: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+        }
+
+        .routine-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: var(--warning);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .routine-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
         .card {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
@@ -128,23 +157,49 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             line-height: 1.35;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .log-row {
-            display: flex;
+        .log-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
             gap: 8px;
-            align-items: center;
+            align-items: end;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-card-alt);
         }
 
-        input[type="text"] {
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-group label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
             background: var(--bg-dark);
             border: 1px solid var(--border);
             color: var(--text-light);
-            padding: 8px;
+            padding: 8px 6px;
             border-radius: 6px;
-            font-size: 0.9rem;
-            flex-grow: 1;
+            font-size: 0.85rem;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent);
+            outline: none;
         }
 
         .btn {
@@ -163,6 +218,11 @@
 
         .btn:hover {
             background-color: var(--primary-hover);
+        }
+
+        .btn-save {
+            height: 35px;
+            padding: 0 14px;
         }
 
         .btn-demo {
@@ -193,7 +253,6 @@
             background-color: var(--danger);
         }
 
-        /* Modal Overlay */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -274,7 +333,7 @@
         </select>
     </div>
 
-    <!-- Main Exercise List -->
+    <!-- Main Content Area -->
     <div id="exerciseList"></div>
 
     <!-- Session Completion Button -->
@@ -297,7 +356,20 @@
 </div>
 
 <script>
-    // Full Program Database with Direct Embedded YouTube Video IDs
+    const warmups = [
+        "5 mins light cardio (treadmill or stationary bike)",
+        "Arm circles & shoulder rolls (15 reps forward/backward)",
+        "Cat-Cow & Thoracic Spine Rotations (10 reps)",
+        "Bodyweight squats & lunges (10 reps total)"
+    ];
+
+    const cooldowns = [
+        "Doorway / Wall Chest & Shoulder Stretch (30s per side)",
+        "Standing Overhead Lat & Side Stretch (30s per side)",
+        "Kneeling Hip Flexor & Hamstring Stretch (30s per side)",
+        "Seated Figure-4 Glute Stretch (30s per side)"
+    ];
+
     const programData = {
         w1: {
             sA: {
@@ -316,15 +388,15 @@
                     { id: "w1sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", videoId: "CAwf7n6Luuc", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest keeping chest open." },
                     { id: "w1sb2", name: "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 12", videoId: "soxrZlIl35U", instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
                     { id: "w1sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", videoId: "V8dZ3pyiCBo", instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
-                    { id: "w1sb4", name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12", videoId: "2fpOYrm3E1M", instructions: "Kneel with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
+                    { id: "w1sb4", name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12", videoId: "6f_8AEE-B_M", instructions: "Kneel with rope held at head level. Flex waist down, pulling elbows toward knees using abs." }
                 ]
             },
             sC: {
                 title: "Week 1 - Session C: Step Squat / Precor / Core",
                 exercises: [
-                    { id: "w1sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", videoId: "dVkErt5ZDGE", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
+                    { id: "w1sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", videoId: "a6U1S6Uq1xY", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
                     { id: "w1sc2", name: "Dumbbell Romanian Deadlift", cat: "Free Weights", target: "3 sets x 10-12", videoId: "JCXUYuzwNrM", instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
-                    { id: "w1sc3", name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", videoId: "N3awlEyY9DA", instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
+                    { id: "w1sc3", name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", videoId: "KyX4O3q0j10", instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
                     { id: "w1sc4", name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", videoId: "pA_8qP9E13E", instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
                 ]
             }
@@ -352,10 +424,10 @@
             sC: {
                 title: "Week 2 - Session C: Precor Leg Press & Step Squat",
                 exercises: [
-                    { id: "w2sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10 / leg", videoId: "dVkErt5ZDGE", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
+                    { id: "w2sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10 / leg", videoId: "a6U1S6Uq1xY", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
                     { id: "w2sc2", name: "Precor Leg Press", cat: "Precor", target: "3 sets x 10-12", videoId: "IZxyjW7MPJQ", instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
                     { id: "w2sc3", name: "Dumbbell Hammer Curls", cat: "Free Weights", target: "3 sets x 12", videoId: "zC3nLlEvinU", instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
-                    { id: "w2sc4", name: "Russian Twists (Weighted)", cat: "Core", target: "3 sets x 20 total", videoId: "wkD8rjkXyUI", instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
+                    { id: "w2sc4", name: "Russian Twists (Weighted)", cat: "Core", target: "3 sets x 20 total", videoId: "j64BBg29i8A", instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
                 ]
             }
         },
@@ -363,7 +435,7 @@
             sA: {
                 title: "Week 3 - Session A: FTS Overhead Press & Upper",
                 exercises: [
-                    { id: "w3sa1", name: "FTS Cable Overhead Press", cat: "Precor FTS", target: "3 sets x 10-12", videoId: "vB5OHsJ3EME", instructions: "Set low cables on FTS. Press handles overhead smoothly from shoulder height." },
+                    { id: "w3sa1", name: "FTS Cable Overhead Press", cat: "Precor FTS", target: "3 sets x 10-12", videoId: "M2rwvNhTOu0", instructions: "Set low cables on FTS. Press handles overhead smoothly from shoulder height." },
                     { id: "w3sa2", name: "Precor FTS Chest Flyes", cat: "Precor FTS", target: "3 sets x 12-15", videoId: "Iwe6AmxVf7o", instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
                     { id: "w3sa3", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 12", videoId: "CAwf7n6Luuc", instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
                     { id: "w3sa4", name: "High-to-Low Woodchoppers", cat: "Core", target: "3 sets x 12 / side", videoId: "g4oI45v9fUQ", instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
@@ -381,10 +453,10 @@
             sC: {
                 title: "Week 3 - Session C: Unilateral Lower & Step Squats",
                 exercises: [
-                    { id: "w3sc1", name: "Weighted Step Squats", cat: "Free Weights", target: "3 sets x 10 / leg", videoId: "dVkErt5ZDGE", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
-                    { id: "w3sc2", name: "Leg Press (Single Leg)", cat: "Precor", target: "3 sets x 10 / leg", videoId: "K3L_S-N8o9I", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
+                    { id: "w3sc1", name: "Weighted Step Squats", cat: "Free Weights", target: "3 sets x 10 / leg", videoId: "a6U1S6Uq1xY", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
+                    { id: "w3sc2", name: "Leg Press (Single Leg)", cat: "Precor", target: "3 sets x 10 / leg", videoId: "IZxyjW7MPJQ", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
                     { id: "w3sc3", name: "Dumbbell Lateral Raises", cat: "Free Weights", target: "3 sets x 15", videoId: "3VcKaXpzqRo", instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
-                    { id: "w3sc4", name: "Decline Bench Reverse Crunch (High Incline)", cat: "Core", target: "3 sets x 12 reps", videoId: "M_SU5KtMDmw", instructions: "Set bench at high incline. Curl hips upward off pad with controlled movement." }
+                    { id: "w3sc4", name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12 reps", videoId: "llBeKBs21Q8", instructions: "Set bench at high incline. Curl hips upward off pad with controlled movement." }
                 ]
             }
         },
@@ -392,7 +464,7 @@
             sA: {
                 title: "Week 4 - Session A: Technogym Press & Core Density",
                 exercises: [
-                    { id: "w4sa1", name: "Seated DB Overhead Press", cat: "Free Weights", target: "3 sets x 10", videoId: "qEwKCR5JCog", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
+                    { id: "w4sa1", name: "Seated DB Overhead Press", cat: "Free Weights", target: "3 sets x 10", videoId: "B-aVuyhvLHU", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
                     { id: "w4sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10 + Max Pushups", videoId: "2XyT3C38-c8", instructions: "10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
                     { id: "w4sa3", name: "Chest-Supported DB Row", cat: "Free Weights", target: "3 sets x 10-12", videoId: "H75im9fA71U", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
                     { id: "w4sa4", name: "Dragon Flags / Reverse Crunch", cat: "Core", target: "1-2 sets max", videoId: "pvzM49J38O8", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
@@ -410,7 +482,7 @@
             sC: {
                 title: "Week 4 - Session C: Step Squat & Full Body Burnout",
                 exercises: [
-                    { id: "w4sc1", name: "DB Step Squat Burnout", cat: "Free Weights", target: "3 sets x 12 / leg", videoId: "dVkErt5ZDGE", instructions: "Continuous step squat reps alternating legs on each step up." },
+                    { id: "w4sc1", name: "DB Step Squat Burnout", cat: "Free Weights", target: "3 sets x 12 / leg", videoId: "a6U1S6Uq1xY", instructions: "Continuous step squat reps alternating legs on each step up." },
                     { id: "w4sc2", name: "Precor Leg Press (Heavy)", cat: "Precor", target: "3 sets x 12-15", videoId: "IZxyjW7MPJQ", instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
                     { id: "w4sc3", name: "21s Biceps Curl (Dumbbell)", cat: "Free Weights", target: "3 sets x 21 total", videoId: "qf6p2qL6R04", instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
                     { id: "w4sc4", name: "Plank to Pushup Transitions", cat: "Core", target: "1-2 sets max", videoId: "L-_E19L3M9E", instructions: "From elbow plank, press up one hand at a time into full pushup position." }
@@ -426,8 +498,22 @@
 
         let html = `<div class="section-banner">${currentData.title}</div>`;
 
+        // Warmup Section
+        html += `
+            <div class="routine-box">
+                <div class="routine-title">🔥 Dynamic Warm-Up & Mobility</div>
+                <ul class="routine-list">
+                    ${warmups.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+
+        // Exercise List
         currentData.exercises.forEach(ex => {
-            const savedValue = localStorage.getItem('log_' + ex.id) || '';
+            const savedWt = localStorage.getItem('log_wt_' + ex.id) || '';
+            const savedReps = localStorage.getItem('log_reps_' + ex.id) || '';
+            const savedLvl = localStorage.getItem('log_lvl_' + ex.id) || '';
+
             html += `
                 <div class="card">
                     <div class="card-header">
@@ -439,13 +525,34 @@
                     </div>
                     <div class="target-tag">${ex.target}</div>
                     <div class="instructions">${ex.instructions}</div>
-                    <div class="log-row">
-                        <input type="text" id="input_${ex.id}" placeholder="Log Wt / Reps (e.g. 45lbs x 10)" value="${savedValue}">
-                        <button class="btn" onclick="saveLog('${ex.id}')">Save</button>
+                    <div class="log-grid">
+                        <div class="input-group">
+                            <label>Weight</label>
+                            <input type="text" id="input_wt_${ex.id}" placeholder="e.g. 45 lbs" value="${savedWt}">
+                        </div>
+                        <div class="input-group">
+                            <label>Reps</label>
+                            <input type="text" id="input_reps_${ex.id}" placeholder="e.g. 10,10,12" value="${savedReps}">
+                        </div>
+                        <div class="input-group">
+                            <label>Level / Pin</label>
+                            <input type="text" id="input_lvl_${ex.id}" placeholder="e.g. Lvl 5" value="${savedLvl}">
+                        </div>
+                        <button class="btn btn-save" onclick="saveLog('${ex.id}')">Save</button>
                     </div>
                 </div>
             `;
         });
+
+        // Cooldown Section
+        html += `
+            <div class="routine-box">
+                <div class="routine-title">🧘 Cool-Down & Flexibility Stretches</div>
+                <ul class="routine-list">
+                    ${cooldowns.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+        `;
 
         document.getElementById('exerciseList').innerHTML = html;
 
@@ -454,8 +561,14 @@
     }
 
     function saveLog(exId) {
-        const val = document.getElementById('input_' + exId).value;
-        localStorage.setItem('log_' + exId, val);
+        const wt = document.getElementById('input_wt_' + exId).value;
+        const reps = document.getElementById('input_reps_' + exId).value;
+        const lvl = document.getElementById('input_lvl_' + exId).value;
+
+        localStorage.setItem('log_wt_' + exId, wt);
+        localStorage.setItem('log_reps_' + exId, reps);
+        localStorage.setItem('log_lvl_' + exId, lvl);
+
         alert('Progress saved!');
     }
 
@@ -481,7 +594,6 @@
         }
     }
 
-    // Modal Video Stream
     function openDemo(exName, videoId) {
         document.getElementById('modalExerciseTitle').innerText = exName;
         document.getElementById('demoVideoIframe').src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
@@ -490,14 +602,13 @@
 
     function closeDemo() {
         document.getElementById('demoModal').classList.remove('active');
-        document.getElementById('demoVideoIframe').src = ''; // Stops audio/video playback on close
+        document.getElementById('demoVideoIframe').src = '';
     }
 
     document.getElementById('demoModal').addEventListener('click', function(e) {
         if (e.target === this) closeDemo();
     });
 
-    // Initial Load
     loadSession();
 </script>
 </body>
