@@ -55,6 +55,7 @@
             color: var(--text-muted);
             font-size: 0.9rem;
             margin-top: 5px;
+            margin-bottom: 12px;
         }
 
         .nav-controls {
@@ -225,6 +226,22 @@
             background-color: var(--primary-hover);
         }
 
+        .btn-history-toggle {
+            background-color: var(--bg-card-alt);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn-history-toggle:hover {
+            background-color: var(--border);
+            color: #ffffff;
+        }
+
         .btn-save {
             height: 35px;
         }
@@ -268,6 +285,60 @@
         .btn-undo {
             background-color: var(--danger);
         }
+
+        /* History Modal / Drawer Styles */
+        .history-container {
+            display: none;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .history-title {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .history-table th, .history-table td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--bg-card-alt);
+        }
+
+        .history-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .empty-history {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -276,7 +347,17 @@
     <header>
         <h1>E and J Get Ripped</h1>
         <div class="sub-header">Technogym & Precor FTS Suite Program</div>
+        <button class="btn-history-toggle" onclick="toggleHistoryView()">📊 Toggle Workout History</button>
     </header>
+
+    <!-- Workout History Section -->
+    <div id="historyContainer" class="history-container">
+        <div class="history-header">
+            <span class="history-title">Logged Workout History</span>
+            <button class="btn btn-clear" onclick="clearAllHistory()" style="height: auto; padding: 4px 8px; font-size: 0.75rem;">Clear All History</button>
+        </div>
+        <div id="historyContent"></div>
+    </div>
 
     <div class="nav-controls">
         <select id="weekSelect" onchange="loadSession()">
@@ -524,6 +605,7 @@
         localStorage.setItem('log_reps_' + exId, reps);
         localStorage.setItem('log_lvl_' + exId, lvl);
 
+        renderHistory();
         alert('Progress saved!');
     }
 
@@ -535,6 +617,8 @@
         localStorage.removeItem('log_wt_' + exId);
         localStorage.removeItem('log_reps_' + exId);
         localStorage.removeItem('log_lvl_' + exId);
+
+        renderHistory();
     }
 
     function toggleSessionComplete() {
@@ -556,6 +640,97 @@
         } else {
             btn.innerHTML = '✅ Mark Session Complete';
             btn.className = 'btn btn-complete';
+        }
+    }
+
+    function toggleHistoryView() {
+        const histContainer = document.getElementById('historyContainer');
+        if (histContainer.style.display === 'block') {
+            histContainer.style.display = 'none';
+        } else {
+            renderHistory();
+            histContainer.style.display = 'block';
+        }
+    }
+
+    function renderHistory() {
+        let historyLogs = [];
+
+        Object.keys(programData).forEach(wKey => {
+            Object.keys(programData[wKey]).forEach(sKey => {
+                const sessionObj = programData[wKey][sKey];
+                sessionObj.exercises.forEach(ex => {
+                    const wt = localStorage.getItem('log_wt_' + ex.id);
+                    const reps = localStorage.getItem('log_reps_' + ex.id);
+                    const lvl = localStorage.getItem('log_lvl_' + ex.id);
+
+                    if (wt || reps || lvl) {
+                        historyLogs.push({
+                            session: sessionObj.title,
+                            exercise: ex.name,
+                            weight: wt || '-',
+                            reps: reps || '-',
+                            level: lvl || '-'
+                        });
+                    }
+                });
+            });
+        });
+
+        const historyContent = document.getElementById('historyContent');
+        if (historyLogs.length === 0) {
+            historyContent.innerHTML = `<div class="empty-history">No logged workouts found yet. Hit "Save" on an exercise to start tracking!</div>`;
+            return;
+        }
+
+        let tableHtml = `
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                        <th>Reps</th>
+                        <th>Lvl/Pin</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        let currentSessionBanner = "";
+        historyLogs.forEach(log => {
+            if (log.session !== currentSessionBanner) {
+                currentSessionBanner = log.session;
+                tableHtml += `
+                    <tr>
+                        <td colspan="4" style="background-color: var(--bg-card-alt); font-weight: bold; color: var(--warning); padding: 6px 8px;">
+                            ${currentSessionBanner}
+                        </td>
+                    </tr>
+                `;
+            }
+            tableHtml += `
+                <tr>
+                    <td>${log.exercise}</td>
+                    <td>${log.weight}</td>
+                    <td>${log.reps}</td>
+                    <td>${log.level}</td>
+                </tr>
+            `;
+        });
+
+        tableHtml += `</tbody></table>`;
+        historyContent.innerHTML = tableHtml;
+    }
+
+    function clearAllHistory() {
+        if (confirm("Are you sure you want to delete all saved exercise logs?")) {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            loadSession();
+            renderHistory();
         }
     }
 
