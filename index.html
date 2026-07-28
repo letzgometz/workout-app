@@ -264,6 +264,21 @@
             color: #ffffff;
         }
 
+        .btn-row-del {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: none;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
+
+        .btn-row-del:hover {
+            color: var(--danger);
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
         .btn-demo {
             background-color: #334155;
             color: var(--accent);
@@ -328,7 +343,7 @@
 
         .history-table th, .history-table td {
             text-align: left;
-            padding: 8px;
+            padding: 8px 6px;
             border-bottom: 1px solid var(--bg-card-alt);
         }
 
@@ -622,15 +637,25 @@
     }
 
     function clearLog(exId) {
-        document.getElementById('input_wt_' + exId).value = '';
-        document.getElementById('input_reps_' + exId).value = '';
-        document.getElementById('input_lvl_' + exId).value = '';
+        const inputWt = document.getElementById('input_wt_' + exId);
+        const inputReps = document.getElementById('input_reps_' + exId);
+        const inputLvl = document.getElementById('input_lvl_' + exId);
+
+        if (inputWt) inputWt.value = '';
+        if (inputReps) inputReps.value = '';
+        if (inputLvl) inputLvl.value = '';
 
         localStorage.removeItem('log_wt_' + exId);
         localStorage.removeItem('log_reps_' + exId);
         localStorage.removeItem('log_lvl_' + exId);
 
         renderHistory();
+    }
+
+    function clearSingleHistory(exId, exName) {
+        if (confirm(`Remove log for "${exName}"?`)) {
+            clearLog(exId);
+        }
     }
 
     function toggleSessionComplete() {
@@ -678,6 +703,7 @@
 
                     if (wt || reps || lvl) {
                         historyLogs.push({
+                            id: ex.id,
                             session: sessionObj.title,
                             exercise: ex.name,
                             weight: wt || '-',
@@ -702,7 +728,8 @@
                         <th>Exercise</th>
                         <th>Weight</th>
                         <th>Reps</th>
-                        <th>Lvl/Pin</th>
+                        <th>Lvl</th>
+                        <th style="width: 24px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -714,7 +741,7 @@
                 currentSessionBanner = log.session;
                 tableHtml += `
                     <tr>
-                        <td colspan="4" style="background-color: var(--bg-card-alt); font-weight: bold; color: var(--warning); padding: 6px 8px;">
+                        <td colspan="5" style="background-color: var(--bg-card-alt); font-weight: bold; color: var(--warning); padding: 6px 8px;">
                             ${currentSessionBanner}
                         </td>
                     </tr>
@@ -726,6 +753,9 @@
                     <td>${log.weight}</td>
                     <td>${log.reps}</td>
                     <td>${log.level}</td>
+                    <td>
+                        <button class="btn-row-del" onclick="clearSingleHistory('${log.id}', '${log.exercise}')" title="Delete this entry">🗑️</button>
+                    </td>
                 </tr>
             `;
         });
