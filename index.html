@@ -411,24 +411,21 @@
 </div>
 
 <script>
-    const warmups = [
-        "5 mins light cardio (treadmill or stationary bike)",
-        "Arm circles & shoulder rolls (15 reps forward/backward)",
-        "Cat-Cow & Thoracic Spine Rotations (10 reps)",
-        "Bodyweight squats & lunges (10 reps total)"
-    ];
-
-    const cooldowns = [
-        "Doorway / Wall Chest & Shoulder Stretch (30s per side)",
-        "Standing Overhead Lat & Side Stretch (30s per side)",
-        "Kneeling Hip Flexor & Hamstring Stretch (30s per side)",
-        "Seated Figure-4 Glute Stretch (30s per side)"
-    ];
-
     const programData = {
         w1: {
             sA: {
                 title: "Week 1 - Session A: Push / Overhead Press",
+                warmups: [
+                    "5 mins light incline treadmill walk",
+                    "Arm circles & Controlled Articular Rotations (15 forward/backward)",
+                    "Scapular push-ups & wall slides (12 reps)",
+                    "Dynamic chest huggers & band openers (10 reps)"
+                ],
+                cooldowns: [
+                    "Doorway / Wall Chest & Anterior Deltoid Stretch (30s per side)",
+                    "Overhead Triceps & Lat Stretch (30s per side)",
+                    "Child's Pose with Arm Walkouts (45s hold)"
+                ],
                 exercises: [
                     { id: "w1sa1", name: "Dumbbell Overhead Press", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Seated or standing, hold dumbbells at shoulder height with palms forward. Press straight overhead." },
                     { id: "w1sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10-12", instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
@@ -439,6 +436,17 @@
             },
             sB: {
                 title: "Week 1 - Session B: Technogym Pull / Arms",
+                warmups: [
+                    "5 mins rowing machine or light cardio",
+                    "Cat-Cow & Thoracic Spine Rotations (10 reps)",
+                    "Scapular pull-ups / Lat shrugs (12 reps)",
+                    "Banded pull-aparts for rear delts (15 reps)"
+                ],
+                cooldowns: [
+                    "Standing Overhead Lat & Side Stretch (30s per side)",
+                    "Seated Biceps & Wrist Flexor Stretch (30s per side)",
+                    "Cross-Body Rear Delt Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w1sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest keeping chest open." },
                     { id: "w1sb2", name: "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 12", instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
@@ -448,6 +456,17 @@
             },
             sC: {
                 title: "Week 1 - Session C: Step Squat / Precor / Core",
+                warmups: [
+                    "5 mins stationary bike or elliptical",
+                    "Leg swings (forward & lateral, 12 per leg)",
+                    "Bodyweight squats & Cossack squat shifts (10 reps total)",
+                    "Ankle mobility drives & hip circles (10 per side)"
+                ],
+                cooldowns: [
+                    "Kneeling Hip Flexor & Quad Stretch (30s per side)",
+                    "Standing or Seated Hamstring Reach (30s per side)",
+                    "Seated Figure-4 Glute Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w1sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
                     { id: "w1sc2", name: "Dumbbell Romanian Deadlift", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
@@ -459,6 +478,17 @@
         w2: {
             sA: {
                 title: "Week 2 - Session A: Dumbbell Hypertrophy & Press",
+                warmups: [
+                    "5 mins brisk incline treadmill walk",
+                    "Y-T-W arm raises (10 reps each)",
+                    "Bear crawl hold to Downward Dog (8 reps)",
+                    "Dynamic chest flyes & shoulder circles (12 reps)"
+                ],
+                cooldowns: [
+                    "Door-frame Pec Minor Stretch (30s per side)",
+                    "Wall Triceps & Upper Back Stretch (30s per side)",
+                    "Thread-the-Needle Shoulder Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w2sa1", name: "Standing DB Overhead Press", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
                     { id: "w2sa2", name: "Incline Dumbbell Press", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
@@ -469,6 +499,17 @@
             },
             sB: {
                 title: "Week 2 - Session B: Technogym Row & Core",
+                warmups: [
+                    "5 mins rowing machine warmup",
+                    "Quadruped Thoracic Rotations (10 per side)",
+                    "Prone Cobra spine extensions (10 reps)",
+                    "Straight-arm cable/band lat sweeps (12 reps)"
+                ],
+                cooldowns: [
+                    "Lat & Intercostal Wall Hanging Stretch (30s per side)",
+                    "Forearm & Biceps Palm-Up Extension Stretch (30s per side)",
+                    "Kneeling Puppy Pose Upper Back Stretch (45s hold)"
+                ],
                 exercises: [
                     { id: "w2sb1", name: "Technogym Low Pull Row", cat: "Technogym", target: "3 sets x 10-12", instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
                     { id: "w2sb2", name: "Dumbbell Deadlift", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
@@ -478,6 +519,17 @@
             },
             sC: {
                 title: "Week 2 - Session C: Precor Leg Press & Step Squat",
+                warmups: [
+                    "5 mins stationary bike or stairclimber",
+                    "World's Greatest Stretch lunge & rotate (5 per side)",
+                    "Walking high knees & butt kicks (10 per leg)",
+                    "Bodyweight reverse lunges with reach (10 reps)"
+                ],
+                cooldowns: [
+                    "Elevated Pigeon Glute Stretch (45s per side)",
+                    "Half-Kneeling Quad & Hip Flexor Stretch (30s per side)",
+                    "Standing Calf & Achilles Stretch on step (30s per side)"
+                ],
                 exercises: [
                     { id: "w2sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10 / leg", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
                     { id: "w2sc2", name: "Precor Leg Press", cat: "Precor", target: "3 sets x 10-12", instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
@@ -489,6 +541,17 @@
         w3: {
             sA: {
                 title: "Week 3 - Session A: FTS Overhead Press & Upper",
+                warmups: [
+                    "5 mins light elliptical or incline walk",
+                    "Shoulder dislocations w/ broomstick or band (12 reps)",
+                    "Plank shoulder taps (10 per side)",
+                    "Dynamic overhead reaches & side bends (12 reps)"
+                ],
+                cooldowns: [
+                    "Standing Doorway Upper Chest Opener (30s per side)",
+                    "Cross-Chest Anterior Deltoid Stretch (30s per side)",
+                    "Seated Neck & Trapezius Relief Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w3sa1", name: "FTS Cable Overhead Press", cat: "Precor FTS", target: "3 sets x 10-12", instructions: "Set low cables on FTS. Press cable handles straight overhead smoothly from shoulder height." },
                     { id: "w3sa2", name: "Precor FTS Chest Flyes", cat: "Precor FTS", target: "3 sets x 12-15", instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
@@ -498,6 +561,17 @@
             },
             sB: {
                 title: "Week 3 - Session B: FTS Core & Technogym Lat",
+                warmups: [
+                    "5 mins rowing machine or arm ergometer",
+                    "Dynamic standing torso rotations (15 reps)",
+                    "Band face-pulls with external rotation (12 reps)",
+                    "Cat-Cow spinal waves (10 reps)"
+                ],
+                cooldowns: [
+                    "Side-Lying Thoracic Windmill Stretch (30s per side)",
+                    "Standing Lat Side-Bend Stretch (30s per side)",
+                    "Cobra / Sphinx Abdominal Stretch (45s hold)"
+                ],
                 exercises: [
                     { id: "w3sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
                     { id: "w3sb2", name: "FTS Cable Biceps Curl", cat: "Precor FTS", target: "3 sets x 12", instructions: "Set low pulley on FTS cable machine. Curl handles upward keeping elbows pinned." },
@@ -507,6 +581,17 @@
             },
             sC: {
                 title: "Week 3 - Session C: Unilateral Lower & Step Squats",
+                warmups: [
+                    "5 mins stationary bike or treadmill",
+                    "Lateral lunges & Cossack shifts (8 per side)",
+                    "Single-leg glute bridges (10 per side)",
+                    "Ankle dorsiflexion wall drives (10 per side)"
+                ],
+                cooldowns: [
+                    "Standing IT-Band & Tensor Fasciae Latae Stretch (30s per side)",
+                    "Kneeling Hamstring Stretch with flexed toe (30s per side)",
+                    "Seated Figure-4 Glute & Outer Hip Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w3sc1", name: "Weighted Step Squats", cat: "Free Weights", target: "3 sets x 10 / leg", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
                     { id: "w3sc2", name: "Leg Press (Single Leg)", cat: "Precor", target: "3 sets x 10 / leg", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
@@ -518,6 +603,17 @@
         w4: {
             sA: {
                 title: "Week 4 - Session A: Technogym Press & Core Density",
+                warmups: [
+                    "5 mins incline treadmill walk",
+                    "Dynamic chest huggers & cross-body swings (15 reps)",
+                    "Push-up to Downward Dog transitions (8 reps)",
+                    "Scapular wall slides & shoulder openers (12 reps)"
+                ],
+                cooldowns: [
+                    "Lie-Down Scorpion Chest Opener (30s per side)",
+                    "Overhead Triceps & Upper Back Stretch (30s per side)",
+                    "Prone Seal Pose Abdominal Stretch (45s hold)"
+                ],
                 exercises: [
                     { id: "w4sa1", name: "Seated DB Overhead Press", cat: "Free Weights", target: "3 sets x 10", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
                     { id: "w4sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10 + Max Pushups", instructions: "10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
@@ -527,6 +623,17 @@
             },
             sB: {
                 title: "Week 4 - Session B: Technogym Pull & Overhead Press",
+                warmups: [
+                    "5 mins rower or elliptical warmup",
+                    "Banded pull-backs & face-pull warmups (15 reps)",
+                    "Torso rotations with dynamic arm reach (10 per side)",
+                    "Deadbug abdominal activations (10 per side)"
+                ],
+                cooldowns: [
+                    "Doorway Lat Stretch with Hip Hinge (30s per side)",
+                    "Forearm Flexor Wall Palm Stretch (30s per side)",
+                    "Cross-Body Shoulder Reach & Triceps Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w4sb1", name: "Single-Arm DB Overhead Press", cat: "Free Weights", target: "3 sets x 10 / side", instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
                     { id: "w4sb2", name: "FTS Single-Arm Cable Row", cat: "Precor FTS", target: "3 sets x 12 / side", instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
@@ -536,6 +643,17 @@
             },
             sC: {
                 title: "Week 4 - Session C: Step Squat & Full Body Burnout",
+                warmups: [
+                    "5 mins stationary bike or stairclimber",
+                    "Dynamic hip openers & fire hydrants (10 per side)",
+                    "Air squats with 2-second pause at bottom (10 reps)",
+                    "Calf bounces & ankle mobility rolls (15 reps)"
+                ],
+                cooldowns: [
+                    "Lizard Lunge Hip Flexor & Groin Stretch (45s per side)",
+                    "Seated Wide-Leg Forward Fold (45s hold)",
+                    "Standing Quad & Wall Hip Extension Stretch (30s per side)"
+                ],
                 exercises: [
                     { id: "w4sc1", name: "DB Step Squat Burnout", cat: "Free Weights", target: "3 sets x 12 / leg", instructions: "Continuous step squat reps alternating legs on each step up." },
                     { id: "w4sc2", name: "Precor Leg Press (Heavy)", cat: "Precor", target: "3 sets x 12-15", instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
@@ -558,12 +676,12 @@
 
         let html = `<div class="section-banner">${currentData.title}</div>`;
 
-        // Warmup Section
+        // Session-Specific Warmup Section
         html += `
             <div class="routine-box">
                 <div class="routine-title">🔥 Dynamic Warm-Up & Mobility</div>
                 <ul class="routine-list">
-                    ${warmups.map(item => `<li>${item}</li>`).join('')}
+                    ${currentData.warmups.map(item => `<li>${item}</li>`).join('')}
                 </ul>
             </div>
         `;
@@ -607,12 +725,12 @@
             `;
         });
 
-        // Cooldown Section
+        // Session-Specific Cooldown Section
         html += `
             <div class="routine-box">
                 <div class="routine-title">🧘 Cool-Down & Flexibility Stretches</div>
                 <ul class="routine-list">
-                    ${cooldowns.map(item => `<li>${item}</li>`).join('')}
+                    ${currentData.cooldowns.map(item => `<li>${item}</li>`).join('')}
                 </ul>
             </div>
         `;
