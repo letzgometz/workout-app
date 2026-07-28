@@ -58,6 +58,14 @@
             margin-bottom: 12px;
         }
 
+        .header-btn-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
         .nav-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -226,18 +234,17 @@
             background-color: var(--primary-hover);
         }
 
-        .btn-history-toggle {
+        .btn-subtle {
             background-color: var(--bg-card-alt);
             color: var(--accent);
             border: 1px solid var(--border);
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
-            margin-top: 8px;
         }
 
-        .btn-history-toggle:hover {
+        .btn-subtle:hover {
             background-color: var(--border);
             color: #ffffff;
         }
@@ -347,7 +354,12 @@
     <header>
         <h1>E and J Get Ripped</h1>
         <div class="sub-header">Technogym & Precor FTS Suite Program</div>
-        <button class="btn-history-toggle" onclick="toggleHistoryView()">📊 Toggle Workout History</button>
+        <div class="header-btn-group">
+            <button class="btn-subtle" onclick="toggleHistoryView()">📊 History</button>
+            <button class="btn-subtle" onclick="exportData()">📥 Export Logs</button>
+            <button class="btn-subtle" onclick="triggerImport()">📤 Import Logs</button>
+            <input type="file" id="importInput" style="display: none;" accept=".json" onchange="importData(event)">
+        </div>
     </header>
 
     <!-- Workout History Section -->
@@ -725,12 +737,60 @@
     function clearAllHistory() {
         if (confirm("Are you sure you want to delete all saved exercise logs?")) {
             Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_')) {
+                if (key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_') || key.startsWith('complete_')) {
                     localStorage.removeItem(key);
                 }
             });
             loadSession();
             renderHistory();
+        }
+    }
+
+    /* Data Backup & Restore Functions */
+    function exportData() {
+        let exportObj = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if (key.startsWith('log_') || key.startsWith('complete_')) {
+                exportObj[key] = localStorage.getItem(key);
+            }
+        }
+
+        if (Object.keys(exportObj).length === 0) {
+            alert('No workout data found to export!');
+            return;
+        }
+
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+        let downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "workout_logs_backup.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function triggerImport() {
+        document.getElementById('importInput').click();
+    }
+
+    function importData(event) {
+        const fileReader = new FileReader();
+        fileReader.onload = function(e) {
+            try {
+                const importedObj = JSON.parse(e.target.result);
+                Object.keys(importedObj).forEach(key => {
+                    localStorage.setItem(key, importedObj[key]);
+                });
+                alert('Workout data imported successfully!');
+                loadSession();
+                renderHistory();
+            } catch (err) {
+                alert('Invalid JSON file format.');
+            }
+        };
+        if (event.target.files[0]) {
+            fileReader.readAsText(event.target.files[0]);
         }
     }
 
