@@ -233,6 +233,7 @@
             border-radius: 6px;
             font-size: 0.8rem;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .btn-demo:hover {
@@ -251,62 +252,6 @@
 
         .btn-undo {
             background-color: var(--danger);
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        }
-
-        .modal-header {
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: 0;
         }
     </style>
 </head>
@@ -342,19 +287,6 @@
     </button>
 </div>
 
-<!-- Video Demo Modal -->
-<div id="demoModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <span id="modalExerciseTitle" style="font-weight: bold;">Exercise Demo</span>
-            <button class="close-btn" onclick="closeDemo()">&times;</button>
-        </div>
-        <div class="video-container">
-            <iframe id="demoVideoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-    </div>
-</div>
-
 <script>
     const warmups = [
         "5 mins light cardio (treadmill or stationary bike)",
@@ -375,29 +307,29 @@
             sA: {
                 title: "Week 1 - Session A: Push / Overhead Press",
                 exercises: [
-                    { id: "w1sa1", name: "Dumbbell Overhead Press", cat: "Free Weights", target: "3 sets x 10-12", videoId: "B-aVuyhvLHU", instructions: "Seated or standing, hold dumbbells at shoulder height with palms forward. Press straight overhead." },
-                    { id: "w1sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10-12", videoId: "2XyT3C38-c8", instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
-                    { id: "w1sa3", name: "Overhead Triceps Extension", cat: "Free Weights", target: "3 sets x 12-15", videoId: "_gsUck-7M74", instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows before pressing up." },
-                    { id: "w1sa4", name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12-15", videoId: "llBeKBs21Q8", instructions: "Lie head-up on decline bench holding handles behind head. Curl knees and hips off pad toward chest." },
-                    { id: "w1sa5", name: "Forearm Plank Hold", cat: "Core", target: "3 sets x 45-60s", videoId: "pSHjTRCQxIw", instructions: "Maintain straight line from shoulders to heels, bracing glutes and core." }
+                    { id: "w1sa1", name: "Dumbbell Overhead Press", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Seated or standing, hold dumbbells at shoulder height with palms forward. Press straight overhead." },
+                    { id: "w1sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10-12", instructions: "Adjust seat height so handles align with mid-chest. Press forward smoothly without locking elbows." },
+                    { id: "w1sa3", name: "Overhead Triceps Extension", cat: "Free Weights", target: "3 sets x 12-15", instructions: "Hold dumbbell overhead with both hands. Lower behind head by bending at elbows before pressing up." },
+                    { id: "w1sa4", name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Lie head-up on decline bench holding handles behind head. Curl knees and hips off pad toward chest." },
+                    { id: "w1sa5", name: "Forearm Plank Hold", cat: "Core", target: "3 sets x 45-60s", instructions: "Maintain straight line from shoulders to heels, bracing glutes and core." }
                 ]
             },
             sB: {
                 title: "Week 1 - Session B: Technogym Pull / Arms",
                 exercises: [
-                    { id: "w1sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", videoId: "CAwf7n6Luuc", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest keeping chest open." },
-                    { id: "w1sb2", name: "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 12", videoId: "soxrZlIl35U", instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
-                    { id: "w1sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", videoId: "V8dZ3pyiCBo", instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
-                    { id: "w1sb4", name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12", videoId: "2fPO7ac_254", instructions: "Kneel facing or away from high cable pulley. Flex waist down, flexing abs to pull ribs down." }
+                    { id: "w1sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Adjust thigh pad securely. Grip handles high, pull down toward upper chest keeping chest open." },
+                    { id: "w1sb2", name: "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 12", instructions: "Sit back on incline bench. Keep elbows stationary and curl dumbbells upward." },
+                    { id: "w1sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Set FTS pulley to upper chest height. Pull rope toward forehead, flaring hands out near ears." },
+                    { id: "w1sb4", name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12", instructions: "Kneel facing or away from high cable pulley. Flex waist down, flexing abs to pull ribs down." }
                 ]
             },
             sC: {
                 title: "Week 1 - Session C: Step Squat / Precor / Core",
                 exercises: [
-                    { id: "w1sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", videoId: "34C1U2lG1b4", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
-                    { id: "w1sc2", name: "Dumbbell Romanian Deadlift", cat: "Free Weights", target: "3 sets x 10-12", videoId: "JCXUYuzwNrM", instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
-                    { id: "w1sc3", name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", videoId: "1qJp8eEa0sI", instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
-                    { id: "w1sc4", name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", videoId: "pA_8qP9E13E", instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
+                    { id: "w1sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", instructions: "Step one foot up onto box/bench, drive up to stand, then lower back down into a controlled squat." },
+                    { id: "w1sc2", name: "Dumbbell Romanian Deadlift", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Hold dumbbells in front of thighs. Hinge hips back with flat back; squeeze glutes to return." },
+                    { id: "w1sc3", name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", instructions: "Place balls of feet on bottom edge of platform. Press platform out, then flex ankles to elevate toes." },
+                    { id: "w1sc4", name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Set pulley at mid-height. Rotate torso diagonally across body using core strength." }
                 ]
             }
         },
@@ -405,29 +337,29 @@
             sA: {
                 title: "Week 2 - Session A: Dumbbell Hypertrophy & Press",
                 exercises: [
-                    { id: "w2sa1", name: "Standing DB Overhead Press", cat: "Free Weights", target: "3 sets x 8-10", videoId: "M2rwvNhTOu0", instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
-                    { id: "w2sa2", name: "Incline Dumbbell Press", cat: "Free Weights", target: "3 sets x 8-10", videoId: "8iPEnn-ltC8", instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
-                    { id: "w2sa3", name: "Single-Arm Dumbbell Row", cat: "Free Weights", target: "3 sets x 10 / side", videoId: "pYcpY20QaE8", instructions: "Knee and hand on bench. Pull dumbbell elbow toward hip driving shoulder blade back." },
-                    { id: "w2sa4", name: "Decline Sit-Ups / Crunch", cat: "Core", target: "3 sets x 15", videoId: "1_K1L7sA_Q4", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength." },
-                    { id: "w2sa5", name: "Dead Bugs", cat: "Core", target: "3 sets x 12 / side", videoId: "g_BYB0R-4Ws", instructions: "Lie on back. Lower opposite arm and leg while pressing lower back flush into floor." }
+                    { id: "w2sa1", name: "Standing DB Overhead Press", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Stand shoulder-width apart, brace core, and press dumbbells overhead." },
+                    { id: "w2sa2", name: "Incline Dumbbell Press", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Bench at 30-45 degrees. Press dumbbells overhead, lower to upper chest level." },
+                    { id: "w2sa3", name: "Single-Arm Dumbbell Row", cat: "Free Weights", target: "3 sets x 10 / side", instructions: "Knee and hand on bench. Pull dumbbell elbow toward hip driving shoulder blade back." },
+                    { id: "w2sa4", name: "Decline Sit-Ups / Crunch", cat: "Core", target: "3 sets x 15", instructions: "Anchor feet on decline bench. Flex torso upward using abdominal strength." },
+                    { id: "w2sa5", name: "Dead Bugs", cat: "Core", target: "3 sets x 12 / side", instructions: "Lie on back. Lower opposite arm and leg while pressing lower back flush into floor." }
                 ]
             },
             sB: {
                 title: "Week 2 - Session B: Technogym Row & Core",
                 exercises: [
-                    { id: "w2sb1", name: "Technogym Low Pull Row", cat: "Technogym", target: "3 sets x 10-12", videoId: "GZbfZ033f74", instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
-                    { id: "w2sb2", name: "Dumbbell Deadlift", cat: "Free Weights", target: "3 sets x 8-10", videoId: "lJ3QwaXNJfw", instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
-                    { id: "w2sb3", name: "Precor FTS Triceps Pushdown", cat: "Precor FTS", target: "3 sets x 12-15", videoId: "vB5OHsJ3EME", instructions: "Attach rope to high pulley. Extend elbows down toward hips, spreading handles outward." },
-                    { id: "w2sb4", name: "Plank with Arm Reach", cat: "Core", target: "3 sets x 45s", videoId: "N2J4604Y1zI", instructions: "Forearm plank position. Alternately reach one arm straight in front without tilting hips." }
+                    { id: "w2sb1", name: "Technogym Low Pull Row", cat: "Technogym", target: "3 sets x 10-12", instructions: "Maintain upright posture on row machine. Drive elbows straight back close to torso." },
+                    { id: "w2sb2", name: "Dumbbell Deadlift", cat: "Free Weights", target: "3 sets x 8-10", instructions: "Lower dumbbells toward floor by bending knees and hinging hips; drive floor away to stand." },
+                    { id: "w2sb3", name: "Precor FTS Triceps Pushdown", cat: "Precor FTS", target: "3 sets x 12-15", instructions: "Attach rope to high pulley. Extend elbows down toward hips, spreading handles outward." },
+                    { id: "w2sb4", name: "Plank with Arm Reach", cat: "Core", target: "3 sets x 45s", instructions: "Forearm plank position. Alternately reach one arm straight in front without tilting hips." }
                 ]
             },
             sC: {
                 title: "Week 2 - Session C: Precor Leg Press & Step Squat",
                 exercises: [
-                    { id: "w2sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10 / leg", videoId: "34C1U2lG1b4", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
-                    { id: "w2sc2", name: "Precor Leg Press", cat: "Precor", target: "3 sets x 10-12", videoId: "IZxyjW7MPJQ", instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
-                    { id: "w2sc3", name: "Dumbbell Hammer Curls", cat: "Free Weights", target: "3 sets x 12", videoId: "TwD-YGVP4Bk", instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
-                    { id: "w2sc4", name: "Russian Twists (Weighted)", cat: "Core", target: "3 sets x 20 total", videoId: "wkD8rjkX4_8", instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
+                    { id: "w2sc1", name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10 / leg", instructions: "Step up onto box, lower into full squat position, then switch lead legs." },
+                    { id: "w2sc2", name: "Precor Leg Press", cat: "Precor", target: "3 sets x 10-12", instructions: "Feet shoulder-width on platform. Lower sled until knees bend to 90 degrees, press back up." },
+                    { id: "w2sc3", name: "Dumbbell Hammer Curls", cat: "Free Weights", target: "3 sets x 12", instructions: "Hold dumbbells with neutral grip (palms facing each other). Curl toward shoulders." },
+                    { id: "w2sc4", name: "Russian Twists (Weighted)", cat: "Core", target: "3 sets x 20 total", instructions: "Sit with feet elevated. Hold weight and rotate torso side-to-side, tapping floor." }
                 ]
             }
         },
@@ -435,28 +367,28 @@
             sA: {
                 title: "Week 3 - Session A: FTS Overhead Press & Upper",
                 exercises: [
-                    { id: "w3sa1", name: "FTS Cable Overhead Press", cat: "Precor FTS", target: "3 sets x 10-12", videoId: "GzS6J0m6M9Y", instructions: "Set low cables on FTS. Press cable handles straight overhead smoothly from shoulder height." },
-                    { id: "w3sa2", name: "Precor FTS Chest Flyes", cat: "Precor FTS", target: "3 sets x 12-15", videoId: "Iwe6AmxVf7o", instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
-                    { id: "w3sa3", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 12", videoId: "CAwf7n6Luuc", instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
-                    { id: "w3sa4", name: "High-to-Low Woodchoppers", cat: "Core", target: "3 sets x 12 / side", videoId: "q3a25y_494w", instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
+                    { id: "w3sa1", name: "FTS Cable Overhead Press", cat: "Precor FTS", target: "3 sets x 10-12", instructions: "Set low cables on FTS. Press cable handles straight overhead smoothly from shoulder height." },
+                    { id: "w3sa2", name: "Precor FTS Chest Flyes", cat: "Precor FTS", target: "3 sets x 12-15", instructions: "Dual FTS arms at chest height. Pull handles together in front with slight elbow bend." },
+                    { id: "w3sa3", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 12", instructions: "Underhand grip on high pull lat. Pull down toward upper chest focusing on lats." },
+                    { id: "w3sa4", name: "High-to-Low Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Set FTS arm high. Pull handle diagonally down across body toward opposite hip." }
                 ]
             },
             sB: {
                 title: "Week 3 - Session B: FTS Core & Technogym Lat",
                 exercises: [
-                    { id: "w3sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", videoId: "CAwf7n6Luuc", instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
-                    { id: "w3sb2", name: "FTS Cable Biceps Curl", cat: "Precor FTS", target: "3 sets x 12", videoId: "AsAVbB02i0E", instructions: "Set low pulley on FTS cable machine. Curl handles upward keeping elbows pinned." },
-                    { id: "w3sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", videoId: "V8dZ3pyiCBo", instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion." },
-                    { id: "w3sb4", name: "Precor FTS Pallof Press", cat: "Core", target: "3 sets x 10 holds", videoId: "AH_QZLm_0-s", instructions: "Stand sideways to FTS. Press handle straight out in front, resisting rotational pull." }
+                    { id: "w3sb1", name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Standard wide grip. Drive elbows down toward ribs to engage upper back width." },
+                    { id: "w3sb2", name: "FTS Cable Biceps Curl", cat: "Precor FTS", target: "3 sets x 12", instructions: "Set low pulley on FTS cable machine. Curl handles upward keeping elbows pinned." },
+                    { id: "w3sb3", name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Pull rope high toward forehead, rotating knuckles back at end of motion." },
+                    { id: "w3sb4", name: "Precor FTS Pallof Press", cat: "Core", target: "3 sets x 10 holds", instructions: "Stand sideways to FTS. Press handle straight out in front, resisting rotational pull." }
                 ]
             },
             sC: {
                 title: "Week 3 - Session C: Unilateral Lower & Step Squats",
                 exercises: [
-                    { id: "w3sc1", name: "Weighted Step Squats", cat: "Free Weights", target: "3 sets x 10 / leg", videoId: "34C1U2lG1b4", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
-                    { id: "w3sc2", name: "Leg Press (Single Leg)", cat: "Precor", target: "3 sets x 10 / leg", videoId: "1qJp8eEa0sI", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
-                    { id: "w3sc3", name: "Dumbbell Lateral Raises", cat: "Free Weights", target: "3 sets x 15", videoId: "3VcKaXpzqRo", instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
-                    { id: "w3sc4", name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12 reps", videoId: "llBeKBs21Q8", instructions: "Set bench at high incline. Curl hips upward off pad with controlled movement." }
+                    { id: "w3sc1", name: "Weighted Step Squats", cat: "Free Weights", target: "3 sets x 10 / leg", instructions: "Step elevated onto platform, lower into squatting stance, keeping posture tall." },
+                    { id: "w3sc2", name: "Leg Press (Single Leg)", cat: "Precor", target: "3 sets x 10 / leg", instructions: "One foot in center of platform. Lower platform to 90 degrees and press back up." },
+                    { id: "w3sc3", name: "Dumbbell Lateral Raises", cat: "Free Weights", target: "3 sets x 15", instructions: "Raise arms out sideways until parallel with shoulders; lower with control." },
+                    { id: "w3sc4", name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12 reps", instructions: "Set bench at high incline. Curl hips upward off pad with controlled movement." }
                 ]
             }
         },
@@ -464,32 +396,37 @@
             sA: {
                 title: "Week 4 - Session A: Technogym Press & Core Density",
                 exercises: [
-                    { id: "w4sa1", name: "Seated DB Overhead Press", cat: "Free Weights", target: "3 sets x 10", videoId: "B-aVuyhvLHU", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
-                    { id: "w4sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10 + Max Pushups", videoId: "2XyT3C38-c8", instructions: "10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
-                    { id: "w4sa3", name: "Chest-Supported DB Row", cat: "Free Weights", target: "3 sets x 10-12", videoId: "H75im9fA71U", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
-                    { id: "w4sa4", name: "Dragon Flags / Reverse Crunch", cat: "Core", target: "1-2 sets max", videoId: "pvzM49J38O8", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
+                    { id: "w4sa1", name: "Seated DB Overhead Press", cat: "Free Weights", target: "3 sets x 10", instructions: "Sit upright with back supported. Press dumbbells overhead smoothly." },
+                    { id: "w4sa2", name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10 + Max Pushups", instructions: "10 heavy reps on Technogym Chest Press, immediately follow with max pushups." },
+                    { id: "w4sa3", name: "Chest-Supported DB Row", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Lie chest down on incline bench. Pull dumbbells upward toward hips." },
+                    { id: "w4sa4", name: "Dragon Flags / Reverse Crunch", cat: "Core", target: "1-2 sets max", instructions: "Lie flat holding bench edge behind head. Lift legs and hips off bench toward ceiling." }
                 ]
             },
             sB: {
                 title: "Week 4 - Session B: Technogym Pull & Overhead Press",
                 exercises: [
-                    { id: "w4sb1", name: "Single-Arm DB Overhead Press", cat: "Free Weights", target: "3 sets x 10 / side", videoId: "429_Y6b3K8I", instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
-                    { id: "w4sb2", name: "FTS Single-Arm Cable Row", cat: "Precor FTS", target: "3 sets x 12 / side", videoId: "158524g26aA", instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
-                    { id: "w4sb3", name: "DB Concentration Curls", cat: "Free Weights", target: "3 sets x 12 / side", videoId: "Jvj2wV0vOYU", instructions: "Rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
-                    { id: "w4sb4", name: "Decline Bench Oblique Crunch", cat: "Core", target: "3 sets x 10-12 / side", videoId: "sBAZTuZAUA8", instructions: "On decline bench, lift hips while twisting knees toward opposite shoulders alternating sides." }
+                    { id: "w4sb1", name: "Single-Arm DB Overhead Press", cat: "Free Weights", target: "3 sets x 10 / side", instructions: "Press one dumbbell overhead keeping opposite hand on hip to maintain trunk stability." },
+                    { id: "w4sb2", name: "FTS Single-Arm Cable Row", cat: "Precor FTS", target: "3 sets x 12 / side", instructions: "Set FTS arm at mid-height. Row single cable handle toward hip into lat squeeze." },
+                    { id: "w4sb3", name: "DB Concentration Curls", cat: "Free Weights", target: "3 sets x 12 / side", instructions: "Rest elbow inside inner thigh. Curl dumbbell upward to isolate biceps peak." },
+                    { id: "w4sb4", name: "Decline Bench Oblique Crunch", cat: "Core", target: "3 sets x 10-12 / side", instructions: "On decline bench, lift hips while twisting knees toward opposite shoulders alternating sides." }
                 ]
             },
             sC: {
                 title: "Week 4 - Session C: Step Squat & Full Body Burnout",
                 exercises: [
-                    { id: "w4sc1", name: "DB Step Squat Burnout", cat: "Free Weights", target: "3 sets x 12 / leg", videoId: "34C1U2lG1b4", instructions: "Continuous step squat reps alternating legs on each step up." },
-                    { id: "w4sc2", name: "Precor Leg Press (Heavy)", cat: "Precor", target: "3 sets x 12-15", videoId: "IZxyjW7MPJQ", instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
-                    { id: "w4sc3", name: "21s Biceps Curl (Dumbbell)", cat: "Free Weights", target: "3 sets x 21 total", videoId: "qf6p2qL6R04", instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
-                    { id: "w4sc4", name: "Plank to Pushup Transitions", cat: "Core", target: "1-2 sets max", videoId: "L-_E19L3M9E", instructions: "From elbow plank, press up one hand at a time into full pushup position." }
+                    { id: "w4sc1", name: "DB Step Squat Burnout", cat: "Free Weights", target: "3 sets x 12 / leg", instructions: "Continuous step squat reps alternating legs on each step up." },
+                    { id: "w4sc2", name: "Precor Leg Press (Heavy)", cat: "Precor", target: "3 sets x 12-15", instructions: "Feet mid-platform on Precor press. Lower controlled to 90 degrees, drive up through heels." },
+                    { id: "w4sc3", name: "21s Biceps Curl (Dumbbell)", cat: "Free Weights", target: "3 sets x 21 total", instructions: "7 reps lower-half, 7 reps upper-half, followed by 7 full-range curls." },
+                    { id: "w4sc4", name: "Plank to Pushup Transitions", cat: "Core", target: "1-2 sets max", instructions: "From elbow plank, press up one hand at a time into full pushup position." }
                 ]
             }
         }
     };
+
+    function openDemo(exName) {
+        const searchQuery = encodeURIComponent(exName + " exercise demonstration form");
+        window.open(`https://www.youtube.com/results?search_query=${searchQuery}`, '_blank');
+    }
 
     function loadSession() {
         const week = document.getElementById('weekSelect').value;
@@ -520,7 +457,7 @@
                         <span class="ex-title">${ex.name}</span>
                         <div style="display: flex; gap: 6px; align-items: center;">
                             <span class="ex-cat">${ex.cat}</span>
-                            <button class="btn-demo" onclick="openDemo('${ex.name}', '${ex.videoId}')">🎥 Demo</button>
+                            <button class="btn-demo" onclick="openDemo('${ex.name}')">🎥 Demo</button>
                         </div>
                     </div>
                     <div class="target-tag">${ex.target}</div>
@@ -593,21 +530,6 @@
             btn.className = 'btn btn-complete';
         }
     }
-
-    function openDemo(exName, videoId) {
-        document.getElementById('modalExerciseTitle').innerText = exName;
-        document.getElementById('demoVideoIframe').src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-        document.getElementById('demoModal').classList.add('active');
-    }
-
-    function closeDemo() {
-        document.getElementById('demoModal').classList.remove('active');
-        document.getElementById('demoVideoIframe').src = '';
-    }
-
-    document.getElementById('demoModal').addEventListener('click', function(e) {
-        if (e.target === this) closeDemo();
-    });
 
     loadSession();
 </script>
