@@ -854,7 +854,7 @@
         document.getElementById('importInput').click();
     }
 
-   function importData(event) {
+    function importData(event) {
         const fileReader = new FileReader();
         fileReader.onload = function(e) {
             try {
@@ -868,11 +868,9 @@
 
                 let importedCount = 0;
 
-                // Recursive function to extract log arrays or objects anywhere in the JSON
                 function processKeyVal(key, val) {
                     if (!val) return;
 
-                    // Parse JSON strings if the exported value was double-stringified
                     let parsedVal = val;
                     if (typeof val === 'string' && (val.startsWith('{') || val.startsWith('['))) {
                         try { parsedVal = JSON.parse(val); } catch (err) {}
@@ -883,7 +881,6 @@
                         return;
                     }
 
-                    // 1. Direct log_history_ keys
                     if (key.startsWith('log_history_')) {
                         if (Array.isArray(parsedVal) && parsedVal.length > 0) {
                             localStorage.setItem(key, JSON.stringify(parsedVal));
@@ -892,13 +889,11 @@
                         return;
                     }
 
-                    // 2. Completion markers
                     if (key.startsWith('complete_')) {
                         localStorage.setItem(key, parsedVal);
                         return;
                     }
 
-                    // 3. Flat legacy keys (log_wt_exId)
                     if (key.startsWith('log_wt_')) {
                         const exId = key.replace('log_wt_', '');
                         const repsVal = importedObj['log_reps_' + exId] || '-';
@@ -919,7 +914,6 @@
                         return;
                     }
 
-                    // 4. Handle generic array logs or nested objects with weight/reps
                     if (Array.isArray(parsedVal)) {
                         parsedVal.forEach(item => {
                             if (typeof item === 'object' && item !== null && (item.weight || item.reps || item.wt)) {
@@ -949,45 +943,6 @@
                 renderHistory();
             } catch (err) {
                 alert('Invalid JSON file format. Please check your backup file.');
-            }
-        };
-        if (event.target.files[0]) {
-            fileReader.readAsText(event.target.files[0]);
-        }
-    }
-                    else if (key.startsWith('log_wt_')) {
-                        const exId = key.replace('log_wt_', '');
-                        const wtVal = importedObj[key];
-                        const repsVal = importedObj['log_reps_' + exId] || '-';
-                        const lvlVal = importedObj['log_lvl_' + exId] || '-';
-
-                        if (wtVal || repsVal !== '-' || lvlVal !== '-') {
-                            const newEntry = {
-                                id: Date.now() + Math.floor(Math.random() * 10000),
-                                timestamp: defaultTimestamp,
-                                weight: wtVal || '-',
-                                reps: repsVal,
-                                level: lvlVal
-                            };
-
-                            const existingLogs = getExerciseLogs(exId);
-                            if (!existingLogs.some(l => l.weight === newEntry.weight && l.reps === newEntry.reps && l.level === newEntry.level)) {
-                                existingLogs.push(newEntry);
-                                saveExerciseLogs(exId, existingLogs);
-                                importedCount++;
-                            }
-                        }
-                    } 
-                    else if (key.startsWith('complete_')) {
-                        localStorage.setItem(key, importedObj[key]);
-                    }
-                });
-
-                alert(`Success! Imported and synced ${importedCount} workout entries.`);
-                loadSession();
-                renderHistory();
-            } catch (err) {
-                alert('Invalid JSON file format. Please check the backup file.');
             }
         };
         if (event.target.files[0]) {
