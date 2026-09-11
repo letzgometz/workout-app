@@ -490,8 +490,7 @@
                     { id: `${prefix}1`, name: wNum % 2 === 1 ? "Dumbbell Overhead Press" : "Standing DB Overhead Press", cat: "Free Weights", target: `3 sets x ${12 - wNum}`, instructions: "Press dumbbells straight overhead maintaining steady core bracing." },
                     { id: `${prefix}2`, name: "Technogym Chest Press", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Adjust seat height so handles align with mid-chest; press forward smoothly." },
                     { id: `${prefix}3`, name: wNum > 2 ? "FTS Cable Overhead Press" : "Overhead Triceps Extension", cat: wNum > 2 ? "Precor FTS" : "Free Weights", target: "3 sets x 12-15", instructions: "Control the weight through a full range of motion." },
-                    { id: `${prefix}4`, name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Curl hips off pad toward chest using lower abdominal control." },
-                    { id: `${prefix}5`, name: "Forearm Plank Hold", cat: "Core", target: `3 sets x ${30 + (wNum * 10)}s`, instructions: "Maintain a rigid straight line from shoulders to heels." }
+                    { id: `${prefix}4`, name: wNum % 2 === 1 ? "Forearm Plank Hold" : "Russian Twists", cat: "Core", target: wNum % 2 === 1 ? `3 sets x ${30 + (wNum * 10)}s` : "3 sets x 20 total twists", instructions: wNum % 2 === 1 ? "Maintain a rigid straight line from shoulders to heels." : "Sit with knees bent, lean torso back slightly, and rotate side-to-side with optional dumbbell weight." }
                 ]
             };
         } else if (sType === 'sB') {
