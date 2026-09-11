@@ -452,6 +452,7 @@
     function createSessionData(mNum, wNum, sType) {
         const mLabel = monthNames[mNum - 1];
         const prefix = `m${mNum}w${wNum}${sType.toLowerCase()}`;
+        const altPrefix = `w${wNum}${sType.toLowerCase()}`;
 
         if (wNum === 5) {
             return {
@@ -466,8 +467,8 @@
                     "Deep diaphragm breathing hold (2 mins)"
                 ],
                 exercises: [
-                    { id: `${prefix}1`, name: "Light Cable / Free-Weight Practice", cat: "Technogym / Free", target: "2 sets x 15 (Light)", instructions: "Focus purely on smooth movement and range of motion at 50% normal weight." },
-                    { id: `${prefix}2`, name: "Bodyweight Core & Stability Hold", cat: "Core", target: "3 sets x 30s", instructions: "Planks or side planks to maintain core activation without fatigue." }
+                    { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: "Light Cable / Free-Weight Practice", cat: "Technogym / Free", target: "2 sets x 15 (Light)", instructions: "Focus purely on smooth movement and range of motion at 50% normal weight." },
+                    { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: "Bodyweight Core & Stability Hold", cat: "Core", target: "3 sets x 30s", instructions: "Planks or side planks to maintain core activation without fatigue." }
                 ]
             };
         }
@@ -487,10 +488,10 @@
                     "Child's Pose with Arm Walkouts (45s hold)"
                 ],
                 exercises: [
-                    { id: `${prefix}1`, name: wNum % 2 === 1 ? "Dumbbell Overhead Press" : "Standing DB Overhead Press", cat: "Free Weights", target: `3 sets x ${12 - wNum}`, instructions: "Press dumbbells straight overhead maintaining steady core bracing." },
-                    { id: `${prefix}2`, name: "Technogym Chest Press", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Adjust seat height so handles align with mid-chest; press forward smoothly." },
-                    { id: `${prefix}3`, name: wNum > 2 ? "FTS Cable Overhead Press" : "Overhead Triceps Extension", cat: wNum > 2 ? "Precor FTS" : "Free Weights", target: "3 sets x 12-15", instructions: "Control the weight through a full range of motion." },
-                    { id: `${prefix}4`, name: wNum % 2 === 1 ? "Forearm Plank Hold" : "Russian Twists", cat: "Core", target: wNum % 2 === 1 ? `3 sets x ${30 + (wNum * 10)}s` : "3 sets x 20 total twists", instructions: wNum % 2 === 1 ? "Maintain a rigid straight line from shoulders to heels." : "Sit with knees bent, lean torso back slightly, and rotate side-to-side with optional dumbbell weight." }
+                    { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: wNum % 2 === 1 ? "Dumbbell Overhead Press" : "Standing DB Overhead Press", cat: "Free Weights", target: `3 sets x ${12 - wNum}`, instructions: "Press dumbbells straight overhead maintaining steady core bracing." },
+                    { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: "Technogym Chest Press", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Adjust seat height so handles align with mid-chest; press forward smoothly." },
+                    { id: `${prefix}3`, legacyId: `${altPrefix}3`, name: wNum > 2 ? "FTS Cable Overhead Press" : "Overhead Triceps Extension", cat: wNum > 2 ? "Precor FTS" : "Free Weights", target: "3 sets x 12-15", instructions: "Control the weight through a full range of motion." },
+                    { id: `${prefix}4`, legacyId: `${altPrefix}4`, name: wNum % 2 === 1 ? "Forearm Plank Hold" : "Russian Twists", cat: "Core", target: wNum % 2 === 1 ? `3 sets x ${30 + (wNum * 10)}s` : "3 sets x 20 total twists", instructions: wNum % 2 === 1 ? "Maintain a rigid straight line from shoulders to heels." : "Sit with knees bent, lean torso back slightly, and rotate side-to-side with optional dumbbell weight." }
                 ]
             };
         } else if (sType === 'sB') {
@@ -508,10 +509,10 @@
                     "Cross-Body Rear Delt Stretch (30s per side)"
                 ],
                 exercises: [
-                    { id: `${prefix}1`, name: wNum % 2 === 1 ? "Technogym High Pull Lat" : "Technogym Low Pull Row", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Keep chest tall and pull handles down/back toward torso." },
-                    { id: `${prefix}2`, name: wNum > 2 ? "Single-Arm Dumbbell Row" : "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Squeeze target muscles at peak contraction." },
-                    { id: `${prefix}3`, name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Pull rope high toward forehead, flaring hands past ears." },
-                    { id: `${prefix}4`, name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Kneel facing pulley and flex abs to bring ribs toward hips." }
+                    { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: wNum % 2 === 1 ? "Technogym High Pull Lat" : "Technogym Low Pull Row", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Keep chest tall and pull handles down/back toward torso." },
+                    { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: wNum > 2 ? "Single-Arm Dumbbell Row" : "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Squeeze target muscles at peak contraction." },
+                    { id: `${prefix}3`, legacyId: `${altPrefix}3`, name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Pull rope high toward forehead, flaring hands past ears." },
+                    { id: `${prefix}4`, legacyId: `${altPrefix}4`, name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Kneel facing pulley and flex abs to bring ribs toward hips." }
                 ]
             };
         } else {
@@ -529,17 +530,17 @@
                     "Seated Figure-4 Glute Stretch (30s per side)"
                 ],
                 exercises: [
-                    { id: `${prefix}1`, name: "Dumbbell Step Squat", cat: "Free Weights", target: `3 sets x ${10 + wNum} / leg`, instructions: "Step foot up onto box, drive up into full stand, then squat down controlled." },
-                    { id: `${prefix}2`, name: wNum % 2 === 0 ? "Precor Leg Press" : "Dumbbell Romanian Deadlift", cat: wNum % 2 === 0 ? "Precor" : "Free Weights", target: "3 sets x 10-12", instructions: "Hinge at hips or press through platform driving through heels." },
-                    { id: `${prefix}3`, name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", instructions: "Extend ankles on platform edge to elevate heels." },
-                    { id: `${prefix}4`, name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Rotate torso diagonally across body using core power." }
+                    { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: "Dumbbell Step Squat", cat: "Free Weights", target: `3 sets x ${10 + wNum} / leg`, instructions: "Step foot up onto box, drive up into full stand, then squat down controlled." },
+                    { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: wNum % 2 === 0 ? "Precor Leg Press" : "Dumbbell Romanian Deadlift", cat: wNum % 2 === 0 ? "Precor" : "Free Weights", target: "3 sets x 10-12", instructions: "Hinge at hips or press through platform driving through heels." },
+                    { id: `${prefix}3`, legacyId: `${altPrefix}3`, name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", instructions: "Extend ankles on platform edge to elevate heels." },
+                    { id: `${prefix}4`, legacyId: `${altPrefix}4`, name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Rotate torso diagonally across body using core power." }
                 ]
             };
         }
     }
 
     const programData = {};
-    const exerciseNameMap = {}; // Map exId to name for history display
+    const exerciseNameMap = {};
     for (let m = 1; m <= 12; m++) {
         programData['m' + m] = {};
         for (let w = 1; w <= 5; w++) {
@@ -551,6 +552,9 @@
             ['sA', 'sB', 'sC'].forEach(sKey => {
                 programData['m' + m]['w' + w][sKey].exercises.forEach(ex => {
                     exerciseNameMap[ex.id] = ex.name;
+                    if (ex.legacyId) {
+                        exerciseNameMap[ex.legacyId] = ex.name;
+                    }
                 });
             });
         }
@@ -566,14 +570,19 @@
         window.open(`https://www.youtube.com/results?search_query=${searchQuery}`, '_blank');
     }
 
-    function getExerciseLogs(exId) {
+    function getExerciseLogs(exId, legacyId) {
+        let logs = [];
         const raw = localStorage.getItem('log_history_' + exId);
-        if (!raw) return [];
-        try {
-            return JSON.parse(raw);
-        } catch(e) {
-            return [];
+        if (raw) {
+            try { logs = JSON.parse(raw); } catch(e) {}
         }
+        if (logs.length === 0 && legacyId) {
+            const legacyRaw = localStorage.getItem('log_history_' + legacyId);
+            if (legacyRaw) {
+                try { logs = JSON.parse(legacyRaw); } catch(e) {}
+            }
+        }
+        return logs;
     }
 
     function saveExerciseLogs(exId, logsArray) {
@@ -599,12 +608,16 @@
         `;
 
         currentData.exercises.forEach(ex => {
-            const logs = getExerciseLogs(ex.id);
+            const logs = getExerciseLogs(ex.id, ex.legacyId);
             const latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
             
             const lastLogText = latestLog 
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
+
+            const initWt = latestLog ? (latestLog.weight !== '-' ? latestLog.weight : '') : '';
+            const initReps = latestLog ? (latestLog.reps !== '-' ? latestLog.reps : '') : '';
+            const initLvl = latestLog ? (latestLog.level !== '-' ? latestLog.level : '') : '';
 
             html += `
                 <div class="card">
@@ -620,18 +633,18 @@
                     <div class="log-grid">
                         <div class="input-group">
                             <label>Weight</label>
-                            <input type="text" id="input_wt_${ex.id}" placeholder="e.g. 45 lbs">
+                            <input type="text" id="input_wt_${ex.id}" value="${initWt}" placeholder="e.g. 45 lbs">
                         </div>
                         <div class="input-group">
                             <label>Reps</label>
-                            <input type="text" id="input_reps_${ex.id}" placeholder="e.g. 10,10,12">
+                            <input type="text" id="input_reps_${ex.id}" value="${initReps}" placeholder="e.g. 10,10,12">
                         </div>
                         <div class="input-group">
                             <label>Level / Pin</label>
-                            <input type="text" id="input_lvl_${ex.id}" placeholder="e.g. Lvl 5">
+                            <input type="text" id="input_lvl_${ex.id}" value="${initLvl}" placeholder="e.g. Lvl 5">
                         </div>
                         <div class="action-buttons">
-                            <button class="btn btn-save" onclick="saveLog('${ex.id}')">Save</button>
+                            <button class="btn btn-save" onclick="saveLog('${ex.id}', '${ex.legacyId || ''}')">Save</button>
                             <button class="btn btn-clear" onclick="clearInputs('${ex.id}')" title="Clear inputs">Clear</button>
                         </div>
                     </div>
@@ -651,11 +664,12 @@
 
         document.getElementById('exerciseList').innerHTML = html;
 
-        const isComplete = localStorage.getItem('complete_' + month + '_' + week + '_' + session) === 'true';
+        const isComplete = localStorage.getItem('complete_' + month + '_' + week + '_' + session) === 'true' ||
+                           localStorage.getItem('complete_' + week + '_' + session) === 'true';
         updateCompleteButton(isComplete);
     }
 
-    function saveLog(exId) {
+    function saveLog(exId, legacyId) {
         const wtInput = document.getElementById('input_wt_' + exId);
         const repsInput = document.getElementById('input_reps_' + exId);
         const lvlInput = document.getElementById('input_lvl_' + exId);
@@ -684,7 +698,7 @@
             level: lvl || '-'
         };
 
-        const logs = getExerciseLogs(exId);
+        const logs = getExerciseLogs(exId, legacyId);
         logs.push(newEntry);
         saveExerciseLogs(exId, logs);
 
@@ -692,10 +706,6 @@
         if (badge) {
             badge.innerText = `Last logged: ${timestamp} (${newEntry.weight} | ${newEntry.reps} reps | ${newEntry.level})`;
         }
-
-        wtInput.value = '';
-        repsInput.value = '';
-        lvlInput.value = '';
 
         if (document.getElementById('historyContainer').style.display === 'block') {
             renderHistory();
@@ -710,7 +720,7 @@
 
     function deleteSingleLogEntry(exId, logId) {
         if (confirm("Delete this specific timestamped log entry?")) {
-            let logs = getExerciseLogs(exId);
+            let logs = getExerciseLogs(exId, null);
             logs = logs.filter(item => item.id !== logId);
             saveExerciseLogs(exId, logs);
             renderHistory();
@@ -763,19 +773,18 @@
     function renderHistory() {
         let historyLogs = [];
 
-        // Scan all keys in localStorage to ensure imported entries with any ID format show up
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith('log_history_')) {
                 const exId = key.replace('log_history_', '');
-                const logs = getExerciseLogs(exId);
-                const exName = exerciseNameMap[exId] || exId;
+                const logs = getExerciseLogs(exId, null);
+                const exName = exerciseNameMap[exId] || exId.toUpperCase();
 
                 logs.forEach(entry => {
                     historyLogs.push({
                         exId: exId,
                         logId: entry.id || Date.now(),
-                        timestamp: entry.timestamp || 'Recorded',
+                        timestamp: entry.timestamp || 'Logged',
                         exercise: exName,
                         weight: entry.weight || '-',
                         reps: entry.reps || '-',
@@ -787,7 +796,7 @@
 
         const historyContent = document.getElementById('historyContent');
         if (historyLogs.length === 0) {
-            historyContent.innerHTML = `<div class="empty-history">No logged workouts found. Hit "Save" to record timestamped sets!</div>`;
+            historyContent.innerHTML = `<div class="empty-history">No logged workouts found. Import logs or hit "Save" on exercises!</div>`;
             return;
         }
 
@@ -797,7 +806,7 @@
             <table class="history-table">
                 <thead>
                     <tr>
-                        <th>Date & Time</th>
+                        <th>Date / Session</th>
                         <th>Exercise</th>
                         <th>Weight</th>
                         <th>Reps</th>
@@ -830,7 +839,7 @@
     function clearAllHistory() {
         if (confirm("Are you sure you want to permanently delete all logged history and reset counter?")) {
             Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('log_history_') || key.startsWith('complete_')) {
+                if (key.startsWith('log_history_') || key.startsWith('complete_') || key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_')) {
                     localStorage.removeItem(key);
                 }
             });
@@ -870,11 +879,17 @@
             try {
                 const importedObj = JSON.parse(e.target.result);
                 let importedCount = 0;
+                const legacyGroups = {};
 
                 Object.keys(importedObj).forEach(key => {
                     let val = importedObj[key];
 
                     if (key === 'lifetime_workout_count') {
+                        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
+                        return;
+                    }
+
+                    if (key.startsWith('complete_')) {
                         localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
                         return;
                     }
@@ -891,13 +906,54 @@
                         return;
                     }
 
-                    if (key.startsWith('complete_')) {
-                        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
-                        return;
+                    // Process legacy log_wt_*, log_reps_*, log_lvl_* format
+                    if (key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_')) {
+                        let fieldType = '';
+                        let code = '';
+
+                        if (key.startsWith('log_wt_')) {
+                            fieldType = 'weight';
+                            code = key.replace('log_wt_', '');
+                        } else if (key.startsWith('log_reps_')) {
+                            fieldType = 'reps';
+                            code = key.replace('log_reps_', '');
+                        } else if (key.startsWith('log_lvl_')) {
+                            fieldType = 'level';
+                            code = key.replace('log_lvl_', '');
+                        }
+
+                        if (!legacyGroups[code]) {
+                            legacyGroups[code] = { weight: '-', reps: '-', level: '-' };
+                        }
+                        legacyGroups[code][fieldType] = val && val.trim() !== '' ? val : '-';
                     }
                 });
 
-                alert(`Success! Imported ${importedCount} logged set entries.`);
+                // Convert grouped legacy entries into log_history_ structures
+                Object.keys(legacyGroups).forEach((code, index) => {
+                    const group = legacyGroups[code];
+                    if (group.weight !== '-' || group.reps !== '-' || group.level !== '-') {
+                        const targetKey = code.startsWith('m') ? code : 'm1' + code;
+                        const legacyEntry = {
+                            id: Date.now() - (100000 - index * 1000),
+                            timestamp: `Imported (${code.toUpperCase()})`,
+                            weight: group.weight,
+                            reps: group.reps,
+                            level: group.level
+                        };
+
+                        let existingLogs = [];
+                        const existingRaw = localStorage.getItem('log_history_' + targetKey);
+                        if (existingRaw) {
+                            try { existingLogs = JSON.parse(existingRaw); } catch(e) {}
+                        }
+                        existingLogs.push(legacyEntry);
+                        localStorage.setItem('log_history_' + targetKey, JSON.stringify(existingLogs));
+                        importedCount++;
+                    }
+                });
+
+                alert(`Success! Imported ${importedCount} logged exercise set entries.`);
                 loadSession();
                 if (document.getElementById('historyContainer').style.display === 'block') {
                     renderHistory();
