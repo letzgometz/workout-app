@@ -80,8 +80,8 @@
 
         .nav-controls {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
             margin-bottom: 20px;
         }
 
@@ -89,9 +89,9 @@
             background-color: var(--bg-card);
             color: var(--text-light);
             border: 1px solid var(--border);
-            padding: 10px;
+            padding: 10px 6px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             width: 100%;
             outline: none;
         }
@@ -102,7 +102,7 @@
             padding: 10px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             margin-bottom: 15px;
             text-align: center;
             text-transform: uppercase;
@@ -249,9 +249,7 @@
             gap: 4px;
         }
 
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
+        .btn:hover { background-color: var(--primary-hover); }
 
         .btn-subtle {
             background-color: var(--bg-card-alt);
@@ -403,24 +401,32 @@
 
     <div class="nav-controls">
         <select id="monthSelect" onchange="loadSession()">
-            <option value="m1">January: Foundation & Strength</option>
-            <option value="m2">February: Free-Weight Hypertrophy</option>
-            <option value="m3">March: Cable Athleticism</option>
-            <option value="m4">April: Metabolic Intensity</option>
-            <option value="m5">May: Power & Explosiveness</option>
-            <option value="m6">June: Summer Shred & Core</option>
-            <option value="m7">July: Heavy Compound Focus</option>
-            <option value="m8">August: Time-Under-Tension</option>
-            <option value="m9">September: Posture & Unilateral</option>
-            <option value="m10">October: Strength Endurance</option>
-            <option value="m11">November: Hypertrophy Peak</option>
-            <option value="m12">December: Year-End Finish</option>
+            <option value="m1">Jan: Foundation</option>
+            <option value="m2">Feb: Hypertrophy</option>
+            <option value="m3">Mar: Cable Athleticism</option>
+            <option value="m4">Apr: Metabolic Burn</option>
+            <option value="m5">May: Power & Strength</option>
+            <option value="m6">Jun: Summer Shred</option>
+            <option value="m7">Jul: Heavy Compounds</option>
+            <option value="m8">Aug: Time-Under-Tension</option>
+            <option value="m9">Sep: Posture & Balance</option>
+            <option value="m10">Oct: Endurance</option>
+            <option value="m11">Nov: Volume Peak</option>
+            <option value="m12">Dec: Year-End Finish</option>
+        </select>
+
+        <select id="weekSelect" onchange="loadSession()">
+            <option value="w1">Week 1</option>
+            <option value="w2">Week 2</option>
+            <option value="w3">Week 3</option>
+            <option value="w4">Week 4</option>
+            <option value="w5">Deload / Flex Week</option>
         </select>
 
         <select id="sessionSelect" onchange="loadSession()">
-            <option value="sA">Session A: Push / Upper</option>
-            <option value="sB">Session B: Pull / Arms</option>
-            <option value="sC">Session C: Step Squat / Legs</option>
+            <option value="sA">Session A: Push</option>
+            <option value="sB">Session B: Pull</option>
+            <option value="sC">Session C: Legs</option>
         </select>
     </div>
 
@@ -432,7 +438,6 @@
 </div>
 
 <script>
-    // Initialize base workout counter (defaults to 33 if not set)
     if (!localStorage.getItem('lifetime_workout_count')) {
         localStorage.setItem('lifetime_workout_count', '33');
     }
@@ -442,14 +447,38 @@
         document.getElementById('workoutCounter').innerText = `You have completed ${count} workouts so far!`;
     }
 
-    // Standardized Template Generator across 12 months
-    function generateMonthProgram(monthName, theme) {
-        return {
-            sA: {
-                title: `${monthName} - Session A: Push / Upper (${theme})`,
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    function createSessionData(mNum, wNum, sType) {
+        const mLabel = monthNames[mNum - 1];
+        const prefix = `m${mNum}w${wNum}${sType.toLowerCase()}`;
+
+        if (wNum === 5) {
+            // Deload & Flex Week for Extra Days between Months
+            return {
+                title: `${mLabel} - Deload & Flex Week (Session ${sType.toUpperCase()})`,
+                warmups: [
+                    "15 mins light treadmill walk or stationary bike",
+                    "Dynamic joint mobility & shoulder circles (10 reps)",
+                    "Cat-Cow & thoracic rotations (10 reps)"
+                ],
+                cooldowns: [
+                    "Full body foam rolling or static stretches (5-10 mins)",
+                    "Deep diaphragm breathing hold (2 mins)"
+                ],
+                exercises: [
+                    { id: `${prefix}1`, name: "Light Cable / Free-Weight Practice", cat: "Technogym / Free", target: "2 sets x 15 (Light)", instructions: "Focus purely on smooth movement and range of motion at 50% normal weight." },
+                    { id: `${prefix}2`, name: "Bodyweight Core & Stability Hold", cat: "Core", target: "3 sets x 30s", instructions: "Planks or side planks to maintain core activation without fatigue." }
+                ]
+            };
+        }
+
+        if (sType === 'sA') {
+            return {
+                title: `${mLabel} - Week ${wNum} - Session A: Push / Upper`,
                 warmups: [
                     "20 mins stationary bike, treadmill, or elliptical",
-                    "Arm circles & Controlled Articular Rotations (15 forward/backward)",
+                    "Arm circles & Controlled Articular Rotations (15 reps)",
                     "Scapular push-ups & wall slides (12 reps)",
                     "Dynamic chest huggers & band openers (10 reps)"
                 ],
@@ -459,15 +488,16 @@
                     "Child's Pose with Arm Walkouts (45s hold)"
                 ],
                 exercises: [
-                    { id: `${monthName.toLowerCase()}_sa1`, name: "Dumbbell Overhead Press", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Seated or standing, press dumbbells overhead maintaining braced core." },
-                    { id: `${monthName.toLowerCase()}_sa2`, name: "Technogym Chest Press", cat: "Technogym", target: "3 sets x 10-12", instructions: "Press forward smoothly without locking elbows, focusing on chest squeeze." },
-                    { id: `${monthName.toLowerCase()}_sa3`, name: "Overhead Triceps Extension", cat: "Free Weights", target: "3 sets x 12-15", instructions: "Lower dumbbell behind head keeping elbows pointed straight forward." },
-                    { id: `${monthName.toLowerCase()}_sa4`, name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Curl hips off pad toward chest to engage lower abdominals." },
-                    { id: `${monthName.toLowerCase()}_sa5`, name: "Forearm Plank Hold", cat: "Core", target: "3 sets x 45-60s", instructions: "Maintain rigid straight body line from head to heels." }
+                    { id: `${prefix}1`, name: wNum % 2 === 1 ? "Dumbbell Overhead Press" : "Standing DB Overhead Press", cat: "Free Weights", target: `3 sets x ${12 - wNum}`, instructions: "Press dumbbells straight overhead maintaining steady core bracing." },
+                    { id: `${prefix}2`, name: "Technogym Chest Press", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Adjust seat height so handles align with mid-chest; press forward smoothly." },
+                    { id: `${prefix}3`, name: wNum > 2 ? "FTS Cable Overhead Press" : "Overhead Triceps Extension", cat: wNum > 2 ? "Precor FTS" : "Free Weights", target: "3 sets x 12-15", instructions: "Control the weight through a full range of motion." },
+                    { id: `${prefix}4`, name: "Decline Bench Reverse Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Curl hips off pad toward chest using lower abdominal control." },
+                    { id: `${prefix}5`, name: "Forearm Plank Hold", cat: "Core", target: `3 sets x ${30 + (wNum * 10)}s`, instructions: "Maintain a rigid straight line from shoulders to heels." }
                 ]
-            },
-            sB: {
-                title: `${monthName} - Session B: Pull / Arms (${theme})`,
+            };
+        } else if (sType === 'sB') {
+            return {
+                title: `${mLabel} - Week ${wNum} - Session B: Pull / Arms`,
                 warmups: [
                     "20 mins stationary bike, treadmill, or elliptical",
                     "Cat-Cow & Thoracic Spine Rotations (10 reps)",
@@ -480,18 +510,19 @@
                     "Cross-Body Rear Delt Stretch (30s per side)"
                 ],
                 exercises: [
-                    { id: `${monthName.toLowerCase()}_sb1`, name: "Technogym High Pull Lat", cat: "Technogym", target: "3 sets x 10-12", instructions: "Grip handles high, pull down toward upper chest keeping posture tall." },
-                    { id: `${monthName.toLowerCase()}_sb2`, name: "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 12", instructions: "Keep elbows pinned back; curl dumbbells upward with controlled tempo." },
-                    { id: `${monthName.toLowerCase()}_sb3`, name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Pull rope high toward forehead, flaring hands out past ears." },
-                    { id: `${monthName.toLowerCase()}_sb4`, name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12", instructions: "Kneel facing pulley, flex abs to crunch ribs down toward hips." }
+                    { id: `${prefix}1`, name: wNum % 2 === 1 ? "Technogym High Pull Lat" : "Technogym Low Pull Row", cat: "Technogym", target: `3 sets x ${12 - wNum}`, instructions: "Keep chest tall and pull handles down/back toward torso." },
+                    { id: `${prefix}2`, name: wNum > 2 ? "Single-Arm Dumbbell Row" : "Incline Dumbbell Curl", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Squeeze target muscles at peak contraction." },
+                    { id: `${prefix}3`, name: "Precor FTS Face Pulls", cat: "Precor FTS", target: "3 sets x 15", instructions: "Pull rope high toward forehead, flaring hands past ears." },
+                    { id: `${prefix}4`, name: "Precor FTS Cable Crunch", cat: "Core", target: "3 sets x 12-15", instructions: "Kneel facing pulley and flex abs to bring ribs toward hips." }
                 ]
-            },
-            sC: {
-                title: `${monthName} - Session C: Step Squat / Legs (${theme})`,
+            };
+        } else {
+            return {
+                title: `${mLabel} - Week ${wNum} - Session C: Step Squat / Legs`,
                 warmups: [
                     "20 mins stationary bike, treadmill, or elliptical",
                     "Leg swings (forward & lateral, 12 per leg)",
-                    "Bodyweight squats & Cossack squat shifts (10 reps total)",
+                    "Bodyweight squats & Cossack shifts (10 total)",
                     "Ankle mobility drives & hip circles (10 per side)"
                 ],
                 cooldowns: [
@@ -500,34 +531,31 @@
                     "Seated Figure-4 Glute Stretch (30s per side)"
                 ],
                 exercises: [
-                    { id: `${monthName.toLowerCase()}_sc1`, name: "Dumbbell Step Squat", cat: "Free Weights", target: "3 sets x 10-12 / leg", instructions: "Step foot up onto platform, drive up into full stand, then squat down with control." },
-                    { id: `${monthName.toLowerCase()}_sc2`, name: "Dumbbell Romanian Deadlift", cat: "Free Weights", target: "3 sets x 10-12", instructions: "Hinge hips back with flat back; drive hips through to stand." },
-                    { id: `${monthName.toLowerCase()}_sc3`, name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", instructions: "Balls of feet on platform edge; extend ankles to raise heels." },
-                    { id: `${monthName.toLowerCase()}_sc4`, name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Rotate torso diagonally across body using core power." }
+                    { id: `${prefix}1`, name: "Dumbbell Step Squat", cat: "Free Weights", target: `3 sets x ${10 + wNum} / leg`, instructions: "Step foot up onto box, drive up into full stand, then squat down controlled." },
+                    { id: `${prefix}2`, name: wNum % 2 === 0 ? "Precor Leg Press" : "Dumbbell Romanian Deadlift", cat: wNum % 2 === 0 ? "Precor" : "Free Weights", target: "3 sets x 10-12", instructions: "Hinge at hips or press through platform driving through heels." },
+                    { id: `${prefix}3`, name: "Precor Leg Press Calf Raises", cat: "Precor", target: "3 sets x 15-20", instructions: "Extend ankles on platform edge to elevate heels." },
+                    { id: `${prefix}4`, name: "Precor FTS Woodchoppers", cat: "Core", target: "3 sets x 12 / side", instructions: "Rotate torso diagonally across body using core power." }
                 ]
-            }
-        };
+            };
+        }
     }
 
-    const programData = {
-        m1: generateMonthProgram("January", "Foundation & Strength"),
-        m2: generateMonthProgram("February", "Free-Weight Hypertrophy"),
-        m3: generateMonthProgram("March", "Cable Athleticism"),
-        m4: generateMonthProgram("April", "Metabolic Intensity"),
-        m5: generateMonthProgram("May", "Power & Explosiveness"),
-        m6: generateMonthProgram("June", "Summer Shred & Core"),
-        m7: generateMonthProgram("July", "Heavy Compound Focus"),
-        m8: generateMonthProgram("August", "Time-Under-Tension"),
-        m9: generateMonthProgram("September", "Posture & Unilateral"),
-        m10: generateMonthProgram("October", "Strength Endurance"),
-        m11: generateMonthProgram("November", "Hypertrophy Peak"),
-        m12: generateMonthProgram("December", "Year-End Finish")
-    };
+    // Build complete 12 Month x 5 Week x 3 Session structure
+    const programData = {};
+    for (let m = 1; m <= 12; m++) {
+        programData['m' + m] = {};
+        for (let w = 1; w <= 5; w++) {
+            programData['m' + m]['w' + w] = {
+                sA: createSessionData(m, w, 'sA'),
+                sB: createSessionData(m, w, 'sB'),
+                sC: createSessionData(m, w, 'sC')
+            };
+        }
+    }
 
     function autoSelectCurrentMonth() {
         const currentMonthIndex = new Date().getMonth() + 1; // 1-12
-        const monthSelect = document.getElementById('monthSelect');
-        monthSelect.value = 'm' + currentMonthIndex;
+        document.getElementById('monthSelect').value = 'm' + currentMonthIndex;
     }
 
     function openDemo(exName) {
@@ -547,8 +575,9 @@
     function loadSession() {
         updateCounterDisplay();
         const month = document.getElementById('monthSelect').value;
+        const week = document.getElementById('weekSelect').value;
         const session = document.getElementById('sessionSelect').value;
-        const currentData = programData[month][session];
+        const currentData = programData[month][week][session];
 
         let html = `<div class="section-banner">${currentData.title}</div>`;
 
@@ -614,7 +643,7 @@
 
         document.getElementById('exerciseList').innerHTML = html;
 
-        const isComplete = localStorage.getItem('complete_' + month + '_' + session) === 'true';
+        const isComplete = localStorage.getItem('complete_' + month + '_' + week + '_' + session) === 'true';
         updateCompleteButton(isComplete);
     }
 
@@ -683,8 +712,9 @@
 
     function toggleSessionComplete() {
         const month = document.getElementById('monthSelect').value;
+        const week = document.getElementById('weekSelect').value;
         const session = document.getElementById('sessionSelect').value;
-        const key = 'complete_' + month + '_' + session;
+        const key = 'complete_' + month + '_' + week + '_' + session;
         
         const currentState = localStorage.getItem(key) === 'true';
         localStorage.setItem(key, !currentState);
@@ -726,19 +756,21 @@
         let historyLogs = [];
 
         Object.keys(programData).forEach(mKey => {
-            Object.keys(programData[mKey]).forEach(sKey => {
-                const sessionObj = programData[mKey][sKey];
-                sessionObj.exercises.forEach(ex => {
-                    const logs = getExerciseLogs(ex.id);
-                    logs.forEach(entry => {
-                        historyLogs.push({
-                            exId: ex.id,
-                            logId: entry.id,
-                            timestamp: entry.timestamp,
-                            exercise: ex.name,
-                            weight: entry.weight,
-                            reps: entry.reps,
-                            level: entry.level
+            Object.keys(programData[mKey]).forEach(wKey => {
+                Object.keys(programData[mKey][wKey]).forEach(sKey => {
+                    const sessionObj = programData[mKey][wKey][sKey];
+                    sessionObj.exercises.forEach(ex => {
+                        const logs = getExerciseLogs(ex.id);
+                        logs.forEach(entry => {
+                            historyLogs.push({
+                                exId: ex.id,
+                                logId: entry.id,
+                                timestamp: entry.timestamp,
+                                exercise: ex.name,
+                                weight: entry.weight,
+                                reps: entry.reps,
+                                level: entry.level
+                            });
                         });
                     });
                 });
