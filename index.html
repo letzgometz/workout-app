@@ -454,7 +454,6 @@
         const prefix = `m${mNum}w${wNum}${sType.toLowerCase()}`;
 
         if (wNum === 5) {
-            // Deload & Flex Week for Extra Days between Months
             return {
                 title: `${mLabel} - Deload & Flex Week (Session ${sType.toUpperCase()})`,
                 warmups: [
@@ -540,7 +539,6 @@
         }
     }
 
-    // Build complete 12 Month x 5 Week x 3 Session structure
     const programData = {};
     for (let m = 1; m <= 12; m++) {
         programData['m' + m] = {};
@@ -554,7 +552,7 @@
     }
 
     function autoSelectCurrentMonth() {
-        const currentMonthIndex = new Date().getMonth() + 1; // 1-12
+        const currentMonthIndex = new Date().getMonth() + 1;
         document.getElementById('monthSelect').value = 'm' + currentMonthIndex;
     }
 
@@ -868,10 +866,21 @@
                     year: 'numeric' 
                 }) + ' (Imported)';
 
+                let importedCount = 0;
+
                 Object.keys(importedObj).forEach(key => {
                     if (key === 'lifetime_workout_count') {
                         localStorage.setItem(key, importedObj[key]);
-                    } else if (key.startsWith('log_wt_')) {
+                    } 
+                    else if (key.startsWith('log_history_')) {
+                        const rawLogs = importedObj[key];
+                        if (rawLogs) {
+                            const parsedLogs = typeof rawLogs === 'string' ? JSON.parse(rawLogs) : rawLogs;
+                            localStorage.setItem(key, JSON.stringify(parsedLogs));
+                            importedCount += parsedLogs.length;
+                        }
+                    } 
+                    else if (key.startsWith('log_wt_')) {
                         const exId = key.replace('log_wt_', '');
                         const wtVal = importedObj[key];
                         const repsVal = importedObj['log_reps_' + exId] || '-';
@@ -879,7 +888,7 @@
 
                         if (wtVal || repsVal !== '-' || lvlVal !== '-') {
                             const newEntry = {
-                                id: Date.now() + Math.floor(Math.random() * 1000),
+                                id: Date.now() + Math.floor(Math.random() * 10000),
                                 timestamp: defaultTimestamp,
                                 weight: wtVal || '-',
                                 reps: repsVal,
@@ -887,21 +896,23 @@
                             };
 
                             const existingLogs = getExerciseLogs(exId);
-                            if (!existingLogs.some(l => l.weight === newEntry.weight && l.reps === newEntry.reps)) {
+                            if (!existingLogs.some(l => l.weight === newEntry.weight && l.reps === newEntry.reps && l.level === newEntry.level)) {
                                 existingLogs.push(newEntry);
                                 saveExerciseLogs(exId, existingLogs);
+                                importedCount++;
                             }
                         }
-                    } else {
+                    } 
+                    else if (key.startsWith('complete_')) {
                         localStorage.setItem(key, importedObj[key]);
                     }
                 });
 
-                alert('Workout logs converted and imported successfully!');
+                alert(`Success! Imported and synced ${importedCount} workout entries.`);
                 loadSession();
                 renderHistory();
             } catch (err) {
-                alert('Invalid JSON file format.');
+                alert('Invalid JSON file format. Please check the backup file.');
             }
         };
         if (event.target.files[0]) {
