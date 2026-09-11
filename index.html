@@ -539,6 +539,7 @@
     }
 
     const programData = {};
+    const exerciseNameMap = {}; // Map exId to name for history display
     for (let m = 1; m <= 12; m++) {
         programData['m' + m] = {};
         for (let w = 1; w <= 5; w++) {
@@ -547,6 +548,11 @@
                 sB: createSessionData(m, w, 'sB'),
                 sC: createSessionData(m, w, 'sC')
             };
+            ['sA', 'sB', 'sC'].forEach(sKey => {
+                programData['m' + m]['w' + w][sKey].exercises.forEach(ex => {
+                    exerciseNameMap[ex.id] = ex.name;
+                });
+            });
         }
     }
 
@@ -562,7 +568,12 @@
 
     function getExerciseLogs(exId) {
         const raw = localStorage.getItem('log_history_' + exId);
-        return raw ? JSON.parse(raw) : [];
+        if (!raw) return [];
+        try {
+            return JSON.parse(raw);
+        } catch(e) {
+            return [];
+        }
     }
 
     function saveExerciseLogs(exId, logsArray) {
@@ -752,27 +763,27 @@
     function renderHistory() {
         let historyLogs = [];
 
-        Object.keys(programData).forEach(mKey => {
-            Object.keys(programData[mKey]).forEach(wKey => {
-                Object.keys(programData[mKey][wKey]).forEach(sKey => {
-                    const sessionObj = programData[mKey][wKey][sKey];
-                    sessionObj.exercises.forEach(ex => {
-                        const logs = getExerciseLogs(ex.id);
-                        logs.forEach(entry => {
-                            historyLogs.push({
-                                exId: ex.id,
-                                logId: entry.id,
-                                timestamp: entry.timestamp,
-                                exercise: ex.name,
-                                weight: entry.weight,
-                                reps: entry.reps,
-                                level: entry.level
-                            });
-                        });
+        // Scan all keys in localStorage to ensure imported entries with any ID format show up
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('log_history_')) {
+                const exId = key.replace('log_history_', '');
+                const logs = getExerciseLogs(exId);
+                const exName = exerciseNameMap[exId] || exId;
+
+                logs.forEach(entry => {
+                    historyLogs.push({
+                        exId: exId,
+                        logId: entry.id || Date.now(),
+                        timestamp: entry.timestamp || 'Recorded',
+                        exercise: exName,
+                        weight: entry.weight || '-',
+                        reps: entry.reps || '-',
+                        level: entry.level || '-'
                     });
                 });
-            });
-        });
+            }
+        }
 
         const historyContent = document.getElementById('historyContent');
         if (historyLogs.length === 0) {
@@ -858,30 +869,22 @@
         fileReader.onload = function(e) {
             try {
                 const importedObj = JSON.parse(e.target.result);
-                const now = new Date();
-                const defaultTimestamp = now.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric', 
-                    year: 'numeric' 
-                }) + ' (Imported)';
-
                 let importedCount = 0;
 
-                function processKeyVal(key, val) {
-                    if (!val) return;
-
-                    let parsedVal = val;
-                    if (typeof val === 'string' && (val.startsWith('{') || val.startsWith('['))) {
-                        try { parsedVal = JSON.parse(val); } catch (err) {}
-                    }
+                Object.keys(importedObj).forEach(key => {
+                    let val = importedObj[key];
 
                     if (key === 'lifetime_workout_count') {
-                        localStorage.setItem(key, parsedVal);
+                        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
                         return;
                     }
 
                     if (key.startsWith('log_history_')) {
-                        if (Array.isArray(parsedVal) && parsedVal.length > 0) {
+                        let parsedVal = val;
+                        if (typeof val === 'string') {
+                            try { parsedVal = JSON.parse(val); } catch (e) {}
+                        }
+                        if (Array.isArray(parsedVal)) {
                             localStorage.setItem(key, JSON.stringify(parsedVal));
                             importedCount += parsedVal.length;
                         }
@@ -889,57 +892,16 @@
                     }
 
                     if (key.startsWith('complete_')) {
-                        localStorage.setItem(key, parsedVal);
+                        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
                         return;
                     }
+                });
 
-                    if (key.startsWith('log_wt_')) {
-                        const exId = key.replace('log_wt_', '');
-                        const repsVal = importedObj['log_reps_' + exId] || '-';
-                        const lvlVal = importedObj['log_lvl_' + exId] || '-';
-                        if (parsedVal || repsVal !== '-' || lvlVal !== '-') {
-                            const newEntry = {
-                                id: Date.now() + Math.floor(Math.random() * 100000),
-                                timestamp: defaultTimestamp,
-                                weight: parsedVal || '-',
-                                reps: repsVal,
-                                level: lvlVal
-                            };
-                            const existingLogs = getExerciseLogs(exId);
-                            existingLogs.push(newEntry);
-                            saveExerciseLogs(exId, existingLogs);
-                            importedCount++;
-                        }
-                        return;
-                    }
-
-                    if (Array.isArray(parsedVal)) {
-                        parsedVal.forEach(item => {
-                            if (typeof item === 'object' && item !== null && (item.weight || item.reps || item.wt)) {
-                                const targetExId = item.exId || key;
-                                const newEntry = {
-                                    id: item.id || (Date.now() + Math.floor(Math.random() * 100000)),
-                                    timestamp: item.timestamp || defaultTimestamp,
-                                    weight: item.weight || item.wt || '-',
-                                    reps: item.reps || '-',
-                                    level: item.level || item.lvl || '-'
-                                };
-                                const existingLogs = getExerciseLogs(targetExId);
-                                existingLogs.push(newEntry);
-                                saveExerciseLogs(targetExId, existingLogs);
-                                importedCount++;
-                            }
-                        });
-                    } else if (typeof parsedVal === 'object' && parsedVal !== null) {
-                        Object.keys(parsedVal).forEach(subKey => processKeyVal(subKey, parsedVal[subKey]));
-                    }
-                }
-
-                Object.keys(importedObj).forEach(key => processKeyVal(key, importedObj[key]));
-
-                alert(`Success! Imported and synced ${importedCount} workout entries.`);
+                alert(`Success! Imported ${importedCount} logged set entries.`);
                 loadSession();
-                renderHistory();
+                if (document.getElementById('historyContainer').style.display === 'block') {
+                    renderHistory();
+                }
             } catch (err) {
                 alert('Invalid JSON file format. Please check your backup file.');
             }
