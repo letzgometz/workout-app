@@ -347,23 +347,46 @@
             font-size: 1.1rem;
         }
 
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
+        .session-group-card {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .session-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--bg-card-alt);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+        }
+
+        .session-group-title {
+            font-weight: 700;
+            color: var(--warning);
+            font-size: 0.95rem;
+        }
+
+        .session-group-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .session-item-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 6px;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--bg-card-alt);
             font-size: 0.85rem;
         }
 
-        .history-table th, .history-table td {
-            text-align: left;
-            padding: 8px 6px;
-            border-bottom: 1px solid var(--bg-card-alt);
-        }
-
-        .history-table th {
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
+        .session-item-row:last-child {
+            border-bottom: none;
         }
 
         .empty-history {
@@ -393,7 +416,7 @@
 
     <div id="historyContainer" class="history-container">
         <div class="history-header">
-            <span class="history-title">Logged Workout History</span>
+            <span class="history-title">Workout History by Session</span>
             <button class="btn btn-clear" onclick="clearAllHistory()" style="height: auto; padding: 4px 8px; font-size: 0.75rem;">Clear All History</button>
         </div>
         <div id="historyContent"></div>
@@ -453,9 +476,11 @@
         const mLabel = monthNames[mNum - 1];
         const prefix = `m${mNum}w${wNum}${sType.toLowerCase()}`;
         const altPrefix = `w${wNum}${sType.toLowerCase()}`;
+        const sessionName = sType === 'sA' ? 'Push' : sType === 'sB' ? 'Pull' : 'Legs';
 
         if (wNum === 5) {
             return {
+                sessionTag: `${mLabel} - Week 5 - ${sessionName}`,
                 title: `${mLabel} - Deload & Flex Week (Session ${sType.toUpperCase()})`,
                 warmups: [
                     "15 mins light treadmill walk or stationary bike",
@@ -475,6 +500,7 @@
 
         if (sType === 'sA') {
             return {
+                sessionTag: `${mLabel} - Week ${wNum} - Session A (${sessionName})`,
                 title: `${mLabel} - Week ${wNum} - Session A: Push / Upper`,
                 warmups: [
                     "20 mins stationary bike, treadmill, or elliptical",
@@ -496,6 +522,7 @@
             };
         } else if (sType === 'sB') {
             return {
+                sessionTag: `${mLabel} - Week ${wNum} - Session B (${sessionName})`,
                 title: `${mLabel} - Week ${wNum} - Session B: Pull / Arms`,
                 warmups: [
                     "20 mins stationary bike, treadmill, or elliptical",
@@ -517,6 +544,7 @@
             };
         } else {
             return {
+                sessionTag: `${mLabel} - Week ${wNum} - Session C (${sessionName})`,
                 title: `${mLabel} - Week ${wNum} - Session C: Step Squat / Legs`,
                 warmups: [
                     "20 mins stationary bike, treadmill, or elliptical",
@@ -540,7 +568,8 @@
     }
 
     const programData = {};
-    const exerciseNameMap = {};
+    const exerciseMetaMap = {};
+
     for (let m = 1; m <= 12; m++) {
         programData['m' + m] = {};
         for (let w = 1; w <= 5; w++) {
@@ -550,10 +579,11 @@
                 sC: createSessionData(m, w, 'sC')
             };
             ['sA', 'sB', 'sC'].forEach(sKey => {
-                programData['m' + m]['w' + w][sKey].exercises.forEach(ex => {
-                    exerciseNameMap[ex.id] = ex.name;
+                const sess = programData['m' + m]['w' + w][sKey];
+                sess.exercises.forEach(ex => {
+                    exerciseMetaMap[ex.id] = { name: ex.name, sessionTag: sess.sessionTag };
                     if (ex.legacyId) {
-                        exerciseNameMap[ex.legacyId] = ex.name;
+                        exerciseMetaMap[ex.legacyId] = { name: ex.name, sessionTag: sess.sessionTag };
                     }
                 });
             });
@@ -587,6 +617,13 @@
 
     function saveExerciseLogs(exId, logsArray) {
         localStorage.setItem('log_history_' + exId, JSON.stringify(logsArray));
+    }
+
+    function getCurrentSessionTag() {
+        const month = document.getElementById('monthSelect').value;
+        const week = document.getElementById('weekSelect').value;
+        const session = document.getElementById('sessionSelect').value;
+        return programData[month][week][session].sessionTag;
     }
 
     function loadSession() {
@@ -688,11 +725,12 @@
             month: 'short', 
             day: 'numeric', 
             year: 'numeric' 
-        }) + ' at ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        });
 
         const newEntry = {
             id: Date.now(),
             timestamp: timestamp,
+            sessionTag: getCurrentSessionTag(),
             weight: wt || '-',
             reps: reps || '-',
             level: lvl || '-'
@@ -719,7 +757,7 @@
     }
 
     function deleteSingleLogEntry(exId, logId) {
-        if (confirm("Delete this specific timestamped log entry?")) {
+        if (confirm("Delete this log entry?")) {
             let logs = getExerciseLogs(exId, null);
             logs = logs.filter(item => item.id !== logId);
             saveExerciseLogs(exId, logs);
@@ -771,21 +809,31 @@
     }
 
     function renderHistory() {
-        let historyLogs = [];
+        const sessionMap = {};
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith('log_history_')) {
                 const exId = key.replace('log_history_', '');
                 const logs = getExerciseLogs(exId, null);
-                const exName = exerciseNameMap[exId] || exId.toUpperCase();
+                const meta = exerciseMetaMap[exId] || { name: exId.toUpperCase(), sessionTag: 'Workout Session' };
 
                 logs.forEach(entry => {
-                    historyLogs.push({
+                    const tag = entry.sessionTag || meta.sessionTag;
+                    const groupKey = `${tag}___${entry.timestamp}`;
+
+                    if (!sessionMap[groupKey]) {
+                        sessionMap[groupKey] = {
+                            sessionTag: tag,
+                            timestamp: entry.timestamp,
+                            items: []
+                        };
+                    }
+
+                    sessionMap[groupKey].items.push({
                         exId: exId,
                         logId: entry.id || Date.now(),
-                        timestamp: entry.timestamp || 'Logged',
-                        exercise: exName,
+                        exercise: meta.name,
                         weight: entry.weight || '-',
                         reps: entry.reps || '-',
                         level: entry.level || '-'
@@ -795,45 +843,46 @@
         }
 
         const historyContent = document.getElementById('historyContent');
-        if (historyLogs.length === 0) {
+        const sortedGroups = Object.values(sessionMap);
+
+        if (sortedGroups.length === 0) {
             historyContent.innerHTML = `<div class="empty-history">No logged workouts found. Import logs or hit "Save" on exercises!</div>`;
             return;
         }
 
-        historyLogs.sort((a, b) => b.logId - a.logId);
-
-        let tableHtml = `
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>Date / Session</th>
-                        <th>Exercise</th>
-                        <th>Weight</th>
-                        <th>Reps</th>
-                        <th>Lvl</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        historyLogs.forEach(log => {
-            tableHtml += `
-                <tr>
-                    <td style="font-size: 0.75rem; color: var(--text-muted);">${log.timestamp}</td>
-                    <td><strong>${log.exercise}</strong></td>
-                    <td>${log.weight}</td>
-                    <td>${log.reps}</td>
-                    <td>${log.level}</td>
-                    <td>
-                        <button class="btn-row-del" onclick="deleteSingleLogEntry('${log.exId}', ${log.logId})" title="Delete entry">🗑️</button>
-                    </td>
-                </tr>
-            `;
+        sortedGroups.sort((a, b) => {
+            const idA = a.items[0]?.logId || 0;
+            const idB = b.items[0]?.logId || 0;
+            return idB - idA;
         });
 
-        tableHtml += `</tbody></table>`;
-        historyContent.innerHTML = tableHtml;
+        let html = '';
+
+        sortedGroups.forEach(group => {
+            html += `
+                <div class="session-group-card">
+                    <div class="session-group-header">
+                        <span class="session-group-title">🏋️ ${group.sessionTag}</span>
+                        <span class="session-group-date">📅 ${group.timestamp}</span>
+                    </div>
+            `;
+
+            group.items.forEach(item => {
+                html += `
+                    <div class="session-item-row">
+                        <span><strong>${item.exercise}</strong></span>
+                        <span>Wt: ${item.weight}</span>
+                        <span>Reps: ${item.reps}</span>
+                        <span>Lvl: ${item.level}</span>
+                        <button class="btn-row-del" onclick="deleteSingleLogEntry('${item.exId}', ${item.logId})" title="Delete entry">🗑️</button>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+        });
+
+        historyContent.innerHTML = html;
     }
 
     function clearAllHistory() {
@@ -873,6 +922,24 @@
         document.getElementById('importInput').click();
     }
 
+    // Helper to calculate approximate historical workout dates based on program week & session
+    function deriveHistoricalDate(code) {
+        const match = code.match(/w(\d)s([abc])/i);
+        if (!match) return "Historical Log";
+
+        const weekNum = parseInt(match[1], 10);
+        const sessType = match[2].toLowerCase();
+        
+        // Base starting timeline (e.g. 4-week program blocks)
+        const baseDate = new Date();
+        baseDate.setDate(baseDate.getDate() - (28 - (weekNum - 1) * 7));
+        
+        if (sessType === 'b') baseDate.setDate(baseDate.getDate() + 2);
+        if (sessType === 'c') baseDate.setDate(baseDate.getDate() + 4);
+
+        return baseDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
     function importData(event) {
         const fileReader = new FileReader();
         fileReader.onload = function(e) {
@@ -884,12 +951,7 @@
                 Object.keys(importedObj).forEach(key => {
                     let val = importedObj[key];
 
-                    if (key === 'lifetime_workout_count') {
-                        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
-                        return;
-                    }
-
-                    if (key.startsWith('complete_')) {
+                    if (key === 'lifetime_workout_count' || key.startsWith('complete_')) {
                         localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
                         return;
                     }
@@ -929,14 +991,18 @@
                     }
                 });
 
-                // Convert grouped legacy entries into log_history_ structures
+                // Convert grouped legacy entries into log_history_ structures with derived dates
                 Object.keys(legacyGroups).forEach((code, index) => {
                     const group = legacyGroups[code];
                     if (group.weight !== '-' || group.reps !== '-' || group.level !== '-') {
                         const targetKey = code.startsWith('m') ? code : 'm1' + code;
+                        const derivedDate = deriveHistoricalDate(code);
+                        const meta = exerciseMetaMap[targetKey] || { sessionTag: `Week ${code.charAt(1).toUpperCase()} - Session ${code.charAt(3).toUpperCase()}` };
+
                         const legacyEntry = {
-                            id: Date.now() - (100000 - index * 1000),
-                            timestamp: `Imported (${code.toUpperCase()})`,
+                            id: Date.now() - (5000000 - index * 10000),
+                            timestamp: derivedDate,
+                            sessionTag: meta.sessionTag,
                             weight: group.weight,
                             reps: group.reps,
                             level: group.level
@@ -953,7 +1019,7 @@
                     }
                 });
 
-                alert(`Success! Imported ${importedCount} logged exercise set entries.`);
+                alert(`Success! Imported and grouped ${importedCount} logged exercise set entries.`);
                 loadSession();
                 if (document.getElementById('historyContainer').style.display === 'block') {
                     renderHistory();
