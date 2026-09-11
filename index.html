@@ -953,15 +953,49 @@
         document.getElementById('importInput').click();
     }
 
-    function importData(event) {
+   function importData(event) {
         const fileReader = new FileReader();
         fileReader.onload = function(e) {
             try {
                 const importedObj = JSON.parse(e.target.result);
+                const now = new Date();
+                const defaultTimestamp = now.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                }) + ' (Imported)';
+
                 Object.keys(importedObj).forEach(key => {
-                    localStorage.setItem(key, importedObj[key]);
+                    // Check if key is in the old single-entry format (e.g., log_wt_w1sa1)
+                    if (key.startsWith('log_wt_')) {
+                        const exId = key.replace('log_wt_', '');
+                        const wtVal = importedObj[key];
+                        const repsVal = importedObj['log_reps_' + exId] || '-';
+                        const lvlVal = importedObj['log_lvl_' + exId] || '-';
+
+                        if (wtVal || repsVal !== '-' || lvlVal !== '-') {
+                            const newEntry = {
+                                id: Date.now() + Math.floor(Math.random() * 1000),
+                                timestamp: defaultTimestamp,
+                                weight: wtVal || '-',
+                                reps: repsVal,
+                                level: lvlVal
+                            };
+
+                            const existingLogs = getExerciseLogs(exId);
+                            // Avoid adding duplicate entry if already present
+                            if (!existingLogs.some(l => l.weight === newEntry.weight && l.reps === newEntry.reps)) {
+                                existingLogs.push(newEntry);
+                                saveExerciseLogs(exId, existingLogs);
+                            }
+                        }
+                    } else {
+                        // Directly restore new history logs or completion status
+                        localStorage.setItem(key, importedObj[key]);
+                    }
                 });
-                alert('Workout logs imported successfully!');
+
+                alert('Workout logs converted and imported successfully!');
                 loadSession();
                 renderHistory();
             } catch (err) {
