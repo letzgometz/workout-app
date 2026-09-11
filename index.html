@@ -216,6 +216,13 @@
             outline: none;
         }
 
+        .latest-log-badge {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--warning);
+            font-style: italic;
+        }
+
         .btn {
             background-color: var(--primary);
             color: white;
@@ -308,7 +315,6 @@
             background-color: var(--danger);
         }
 
-        /* History Modal / Drawer Styles */
         .history-container {
             display: none;
             background-color: var(--bg-card);
@@ -377,7 +383,6 @@
         </div>
     </header>
 
-    <!-- Workout History Section -->
     <div id="historyContainer" class="history-container">
         <div class="history-header">
             <span class="history-title">Logged Workout History</span>
@@ -401,10 +406,8 @@
         </select>
     </div>
 
-    <!-- Main Content Area -->
     <div id="exerciseList"></div>
 
-    <!-- Session Completion Button -->
     <button class="btn btn-complete" id="completeBtn" onclick="toggleSessionComplete()">
         ✅ Mark Session Complete
     </button>
@@ -669,6 +672,15 @@
         window.open(`https://www.youtube.com/results?search_query=${searchQuery}`, '_blank');
     }
 
+    function getExerciseLogs(exId) {
+        const raw = localStorage.getItem('log_history_' + exId);
+        return raw ? JSON.parse(raw) : [];
+    }
+
+    function saveExerciseLogs(exId, logsArray) {
+        localStorage.setItem('log_history_' + exId, JSON.stringify(logsArray));
+    }
+
     function loadSession() {
         const week = document.getElementById('weekSelect').value;
         const session = document.getElementById('sessionSelect').value;
@@ -676,7 +688,6 @@
 
         let html = `<div class="section-banner">${currentData.title}</div>`;
 
-        // Session-Specific Warmup Section
         html += `
             <div class="routine-box">
                 <div class="routine-title">🔥 Dynamic Warm-Up & Mobility</div>
@@ -686,11 +697,13 @@
             </div>
         `;
 
-        // Exercise List
         currentData.exercises.forEach(ex => {
-            const savedWt = localStorage.getItem('log_wt_' + ex.id) || '';
-            const savedReps = localStorage.getItem('log_reps_' + ex.id) || '';
-            const savedLvl = localStorage.getItem('log_lvl_' + ex.id) || '';
+            const logs = getExerciseLogs(ex.id);
+            const latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
+            
+            const lastLogText = latestLog 
+                ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
+                : `No history logged yet.`;
 
             html += `
                 <div class="card">
@@ -706,26 +719,26 @@
                     <div class="log-grid">
                         <div class="input-group">
                             <label>Weight</label>
-                            <input type="text" id="input_wt_${ex.id}" placeholder="e.g. 45 lbs" value="${savedWt}">
+                            <input type="text" id="input_wt_${ex.id}" placeholder="e.g. 45 lbs">
                         </div>
                         <div class="input-group">
                             <label>Reps</label>
-                            <input type="text" id="input_reps_${ex.id}" placeholder="e.g. 10,10,12" value="${savedReps}">
+                            <input type="text" id="input_reps_${ex.id}" placeholder="e.g. 10,10,12">
                         </div>
                         <div class="input-group">
                             <label>Level / Pin</label>
-                            <input type="text" id="input_lvl_${ex.id}" placeholder="e.g. Lvl 5" value="${savedLvl}">
+                            <input type="text" id="input_lvl_${ex.id}" placeholder="e.g. Lvl 5">
                         </div>
                         <div class="action-buttons">
                             <button class="btn btn-save" onclick="saveLog('${ex.id}')">Save</button>
-                            <button class="btn btn-clear" onclick="clearLog('${ex.id}')" title="Clear inputs">Clear</button>
+                            <button class="btn btn-clear" onclick="clearInputs('${ex.id}')" title="Clear inputs">Clear</button>
                         </div>
                     </div>
+                    <div class="latest-log-badge" id="badge_${ex.id}">${lastLogText}</div>
                 </div>
             `;
         });
 
-        // Session-Specific Cooldown Section
         html += `
             <div class="routine-box">
                 <div class="routine-title">🧘 Cool-Down & Flexibility Stretches</div>
@@ -742,37 +755,65 @@
     }
 
     function saveLog(exId) {
-        const wt = document.getElementById('input_wt_' + exId).value;
-        const reps = document.getElementById('input_reps_' + exId).value;
-        const lvl = document.getElementById('input_lvl_' + exId).value;
+        const wtInput = document.getElementById('input_wt_' + exId);
+        const repsInput = document.getElementById('input_reps_' + exId);
+        const lvlInput = document.getElementById('input_lvl_' + exId);
 
-        localStorage.setItem('log_wt_' + exId, wt);
-        localStorage.setItem('log_reps_' + exId, reps);
-        localStorage.setItem('log_lvl_' + exId, lvl);
+        const wt = wtInput.value.trim();
+        const reps = repsInput.value.trim();
+        const lvl = lvlInput.value.trim();
 
-        renderHistory();
-        alert('Progress saved!');
+        if (!wt && !reps && !lvl) {
+            alert("Please enter a weight, rep count, or level before saving!");
+            return;
+        }
+
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+        }) + ' at ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const newEntry = {
+            id: Date.now(),
+            timestamp: timestamp,
+            weight: wt || '-',
+            reps: reps || '-',
+            level: lvl || '-'
+        };
+
+        const logs = getExerciseLogs(exId);
+        logs.push(newEntry);
+        saveExerciseLogs(exId, logs);
+
+        const badge = document.getElementById('badge_' + exId);
+        if (badge) {
+            badge.innerText = `Last logged: ${timestamp} (${newEntry.weight} | ${newEntry.reps} reps | ${newEntry.level})`;
+        }
+
+        wtInput.value = '';
+        repsInput.value = '';
+        lvlInput.value = '';
+
+        if (document.getElementById('historyContainer').style.display === 'block') {
+            renderHistory();
+        }
     }
 
-    function clearLog(exId) {
-        const inputWt = document.getElementById('input_wt_' + exId);
-        const inputReps = document.getElementById('input_reps_' + exId);
-        const inputLvl = document.getElementById('input_lvl_' + exId);
-
-        if (inputWt) inputWt.value = '';
-        if (inputReps) inputReps.value = '';
-        if (inputLvl) inputLvl.value = '';
-
-        localStorage.removeItem('log_wt_' + exId);
-        localStorage.removeItem('log_reps_' + exId);
-        localStorage.removeItem('log_lvl_' + exId);
-
-        renderHistory();
+    function clearInputs(exId) {
+        document.getElementById('input_wt_' + exId).value = '';
+        document.getElementById('input_reps_' + exId).value = '';
+        document.getElementById('input_lvl_' + exId).value = '';
     }
 
-    function clearSingleHistory(exId, exName) {
-        if (confirm(`Remove log for "${exName}"?`)) {
-            clearLog(exId);
+    function deleteSingleLogEntry(exId, logId) {
+        if (confirm("Delete this specific timestamped log entry?")) {
+            let logs = getExerciseLogs(exId);
+            logs = logs.filter(item => item.id !== logId);
+            saveExerciseLogs(exId, logs);
+            renderHistory();
+            loadSession();
         }
     }
 
@@ -815,64 +856,55 @@
             Object.keys(programData[wKey]).forEach(sKey => {
                 const sessionObj = programData[wKey][sKey];
                 sessionObj.exercises.forEach(ex => {
-                    const wt = localStorage.getItem('log_wt_' + ex.id);
-                    const reps = localStorage.getItem('log_reps_' + ex.id);
-                    const lvl = localStorage.getItem('log_lvl_' + ex.id);
-
-                    if (wt || reps || lvl) {
+                    const logs = getExerciseLogs(ex.id);
+                    logs.forEach(entry => {
                         historyLogs.push({
-                            id: ex.id,
-                            session: sessionObj.title,
+                            exId: ex.id,
+                            logId: entry.id,
+                            timestamp: entry.timestamp,
                             exercise: ex.name,
-                            weight: wt || '-',
-                            reps: reps || '-',
-                            level: lvl || '-'
+                            weight: entry.weight,
+                            reps: entry.reps,
+                            level: entry.level
                         });
-                    }
+                    });
                 });
             });
         });
 
         const historyContent = document.getElementById('historyContent');
         if (historyLogs.length === 0) {
-            historyContent.innerHTML = `<div class="empty-history">No logged workouts found yet. Hit "Save" on an exercise to start tracking!</div>`;
+            historyContent.innerHTML = `<div class="empty-history">No logged workouts found. Hit "Save" to record timestamped sets!</div>`;
             return;
         }
+
+        historyLogs.sort((a, b) => b.logId - a.logId);
 
         let tableHtml = `
             <table class="history-table">
                 <thead>
                     <tr>
+                        <th>Date & Time</th>
                         <th>Exercise</th>
                         <th>Weight</th>
                         <th>Reps</th>
                         <th>Lvl</th>
-                        <th style="width: 24px;"></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        let currentSessionBanner = "";
         historyLogs.forEach(log => {
-            if (log.session !== currentSessionBanner) {
-                currentSessionBanner = log.session;
-                tableHtml += `
-                    <tr>
-                        <td colspan="5" style="background-color: var(--bg-card-alt); font-weight: bold; color: var(--warning); padding: 6px 8px;">
-                            ${currentSessionBanner}
-                        </td>
-                    </tr>
-                `;
-            }
             tableHtml += `
                 <tr>
-                    <td>${log.exercise}</td>
+                    <td style="font-size: 0.75rem; color: var(--text-muted);">${log.timestamp}</td>
+                    <td><strong>${log.exercise}</strong></td>
                     <td>${log.weight}</td>
                     <td>${log.reps}</td>
                     <td>${log.level}</td>
                     <td>
-                        <button class="btn-row-del" onclick="clearSingleHistory('${log.id}', '${log.exercise}')" title="Delete this entry">🗑️</button>
+                        <button class="btn-row-del" onclick="deleteSingleLogEntry('${log.exId}', ${log.logId})" title="Delete entry">🗑️</button>
                     </td>
                 </tr>
             `;
@@ -883,9 +915,9 @@
     }
 
     function clearAllHistory() {
-        if (confirm("Are you sure you want to delete all saved exercise logs?")) {
+        if (confirm("Are you sure you want to permanently delete all logged history?")) {
             Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_') || key.startsWith('complete_')) {
+                if (key.startsWith('log_history_') || key.startsWith('complete_')) {
                     localStorage.removeItem(key);
                 }
             });
@@ -894,12 +926,11 @@
         }
     }
 
-    /* Data Backup & Restore Functions */
     function exportData() {
         let exportObj = {};
         for (let i = 0; i < localStorage.length; i++) {
             let key = localStorage.key(i);
-            if (key.startsWith('log_') || key.startsWith('complete_')) {
+            if (key.startsWith('log_history_') || key.startsWith('complete_')) {
                 exportObj[key] = localStorage.getItem(key);
             }
         }
@@ -912,7 +943,7 @@
         let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
         let downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "workout_logs_backup.json");
+        downloadAnchor.setAttribute("download", "workout_history_backup.json");
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
@@ -930,7 +961,7 @@
                 Object.keys(importedObj).forEach(key => {
                     localStorage.setItem(key, importedObj[key]);
                 });
-                alert('Workout data imported successfully!');
+                alert('Workout logs imported successfully!');
                 loadSession();
                 renderHistory();
             } catch (err) {
