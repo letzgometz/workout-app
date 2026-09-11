@@ -647,14 +647,15 @@
         currentData.exercises.forEach(ex => {
             const logs = getExerciseLogs(ex.id, ex.legacyId);
             const latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
-            
+
             const lastLogText = latestLog 
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
 
-            const initWt = latestLog ? (latestLog.weight !== '-' ? latestLog.weight : '') : '';
-            const initReps = latestLog ? (latestLog.reps !== '-' ? latestLog.reps : '') : '';
-            const initLvl = latestLog ? (latestLog.level !== '-' ? latestLog.level : '') : '';
+            // Clear inputs for clean manual entry on current session load
+            const initWt = '';
+            const initReps = '';
+            const initLvl = '';
 
             html += `
                 <div class="card">
@@ -701,8 +702,9 @@
 
         document.getElementById('exerciseList').innerHTML = html;
 
-        const isComplete = localStorage.getItem('complete_' + month + '_' + week + '_' + session) === 'true' ||
-                           localStorage.getItem('complete_' + week + '_' + session) === 'true';
+        // Check completion key specifically for this month/week/session
+        const key = 'complete_' + month + '_' + week + '_' + session;
+        const isComplete = localStorage.getItem(key) === 'true';
         updateCompleteButton(isComplete);
     }
 
@@ -773,7 +775,7 @@
         const key = 'complete_' + month + '_' + week + '_' + session;
         
         const currentState = localStorage.getItem(key) === 'true';
-        localStorage.setItem(key, !currentState);
+        localStorage.setItem(key, (!currentState).toString());
 
         let currentCount = parseInt(localStorage.getItem('lifetime_workout_count') || '33', 10);
         if (!currentState) {
@@ -922,7 +924,6 @@
         document.getElementById('importInput').click();
     }
 
-    // Helper to calculate approximate historical workout dates based on program week & session
     function deriveHistoricalDate(code) {
         const match = code.match(/w(\d)s([abc])/i);
         if (!match) return "Historical Log";
@@ -930,7 +931,6 @@
         const weekNum = parseInt(match[1], 10);
         const sessType = match[2].toLowerCase();
         
-        // Base starting timeline (e.g. 4-week program blocks)
         const baseDate = new Date();
         baseDate.setDate(baseDate.getDate() - (28 - (weekNum - 1) * 7));
         
@@ -951,7 +951,7 @@
                 Object.keys(importedObj).forEach(key => {
                     let val = importedObj[key];
 
-                    if (key === 'lifetime_workout_count' || key.startsWith('complete_')) {
+                    if (key === 'lifetime_workout_count') {
                         localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
                         return;
                     }
@@ -968,7 +968,6 @@
                         return;
                     }
 
-                    // Process legacy log_wt_*, log_reps_*, log_lvl_* format
                     if (key.startsWith('log_wt_') || key.startsWith('log_reps_') || key.startsWith('log_lvl_')) {
                         let fieldType = '';
                         let code = '';
@@ -991,7 +990,6 @@
                     }
                 });
 
-                // Convert grouped legacy entries into log_history_ structures with derived dates
                 Object.keys(legacyGroups).forEach((code, index) => {
                     const group = legacyGroups[code];
                     if (group.weight !== '-' || group.reps !== '-' || group.level !== '-') {
