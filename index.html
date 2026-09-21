@@ -615,6 +615,31 @@
         return logs;
     }
 
+    // Helper function to find last logged stats for matching exercise across all history
+    function findLatestLogForExercise(exName) {
+        let latestEntry = null;
+        let highestId = -1;
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('log_history_')) {
+                const exId = key.replace('log_history_', '');
+                const meta = exerciseMetaMap[exId];
+                if (meta && meta.name === exName) {
+                    const logs = getExerciseLogs(exId, null);
+                    logs.forEach(entry => {
+                        const entryId = entry.id || 0;
+                        if (entryId > highestId) {
+                            highestId = entryId;
+                            latestEntry = entry;
+                        }
+                    });
+                }
+            }
+        }
+        return latestEntry;
+    }
+
     function saveExerciseLogs(exId, logsArray) {
         localStorage.setItem('log_history_' + exId, JSON.stringify(logsArray));
     }
@@ -646,16 +671,21 @@
 
         currentData.exercises.forEach(ex => {
             const logs = getExerciseLogs(ex.id, ex.legacyId);
-            const latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
+            let latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
+
+            // If no log exists for this specific ID/slot, search global history by exercise name
+            if (!latestLog) {
+                latestLog = findLatestLogForExercise(ex.name);
+            }
 
             const lastLogText = latestLog 
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
 
-            // Clear inputs for clean manual entry on current session load
-            const initWt = '';
-            const initReps = '';
-            const initLvl = '';
+            // Prepopulate input fields with previous performance if available
+            const initWt = latestLog && latestLog.weight !== '-' ? latestLog.weight : '';
+            const initReps = latestLog && latestLog.reps !== '-' ? latestLog.reps : '';
+            const initLvl = latestLog && latestLog.level !== '-' ? latestLog.level : '';
 
             html += `
                 <div class="card">
@@ -702,7 +732,6 @@
 
         document.getElementById('exerciseList').innerHTML = html;
 
-        // Check completion key specifically for this month/week/session
         const key = 'complete_' + month + '_' + week + '_' + session;
         const isComplete = localStorage.getItem(key) === 'true';
         updateCompleteButton(isComplete);
