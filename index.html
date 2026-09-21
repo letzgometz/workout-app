@@ -479,23 +479,70 @@
         const sessionName = sType === 'sA' ? 'Push' : sType === 'sB' ? 'Pull' : 'Legs';
 
         if (wNum === 5) {
-            return {
-                sessionTag: `${mLabel} - Week 5 - ${sessionName}`,
-                title: `${mLabel} - Deload & Flex Week (Session ${sType.toUpperCase()})`,
-                warmups: [
-                    "15 mins light treadmill walk or stationary bike",
-                    "Dynamic joint mobility & shoulder circles (10 reps)",
-                    "Cat-Cow & thoracic rotations (10 reps)"
-                ],
-                cooldowns: [
-                    "Full body foam rolling or static stretches (5-10 mins)",
-                    "Deep diaphragm breathing hold (2 mins)"
-                ],
-                exercises: [
-                    { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: "Light Cable / Free-Weight Practice", cat: "Technogym / Free", target: "2 sets x 15 (Light)", instructions: "Focus purely on smooth movement and range of motion at 50% normal weight." },
-                    { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: "Bodyweight Core & Stability Hold", cat: "Core", target: "3 sets x 30s", instructions: "Planks or side planks to maintain core activation without fatigue." }
-                ]
-            };
+            if (sType === 'sA') {
+                return {
+                    sessionTag: `${mLabel} - Week 5 - Deload Upper Mobility`,
+                    title: `${mLabel} - Deload Week: Active Mobility & Cable Flow (Upper)`,
+                    warmups: [
+                        "15 mins treadmill walk (3-5% incline) or stationary bike",
+                        "Scapular circles & shoulder dislocations (10 reps)",
+                        "Cat-Cow & thoracic rotations (10 reps)"
+                    ],
+                    cooldowns: [
+                        "Scapular wall slides (10 reps)",
+                        "Doorway chest & shoulder stretch (45s per side)",
+                        "Thoracic spine foam rolling (2 mins)"
+                    ],
+                    exercises: [
+                        { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: "Precor FTS Face Pull to External Rotation", cat: "Precor FTS", target: "3 sets x 12-15 (Light)", instructions: "Focus purely on scapular control and posterior shoulder engagement." },
+                        { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: "Technogym Chest Press / Incline Fly", cat: "Technogym", target: "3 sets x 12-15 (Light)", instructions: "Use ~40-50% 1RM with a controlled 3-second eccentric lower." },
+                        { id: `${prefix}3`, legacyId: `${altPrefix}3`, name: "Light Dumbbell Overhead Press / Y-T-W", cat: "Free Weights", target: "3 sets x 12-15", instructions: "Smooth motion to prime shoulder stability without pushing near fatigue." },
+                        { id: `${prefix}4`, legacyId: `${altPrefix}4`, name: "Precor FTS Pallof Press", cat: "Core", target: "3 sets x 10 holds / side", instructions: "Press cable handle straight out and hold for 2s to engage anti-rotational core." }
+                    ]
+                };
+            } else if (sType === 'sB') {
+                return {
+                    sessionTag: `${mLabel} - Week 5 - Deload Lower Mobility`,
+                    title: `${mLabel} - Deload Week: Lower Body Mobility & Hips`,
+                    warmups: [
+                        "15 mins rowing machine or elliptical (moderate pace)",
+                        "Leg swings (forward & lateral, 12 reps)",
+                        "Hip openers & Cossack shifts (10 reps)"
+                    ],
+                    cooldowns: [
+                        "Seated figure-4 glute stretch (45s per side)",
+                        "Kneeling hip flexor & quad stretch (45s per side)",
+                        "Calf wall stretch (30s per side)"
+                    ],
+                    exercises: [
+                        { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: "Bodyweight or Goblet Step-Ups", cat: "Free Weights", target: "3 sets x 12 / leg", instructions: "Low box/bench height; drive through front foot focusing on ankle and knee alignment." },
+                        { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: "Dumbbell Romanian Deadlift (Stretch Focus)", cat: "Free Weights", target: "3 sets x 12-15 (Light)", instructions: "Very light load, emphasizing deep hip hinge and hamstrings stretch." },
+                        { id: `${prefix}3`, legacyId: `${altPrefix}3`, name: "Technogym Leg Extension / Seated Curl", cat: "Technogym", target: "3 sets x 12-15", instructions: "Light weight; pause for 1 full second at peak extension/flexion." },
+                        { id: `${prefix}4`, legacyId: `${altPrefix}4`, name: "Side Plank Holds or Bird-Dogs", cat: "Core", target: "3 sets x 30-45s / side", instructions: "Keep torso square and glutes fully engaged throughout." }
+                    ]
+                };
+            } else {
+                return {
+                    sessionTag: `${mLabel} - Week 5 - Deload Flush & Core`,
+                    title: `${mLabel} - Deload Week: Aerobic Flush & Posture`,
+                    warmups: [
+                        "10 mins steady-state cycle or treadmill walk",
+                        "World's Greatest Stretch (5 reps per side)",
+                        "Arm & leg dynamic swings (10 reps)"
+                    ],
+                    cooldowns: [
+                        "Child's pose with arm walkouts (60s hold)",
+                        "Cobra to Downward Dog transition (5 fluid reps)",
+                        "Deep diaphragm breathing hold (2 mins)"
+                    ],
+                    exercises: [
+                        { id: `${prefix}1`, legacyId: `${altPrefix}1`, name: "Moderate Aerobic Flush (Bike/Treadmill)", cat: "Cardio", target: "15-20 mins Zone 2", instructions: "Steady-state moderate effort where you can maintain a conversation easily." },
+                        { id: `${prefix}2`, legacyId: `${altPrefix}2`, name: "Precor FTS Cable Woodchoppers", cat: "Precor FTS", target: "3 sets x 12 / side (Light)", instructions: "Fluid rotation across body emphasizing core control." },
+                        { id: `${prefix}3`, legacyId: `${altPrefix}3`, name: "Dumbbell Farmer's / Suitcase Carry", cat: "Free Weights", target: "3 sets x 40s carry", instructions: "Maintain upright posture with shoulders drawn down and back." },
+                        { id: `${prefix}4`, legacyId: `${altPrefix}4`, name: "Deadbugs or Hanging Leg/Knee Raises", cat: "Core", target: "3 sets x 12 controlled reps", instructions: "Focus on lower abdominal activation and keeping lower back flat." }
+                    ]
+                };
+            }
         }
 
         if (sType === 'sA') {
@@ -615,7 +662,6 @@
         return logs;
     }
 
-    // Helper function to find last logged stats for matching exercise across all history
     function findLatestLogForExercise(exName) {
         let latestEntry = null;
         let highestId = -1;
@@ -673,7 +719,6 @@
             const logs = getExerciseLogs(ex.id, ex.legacyId);
             let latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
 
-            // If no log exists for this specific ID/slot, search global history by exercise name
             if (!latestLog) {
                 latestLog = findLatestLogForExercise(ex.name);
             }
@@ -682,7 +727,6 @@
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
 
-            // Prepopulate input fields with previous performance if available
             const initWt = latestLog && latestLog.weight !== '-' ? latestLog.weight : '';
             const initReps = latestLog && latestLog.reps !== '-' ? latestLog.reps : '';
             const initLvl = latestLog && latestLog.level !== '-' ? latestLog.level : '';
