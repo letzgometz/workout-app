@@ -662,25 +662,35 @@
         return logs;
     }
 
+    // Dynamic fuzzy matching to pull the absolute latest saved log across any week/session for matching exercise names
     function findLatestLogForExercise(exName) {
         let latestEntry = null;
         let highestId = -1;
+
+        // Clean target name for flexible comparison (e.g., handles minor naming variations)
+        const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const targetClean = normalize(exName);
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith('log_history_')) {
                 const exId = key.replace('log_history_', '');
-                const meta = exerciseMetaMap[exId];
-                if (meta && meta.name === exName) {
-                    const logs = getExerciseLogs(exId, null);
-                    logs.forEach(entry => {
+                
+                // Get meta or derive name from id
+                let loggedExName = exerciseMetaMap[exId] ? exerciseMetaMap[exId].name : '';
+                
+                // Check stored logs
+                const logs = getExerciseLogs(exId, null);
+                logs.forEach(entry => {
+                    const entryName = entry.exerciseName || loggedExName;
+                    if (entryName && (normalize(entryName).includes(targetClean) || targetClean.includes(normalize(entryName)))) {
                         const entryId = entry.id || 0;
                         if (entryId > highestId) {
                             highestId = entryId;
                             latestEntry = entry;
                         }
-                    });
-                }
+                    }
+                });
             }
         }
         return latestEntry;
@@ -716,26 +726,30 @@
         `;
 
         currentData.exercises.forEach(ex => {
+            // First check logs specific to this slot
             const logs = getExerciseLogs(ex.id, ex.legacyId);
             let latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
 
-            if (!latestLog) {
-                latestLog = findLatestLogForExercise(ex.name);
+            // Global search across all historical logs by exercise name
+            const globalLatestLog = findLatestLogForExercise(ex.name);
+
+            if (globalLatestLog && (!latestLog || globalLatestLog.id > latestLog.id)) {
+                latestLog = globalLatestLog;
             }
 
             const lastLogText = latestLog 
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
 
-            // On Week 5 (Deload), pre-fill from previous log if input field hasn't been modified yet
+            // On Week 5 (Deload), prepopulate input boxes with values from the latest prior session
             let initWt = '';
             let initReps = '';
             let initLvl = '';
 
             if (week === 'w5') {
-                if (latestLog && latestLog.weight !== '-') initWt = latestLog.weight;
-                if (latestLog && latestLog.reps !== '-') initReps = latestLog.reps;
-                if (latestLog && latestLog.level !== '-') initLvl = latestLog.level;
+                if (latestLog && latestLog.weight && latestLog.weight !== '-') initWt = latestLog.weight;
+                if (latestLog && latestLog.reps && latestLog.reps !== '-') initReps = latestLog.reps;
+                if (latestLog && latestLog.level && latestLog.level !== '-') initLvl = latestLog.level;
             }
 
             html += `
@@ -763,7 +777,7 @@
                             <input type="text" id="input_lvl_${ex.id}" value="${initLvl}" placeholder="e.g. Lvl 5">
                         </div>
                         <div class="action-buttons">
-                            <button class="btn btn-save" onclick="saveLog('${ex.id}', '${ex.legacyId || ''}')">Save</button>
+                            <button class="btn btn-save" onclick="saveLog('${ex.id}', '${ex.legacyId || ''}', '${ex.name.replace(/'/g, "\\'")}')">Save</button>
                             <button class="btn btn-clear" onclick="clearInputs('${ex.id}')" title="Clear inputs">Clear</button>
                         </div>
                     </div>
@@ -788,7 +802,7 @@
         updateCompleteButton(isComplete);
     }
 
-    function saveLog(exId, legacyId) {
+    function saveLog(exId, legacyId, exName) {
         const wtInput = document.getElementById('input_wt_' + exId);
         const repsInput = document.getElementById('input_reps_' + exId);
         const lvlInput = document.getElementById('input_lvl_' + exId);
@@ -813,6 +827,7 @@
             id: Date.now(),
             timestamp: timestamp,
             sessionTag: getCurrentSessionTag(),
+            exerciseName: exName,
             weight: wt || '-',
             reps: reps || '-',
             level: lvl || '-'
@@ -915,7 +930,7 @@
                     sessionMap[groupKey].items.push({
                         exId: exId,
                         logId: entry.id || Date.now(),
-                        exercise: meta.name,
+                        exercise: entry.exerciseName || meta.name,
                         weight: entry.weight || '-',
                         reps: entry.reps || '-',
                         level: entry.level || '-'
@@ -1081,6 +1096,7 @@
                             id: Date.now() - (5000000 - index * 10000),
                             timestamp: derivedDate,
                             sessionTag: meta.sessionTag,
+                            exerciseName: meta.name || '',
                             weight: group.weight,
                             reps: group.reps,
                             level: group.level
