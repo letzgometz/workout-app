@@ -678,18 +678,37 @@
                 
                 const logs = getExerciseLogs(exId, null);
                 logs.forEach(entry => {
-                    const entryName = entry.exerciseName || loggedExName;
-                    if (entryName && (normalize(entryName).includes(targetClean) || targetClean.includes(normalize(entryName)))) {
-                        const entryId = entry.id || 0;
-                        if (entryId > highestId) {
-                            highestId = entryId;
-                            latestEntry = entry;
+                    if (typeof entry === 'object' && entry !== null) {
+                        const entryName = entry.exerciseName || loggedExName;
+                        if (entryName && (normalize(entryName).includes(targetClean) || targetClean.includes(normalize(entryName)))) {
+                            const entryId = entry.id || 0;
+                            if (entryId > highestId) {
+                                highestId = entryId;
+                                latestEntry = entry;
+                            }
                         }
                     }
                 });
             }
         }
         return latestEntry;
+    }
+
+    function parseBadgeTextValues(badgeText) {
+        if (!badgeText) return null;
+        const match = badgeText.match(/\(([^\vert{}]+)\Vert{}\s*([^\vert{}]+)\Vert{}\s*([^)]+)\)/);
+        if (match) {
+            const clean = (str) => {
+                let v = str.replace(/reps?/gi, '').trim();
+                return (v === '-' || v === '') ? '' : v;
+            };
+            return {
+                weight: clean(match[1]),
+                reps: clean(match[2]),
+                level: clean(match[3])
+            };
+        }
+        return null;
     }
 
     function saveExerciseLogs(exId, logsArray) {
@@ -731,19 +750,29 @@
                 latestLog = globalLatestLog;
             }
 
-            const lastLogText = latestLog 
-                ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
-                : `No history logged yet.`;
-
-            // Always prepopulate input boxes with values from the latest log (across all weeks and months)
+            let lastLogText = `No history logged yet.`;
             let initWt = '';
             let initReps = '';
             let initLvl = '';
 
             if (latestLog) {
-                if (latestLog.weight && latestLog.weight !== '-') initWt = latestLog.weight;
-                if (latestLog.reps && latestLog.reps !== '-') initReps = latestLog.reps;
-                if (latestLog.level && latestLog.level !== '-') initLvl = latestLog.level;
+                if (typeof latestLog === 'object') {
+                    lastLogText = `Last logged: ${latestLog.timestamp || 'Previous'} (${latestLog.weight || '-'} | ${latestLog.reps || '-'} reps | ${latestLog.level || '-'})`;
+                    if (latestLog.weight && latestLog.weight !== '-') initWt = latestLog.weight;
+                    if (latestLog.reps && latestLog.reps !== '-') initReps = latestLog.reps;
+                    if (latestLog.level && latestLog.level !== '-') initLvl = latestLog.level;
+                } else if (typeof latestLog === 'string') {
+                    lastLogText = latestLog;
+                }
+            }
+
+            if (!initWt && !initReps && !initLvl && lastLogText) {
+                const parsed = parseBadgeTextValues(lastLogText);
+                if (parsed) {
+                    initWt = parsed.weight;
+                    initReps = parsed.reps;
+                    initLvl = parsed.level;
+                }
             }
 
             html += `
@@ -850,7 +879,7 @@
     function deleteSingleLogEntry(exId, logId) {
         if (confirm("Delete this log entry?")) {
             let logs = getExerciseLogs(exId, null);
-            logs = logs.filter(item => item.id !== logId);
+            logs = logs.filter(item => typeof item === 'object' && item.id !== logId);
             saveExerciseLogs(exId, logs);
             renderHistory();
             loadSession();
@@ -910,25 +939,27 @@
                 const meta = exerciseMetaMap[exId] || { name: exId.toUpperCase(), sessionTag: 'Workout Session' };
 
                 logs.forEach(entry => {
-                    const tag = entry.sessionTag || meta.sessionTag;
-                    const groupKey = `${tag}___${entry.timestamp}`;
+                    if (typeof entry === 'object' && entry !== null) {
+                        const tag = entry.sessionTag || meta.sessionTag;
+                        const groupKey = `${tag}___${entry.timestamp}`;
 
-                    if (!sessionMap[groupKey]) {
-                        sessionMap[groupKey] = {
-                            sessionTag: tag,
-                            timestamp: entry.timestamp,
-                            items: []
-                        };
+                        if (!sessionMap[groupKey]) {
+                            sessionMap[groupKey] = {
+                                sessionTag: tag,
+                                timestamp: entry.timestamp,
+                                items: []
+                            };
+                        }
+
+                        sessionMap[groupKey].items.push({
+                            exId: exId,
+                            logId: entry.id || Date.now(),
+                            exercise: entry.exerciseName || meta.name,
+                            weight: entry.weight || '-',
+                            reps: entry.reps || '-',
+                            level: entry.level || '-'
+                        });
                     }
-
-                    sessionMap[groupKey].items.push({
-                        exId: exId,
-                        logId: entry.id || Date.now(),
-                        exercise: entry.exerciseName || meta.name,
-                        weight: entry.weight || '-',
-                        reps: entry.reps || '-',
-                        level: entry.level || '-'
-                    });
                 });
             }
         }
