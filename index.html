@@ -727,9 +727,16 @@
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
 
-            const initWt = latestLog && latestLog.weight !== '-' ? latestLog.weight : '';
-            const initReps = latestLog && latestLog.reps !== '-' ? latestLog.reps : '';
-            const initLvl = latestLog && latestLog.level !== '-' ? latestLog.level : '';
+            // On Week 5 (Deload), pre-fill from previous log if input field hasn't been modified yet
+            let initWt = '';
+            let initReps = '';
+            let initLvl = '';
+
+            if (week === 'w5') {
+                if (latestLog && latestLog.weight !== '-') initWt = latestLog.weight;
+                if (latestLog && latestLog.reps !== '-') initReps = latestLog.reps;
+                if (latestLog && latestLog.level !== '-') initLvl = latestLog.level;
+            }
 
             html += `
                 <div class="card">
