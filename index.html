@@ -662,12 +662,10 @@
         return logs;
     }
 
-    // Dynamic fuzzy matching to pull the absolute latest saved log across any week/session for matching exercise names
     function findLatestLogForExercise(exName) {
         let latestEntry = null;
         let highestId = -1;
 
-        // Clean target name for flexible comparison (e.g., handles minor naming variations)
         const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
         const targetClean = normalize(exName);
 
@@ -676,10 +674,8 @@
             if (key.startsWith('log_history_')) {
                 const exId = key.replace('log_history_', '');
                 
-                // Get meta or derive name from id
                 let loggedExName = exerciseMetaMap[exId] ? exerciseMetaMap[exId].name : '';
                 
-                // Check stored logs
                 const logs = getExerciseLogs(exId, null);
                 logs.forEach(entry => {
                     const entryName = entry.exerciseName || loggedExName;
@@ -726,11 +722,9 @@
         `;
 
         currentData.exercises.forEach(ex => {
-            // First check logs specific to this slot
             const logs = getExerciseLogs(ex.id, ex.legacyId);
             let latestLog = logs.length > 0 ? logs[logs.length - 1] : null;
 
-            // Global search across all historical logs by exercise name
             const globalLatestLog = findLatestLogForExercise(ex.name);
 
             if (globalLatestLog && (!latestLog || globalLatestLog.id > latestLog.id)) {
@@ -741,15 +735,15 @@
                 ? `Last logged: ${latestLog.timestamp} (${latestLog.weight} | ${latestLog.reps} reps | ${latestLog.level})`
                 : `No history logged yet.`;
 
-            // On Week 5 (Deload), prepopulate input boxes with values from the latest prior session
+            // Always prepopulate input boxes with values from the latest log (across all weeks and months)
             let initWt = '';
             let initReps = '';
             let initLvl = '';
 
-            if (week === 'w5') {
-                if (latestLog && latestLog.weight && latestLog.weight !== '-') initWt = latestLog.weight;
-                if (latestLog && latestLog.reps && latestLog.reps !== '-') initReps = latestLog.reps;
-                if (latestLog && latestLog.level && latestLog.level !== '-') initLvl = latestLog.level;
+            if (latestLog) {
+                if (latestLog.weight && latestLog.weight !== '-') initWt = latestLog.weight;
+                if (latestLog.reps && latestLog.reps !== '-') initReps = latestLog.reps;
+                if (latestLog.level && latestLog.level !== '-') initLvl = latestLog.level;
             }
 
             html += `
