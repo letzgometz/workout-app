@@ -673,7 +673,6 @@
             const key = localStorage.key(i);
             if (key.startsWith('log_history_')) {
                 const exId = key.replace('log_history_', '');
-                
                 let loggedExName = exerciseMetaMap[exId] ? exerciseMetaMap[exId].name : '';
                 
                 const logs = getExerciseLogs(exId, null);
@@ -878,9 +877,19 @@
 
     function deleteSingleLogEntry(exId, logId) {
         if (confirm("Delete this log entry?")) {
-            let logs = getExerciseLogs(exId, null);
-            logs = logs.filter(item => typeof item === 'object' && item.id !== logId);
-            saveExerciseLogs(exId, logs);
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('log_history_')) {
+                    let logs = [];
+                    try { logs = JSON.parse(localStorage.getItem(key)); } catch(e) {}
+                    if (Array.isArray(logs)) {
+                        const filtered = logs.filter(item => typeof item === 'object' && item.id !== logId);
+                        if (filtered.length !== logs.length) {
+                            localStorage.setItem(key, JSON.stringify(filtered));
+                        }
+                    }
+                }
+            }
             renderHistory();
             loadSession();
         }
@@ -930,6 +939,7 @@
 
     function renderHistory() {
         const sessionMap = {};
+        const seenEntries = new Set();
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -941,12 +951,22 @@
                 logs.forEach(entry => {
                     if (typeof entry === 'object' && entry !== null) {
                         const tag = entry.sessionTag || meta.sessionTag;
-                        const groupKey = `${tag}___${entry.timestamp}`;
+                        const exName = entry.exerciseName || meta.name;
+                        const weight = entry.weight || '-';
+                        const reps = entry.reps || '-';
+                        const level = entry.level || '-';
+                        const time = entry.timestamp || 'Previous';
+
+                        const uniqueSig = `${tag}|${time}|${exName}|${weight}|${reps}|${level}`;
+                        if (seenEntries.has(uniqueSig)) return;
+                        seenEntries.add(uniqueSig);
+
+                        const groupKey = `${tag}___${time}`;
 
                         if (!sessionMap[groupKey]) {
                             sessionMap[groupKey] = {
                                 sessionTag: tag,
-                                timestamp: entry.timestamp,
+                                timestamp: time,
                                 items: []
                             };
                         }
@@ -954,10 +974,10 @@
                         sessionMap[groupKey].items.push({
                             exId: exId,
                             logId: entry.id || Date.now(),
-                            exercise: entry.exerciseName || meta.name,
-                            weight: entry.weight || '-',
-                            reps: entry.reps || '-',
-                            level: entry.level || '-'
+                            exercise: exName,
+                            weight: weight,
+                            reps: reps,
+                            level: level
                         });
                     }
                 });
